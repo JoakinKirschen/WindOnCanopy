@@ -88,6 +88,7 @@ tr.gov td{background:#fff3e0 !important}
 .rgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px;align-items:start}
 .rgrid svg{width:100%;height:auto;display:block;background:#fff}
 .rwalls{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin-top:8px}
+.rcanfig{max-width:620px;margin-top:8px}.rcanfig figure{margin:0}.rcanfig svg{width:100%;height:auto;display:block;background:#fff}.rcanfig figcaption{font-size:12px;color:var(--muted)}
 .rwalls figure{margin:0}.rwalls figcaption{font-size:12px;color:var(--muted)}
 @media (max-width:900px){.rgrid{grid-template-columns:minmax(0,1fr)}}
 .asslist{margin:6px 0;padding-left:20px}.asslist li{margin:4px 0}
@@ -153,14 +154,20 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 #saveDlg .dlgbtns{position:static;border-top:none}
 .dlgbtns .primary{background:var(--accent2);color:#fff;border-color:var(--accent2)}
 @media (max-width:600px){.dlgcols{grid-template-columns:minmax(0,1fr)}}
-@page{size:A4;margin:16mm 14mm 16mm 16mm}
+@page{size:A4;margin:0}
+.pgwrap{width:100%;border-collapse:collapse}
+.pgwrap > thead > tr > td,.pgwrap > tfoot > tr > td,.pgwrap > tbody > tr > td{padding:0;border:0;background:transparent !important;text-align:left;white-space:normal}
+.pgsp{height:0}
 @media print{
   html,body{font-size:10.5px;background:#fff !important}
   body::before{display:none}
   body.printing > *:not(#printArea){display:none !important}
-  body.printing #printArea{display:block;padding:0 3mm}
-  main.rep{padding:0 3mm !important}
-  .zonesec{break-before:page}
+  body.printing #printArea{display:block;padding:0 15mm 0 17mm}
+  main.rep{padding:0 15mm 0 17mm !important;max-width:none !important}
+  .pgsp{height:15mm}
+  .pgwrap{font-size:10.5px}
+  .pgwrap > tbody > tr{break-inside:auto}
+  .zonesec,.newpage{break-before:page}
   .rcase > h3,.rcase > p{break-after:avoid}
   header{position:static}
   header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
@@ -180,11 +187,15 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   .formula{white-space:pre-wrap;font-size:8px;padding:2mm}
   .rcase{border:none;padding:0;margin:0 0 4mm;break-inside:auto}
   .rcase + .rcase{break-before:page}
-  .rgrid{grid-template-columns:minmax(0,56fr) minmax(0,44fr) !important;gap:3mm}
-  .rgrid svg{max-height:160mm}
+  .rgrid{grid-template-columns:minmax(0,1fr) !important;gap:3mm}
+  .rgrid svg{max-height:175mm;width:100% !important}
   .rwalls{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:2mm}
   .rwalls figcaption{font-size:8px}
   .rgrid td.l{white-space:nowrap}
+  .rcanfig{max-width:none;break-inside:avoid}
+  .rcanfig svg{max-height:120mm;width:auto !important;max-width:100%}
+  h2 + *, h3 + *{break-before:avoid-page}
+  h2, h3{break-after:avoid-page}
   img.snap{max-height:110mm;width:auto;max-width:100%;display:block;margin:0 auto}
   .asslist li{margin:1mm 0}
 }

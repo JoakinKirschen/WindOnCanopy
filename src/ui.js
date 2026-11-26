@@ -439,7 +439,7 @@
         } else wallHtml = opts.walls ? '<p class="small">Gevels: zie dakgeval ' + firstCase + ' van deze windrichting (onafhankelijk van het dakgeval).</p>' : '';
         var canHtml = '';
         if (signs.length > 1 && o.canopies.length) {
-          if (!canDone) { canDone = true; var p2 = planSVG(d.id, cid, signs[1], true); rows = rows.concat(p2.rows); canHtml = '<div class="rwalls"><figure>' + p2.svg + '<figcaption>Overkapping – ' + (signs[1] === 'min' ? 'opwaarts' : 'neerwaarts') + ' (onafhankelijk van het dakgeval)</figcaption></figure></div>'; }
+          if (!canDone) { canDone = true; var p2 = planSVG(d.id, cid, signs[1], true); rows = rows.concat(p2.rows); canHtml = '<div class="rcanfig"><figure>' + p2.svg + '<figcaption>Overkapping – ' + (signs[1] === 'min' ? 'opwaarts' : 'neerwaarts') + ' (onafhankelijk van het dakgeval)</figcaption></figure></div>'; }
           else canHtml = '<p class="small">Overkapping ' + (signs[1] === 'min' ? 'opwaarts' : 'neerwaarts') + ': zie dakgeval ' + firstCase + ' van deze windrichting.</p>';
         }
         h += table(rows) + '</div></div>' + canHtml + wallHtml + '</div>';
@@ -828,12 +828,12 @@
     h += '<fieldset class="dlgwide"><legend>Aannames</legend>' + assList().map(function (a, i) { return '<label><input type="checkbox" name="ass" value="' + i + '" checked> ' + a[0] + '</label>'; }).join('') + '<label for="rNotes" style="margin-top:6px">Eigen aannames en opmerkingen (één per regel; worden mee bewaard in het projectbestand)</label><textarea id="rNotes" rows="4"></textarea></fieldset>';
     h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button value="cancel">Annuleren</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
     $('reportDlg').innerHTML = h;
-    $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF (A4, Marges “Standaard”).' : 'Afdrukken opent het afdrukvenster van de browser: kies “Opslaan als PDF”, papierformaat A4 en Marges “Standaard” (bij “Geen” valt de witrand weg). Exporteren bewaart een losstaand HTML-rapport.';
+    $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF (A4).' : 'Afdrukken opent het afdrukvenster van de browser: kies “Opslaan als PDF” en papierformaat A4; de witranden zitten in het rapport zelf (Marges “Standaard” of “Geen”). Exporteren bewaart een losstaand HTML-rapport.';
     $('rNotes').value = NOTES; $('rNotes').oninput = function () { NOTES = this.value; renderAss(); };
     $('rAll').onclick = function () { $('reportDlg').querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = true; }); };
     $('rNone').onclick = function () { $('reportDlg').querySelectorAll('input[name=part]').forEach(function (c) { c.checked = false; }); };
     if ($('rPrint')) $('rPrint').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); printDoc(d); };
-    $('rExport').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); deliver('windrapport_loods_gent.html', '<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Windrapport loods Gent</title><style>' + document.querySelector('style').textContent + '\nbody{background:#fff}main.rep{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}@media print{.card{break-inside:auto}}</style></head><body><main class="rep">' + d + '</main></body></html>', 'text/html'); };
+    $('rExport').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); deliver('windrapport_loods_gent.html', '<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Windrapport loods Gent</title><style>' + document.querySelector('style').textContent + '\nbody{background:#fff}main.rep{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}@media print{.card{break-inside:auto}}</style></head><body><main class="rep">' + pageWrap(d) + '</main></body></html>', 'text/html'); };
   }
   function closeDlg() { var d = $('reportDlg'); if (d.close) d.close(); else d.removeAttribute('open'); }
   function docBody() {
@@ -849,7 +849,7 @@
         html += '<section class="card"><h2>3D-model</h2>' + (img ? '<img alt="3D-model van de loods" src="' + img + '" style="width:100%;border:1px solid #d6dde5;border-radius:6px">' : '<p class="small">3D-afbeelding niet beschikbaar.</p>') + '<p class="small">' + $('viewInfo').innerHTML.replace(/<br\s*\/?>/g, ' · ') + '</p></section>';
         return;
       }
-      if (id === 'inputs') { html += '<section class="card"><h2>Invoergegevens (uitgangspunten)</h2>' + inputsTable() + '</section>'; return; }
+      if (id === 'inputs') { html += '<section class="card newpage"><h2>Invoergegevens (uitgangspunten)</h2>' + inputsTable() + '</section>'; return; }
       if (id === 'zones') {
         var dirs = [].map.call(f.querySelectorAll('input[name=dir]:checked'), function (c) { return c.value; }), cases = [].map.call(f.querySelectorAll('input[name=case]:checked'), function (c) { return +c.value; });
         html += '<section class="card zonesec"><h2>Rapport per zone</h2>' + reportHTML({ scen: f.scen.value, meas: f.meas.value, signs: [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; }), mode: f.mode.value, dirs: dirs, cases: cases, walls: f.walls.checked }) + '</section>';
@@ -885,8 +885,10 @@
     var nl2 = notesLines();
     return h + '</table></div>' + (nl2.length ? '<p class="small">Eigen aannames: zie onderdeel Aannames.</p>' : '');
   }
+  // vaste witrand boven/onder op elke pagina (herhaalde thead/tfoot), onafhankelijk van de marge-instelling van de browser
+  function pageWrap(html) { return '<table class="pgwrap" role="presentation"><thead><tr><td><div class="pgsp"></div></td></tr></thead><tfoot><tr><td><div class="pgsp"></div></td></tr></tfoot><tbody><tr><td>' + html + '</td></tr></tbody></table>'; }
   function printDoc(html) {
-    var a = $('printArea'); a.innerHTML = html; document.body.classList.add('printing');
+    var a = $('printArea'); a.innerHTML = pageWrap(html); document.body.classList.add('printing');
     var done = function () { document.body.classList.remove('printing'); a.innerHTML = ''; window.removeEventListener('afterprint', done); };
     window.addEventListener('afterprint', done);
     setTimeout(function () { window.print(); setTimeout(done, 1500); }, 60);
