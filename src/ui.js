@@ -302,6 +302,7 @@
   function rampC(st, t) { t = Math.max(0, Math.min(1, t)); for (var i = 0; i < st.length - 1; i++) if (t <= st[i + 1][0]) { var a = hex2(st[i][1]), b = hex2(st[i + 1][1]), f = (t - st[i][0]) / (st[i + 1][0] - st[i][0]); return 'rgb(' + a.map(function (v, k) { return Math.round(v + (b[k] - v) * f); }).join(',') + ')'; } return st[st.length - 1][1]; }
   function colW(w, m) { return Math.abs(w) < 1e-9 ? '#eeeeee' : w > 0 ? rampC(RPOS, w / m) : rampC(RNEG, -w / m); }
   function txtCol(w, m) { return Math.abs(w) / m > 0.6 ? '#fff' : '#1c2733'; }
+  var LGN = 0;
   function renderReport() {
     var rd0 = $('r_dir').value;
     $('reportBox').innerHTML = reportHTML({ scen: $('r_scen').value, meas: $('r_meas').value, signs: $('r_sign').value === 'both' ? ['min', 'max'] : [$('r_sign').value], mode: $('r_mode').value, dirs: rd0 === 'all' ? ['R', 'L', 'A', 'P'] : [rd0], cases: [0, 1, 2, 3], walls: true });
@@ -316,7 +317,7 @@
     o.canopies.forEach(function (e) { WE.DIRS.forEach(function (d) { var c = e.byDir[d.id]; if (loc) c.zones.forEach(function (z) { wm = Math.max(wm, Math.abs(z.wMax), Math.abs(z.wMin)); }); else c.pitches.forEach(function (p) { wm = Math.max(wm, Math.abs(p.wMax), Math.abs(p.wMin)); }); }); });
     o.free.forEach(function (z) { wm = Math.max(wm, Math.abs(z.w)); });
     wm = (wm || 1) * mf;
-    var legend = '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;margin:4px 0 8px"><span>' + fmt(-wm, 2) + '</span><span style="flex:0 0 220px;height:12px;border-radius:3px;background:linear-gradient(90deg,' + RNEG.slice().reverse().map(function (s2) { return s2[1] + ' ' + ((1 - s2[0]) * 50) + '%'; }).concat(RPOS.map(function (s2) { return s2[1] + ' ' + (50 + s2[0] * 50) + '%'; })).join(',') + ')"></span><span>' + fmt(wm, 2, true) + ' kN/m²</span><span class="small">· blauw = zuiging / opwaarts · rood = druk / neerwaarts · ' + (mode === 'd' ? 'ontwerpwaarden' : 'karakteristiek') + ' · ' + (loc ? 'lokaal (A = ' + fmt(o.P.Aloc, 1) + ' m²)' : 'globaal') + '</span></div>';
+    var legend = '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;margin:4px 0 8px"><span>' + fmt(-wm, 2) + '</span><svg width="220" height="12" viewBox="0 0 220 12" aria-hidden="true"><defs><linearGradient id="lg' + (++LGN) + '">' + RNEG.slice().reverse().map(function (s2) { return '<stop offset="' + ((1 - s2[0]) * 50) + '%" stop-color="' + s2[1] + '"/>'; }).concat(RPOS.map(function (s2) { return '<stop offset="' + (50 + s2[0] * 50) + '%" stop-color="' + s2[1] + '"/>'; })).join('') + '</linearGradient></defs><rect width="220" height="12" rx="3" fill="url(#lg' + LGN + ')"/></svg><span>' + fmt(wm, 2, true) + ' kN/m²</span><span class="small">· blauw = zuiging / opwaarts · rood = druk / neerwaarts · ' + (mode === 'd' ? 'ontwerpwaarden' : 'karakteristiek') + ' · ' + (loc ? 'lokaal (A = ' + fmt(o.P.Aloc, 1) + ' m²)' : 'globaal') + '</span></div>';
     function lab(x, y, w, h, lines, wv) {
       var fs = 11, lh = 13, need = lines.length * lh + 2, maxw = Math.max.apply(null, lines.map(function (l) { return l.replace(/<[^>]+>/g, '').length; })) * 5.6;
       var c = txtCol(wv, wm);
@@ -659,6 +660,7 @@
   var dlP = null;
   function dlCap() { if (!dlP) dlP = (window.claude && window.claude.use) ? window.claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null); return dlP; }
   function note(msg, kind) { var b = $('fileMsg'); b.hidden = false; b.className = 'banner ' + (kind || 'info'); b.textContent = msg; clearTimeout(note.t); note.t = setTimeout(function () { b.hidden = true; }, 7000); }
+  function mimeFor(name) { var e = name.split('.').pop(); return { json: ['application/json', 'Projectbestand / JSON'], csv: ['text/csv', 'CSV-bestand'], html: ['text/html', 'HTML-rapport'] }[e] || ['text/plain', 'Bestand']; }
   function deliver(name, text, type) {
     if (PAGE) {
       dlCap().then(function (dl) {
@@ -673,6 +675,37 @@
       });
       return;
     }
+    // offline: venster “Opslaan als” (map en naam kiezen) waar de browser dat ondersteunt (Chrome, Edge)
+    if (window.showSaveFilePicker) {
+      var m = mimeFor(name), ext = '.' + name.split('.').pop(), acc = {}; acc[m[0]] = [ext];
+      var picked = false;
+      window.showSaveFilePicker({ suggestedName: name, types: [{ description: m[1], accept: acc }] }).then(function (h) {
+        picked = true;
+        return h.createWritable().then(function (w) { return w.write(new Blob([text], { type: type })).then(function () { return w.close(); }); }).then(function () { note((h.name || name) + ' opgeslagen.'); });
+      }).catch(function (e) {
+        if (e && e.name === 'AbortError') return;
+        if (!picked) askName(name, text, type); else note('Opslaan mislukt: ' + (e && e.message ? e.message : e), 'err');
+      });
+      return;
+    }
+    askName(name, text, type);
+  }
+  // browsers zonder “Opslaan als”-venster (bv. Firefox, Safari): eerst bestandsnaam vragen, dan downloaden
+  function askName(name, text, type) {
+    var d = $('saveDlg'), inp = $('saveName');
+    inp.value = name;
+    $('saveInfo').textContent = 'Deze browser laat een pagina geen map kiezen. Het bestand gaat naar je downloadmap, of de browser vraagt zelf waar het moet komen als dat zo is ingesteld (“Altijd vragen waar bestanden moeten worden opgeslagen”).';
+    $('saveOk').onclick = function () {
+      var n = inp.value.trim() || name, ext = '.' + name.split('.').pop();
+      n = n.replace(/[\\/:*?"<>|]/g, '_');
+      if (n.toLowerCase().slice(-ext.length) !== ext) n += ext;
+      if (d.close) d.close(); else d.removeAttribute('open');
+      download(n, text, type);
+    };
+    if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+    inp.focus(); inp.select();
+  }
+  function download(name, text, type) {
     var b = new Blob([text], { type: type }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); note(name + ' gedownload.');
   }
   function clip(name, text) {
@@ -688,7 +721,7 @@
     OUT.free.forEach(function (z) { L.push(['vrijstaand ' + z.part, '', '*', z.name, z.a0 + '-' + z.a1, z.A, z.ze, z.qp / 1000, z.cp, z.cp, '', '', '', '', '', '', z.w, z.w, z.Fk, OUT.vb.red, OUT.P.gammaQ * OUT.P.KFI, z.wD, z.wD, ''].join(';')); });
     deliver('windbelasting_loods_gent.csv', '﻿' + L.join('\r\n'), 'text/csv;charset=utf-8');
   }
-  function json() { deliver('windbelasting_loods_gent.json', JSON.stringify({ invoer: OUT.P, volumes: OUT.vols.map(function (v) { return { naam: v.name, gesloten: v.closed, theorie: v.theory, vlakken: v.faces }; }), wind: OUT.vb, inwendigeDruk: OUT.cpiDetail, zones: OUT.rows, totalen: OUT.totals, overkappingen: OUT.canopies.map(function (e) { var c = e.gov; return { deel: c.part, maatgevendeRichting: c.dir, perRichting: WE.DIRS.map(function (d) { var r = e.byDir[d.id]; return { richting: d.id, phi: r.P.phi, coef: r.coef, opstellingen: r.arrangements }; }), geo: c.geo, coef: c.coef, zones: c.zones, hellingen: c.pitches, opstellingen: c.arrangements, wrijving: c.fric }; }), vrijstaandeWanden: OUT.free, controles: OUT.checks, waarschuwingen: OUT.warnings }, null, 2), 'application/json'); }
+  function json() { deliver('windbelasting_loods_gent.json', JSON.stringify({ programmaversie: APP_VERSION, invoer: OUT.P, volumes: OUT.vols.map(function (v) { return { naam: v.name, gesloten: v.closed, theorie: v.theory, vlakken: v.faces }; }), wind: OUT.vb, inwendigeDruk: OUT.cpiDetail, zones: OUT.rows, totalen: OUT.totals, overkappingen: OUT.canopies.map(function (e) { var c = e.gov; return { deel: c.part, maatgevendeRichting: c.dir, perRichting: WE.DIRS.map(function (d) { var r = e.byDir[d.id]; return { richting: d.id, phi: r.P.phi, coef: r.coef, opstellingen: r.arrangements }; }), geo: c.geo, coef: c.coef, zones: c.zones, hellingen: c.pitches, opstellingen: c.arrangements, wrijving: c.fric }; }), vrijstaandeWanden: OUT.free, controles: OUT.checks, waarschuwingen: OUT.warnings }, null, 2), 'application/json'); }
 
   /* ---------- project opslaan / openen ---------- */
   var FORMAT = 'windbelasting-loods-gent';
@@ -696,7 +729,7 @@
     var R = readInputs(), P = R.P;
     ['cseason', 'T', 'monthsDur'].forEach(function (k) { delete P[k]; });
     P.notes = NOTES;
-    deliver('windproject_loods_gent.json', JSON.stringify({ formaat: FORMAT, versie: 1, opgeslagen: new Date().toISOString(), opmerking: 'Invoer van de windtool (NBN EN 1991-1-4 + ANB). Openen via “Project openen”.', invoer: P }, null, 2), 'application/json');
+    deliver('windproject_loods_gent.json', JSON.stringify({ formaat: FORMAT, versie: 1, programmaversie: APP_VERSION, opgeslagen: new Date().toISOString(), opmerking: 'Invoer van de windtool (NBN EN 1991-1-4 + ANB). Openen via “Project openen”.', invoer: P }, null, 2), 'application/json');
   }
   function mergeKnown(base, src, path, skipped) {
     Object.keys(src || {}).forEach(function (k) {
@@ -742,7 +775,7 @@
     h += '<fieldset class="dlgwide"><legend>Aannames</legend>' + assList().map(function (a, i) { return '<label><input type="checkbox" name="ass" value="' + i + '" checked> ' + a[0] + '</label>'; }).join('') + '<label for="rNotes" style="margin-top:6px">Eigen aannames en opmerkingen (één per regel; worden mee bewaard in het projectbestand)</label><textarea id="rNotes" rows="4"></textarea></fieldset>';
     h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button value="cancel">Annuleren</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
     $('reportDlg').innerHTML = h;
-    $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF.' : 'Afdrukken opent het afdrukvenster van de browser (kies “Opslaan als PDF” voor een PDF). Exporteren bewaart een losstaand HTML-rapport.';
+    $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF (A4, Marges “Standaard”).' : 'Afdrukken opent het afdrukvenster van de browser: kies “Opslaan als PDF”, papierformaat A4 en Marges “Standaard” (bij “Geen” valt de witrand weg). Exporteren bewaart een losstaand HTML-rapport.';
     $('rNotes').value = NOTES; $('rNotes').oninput = function () { NOTES = this.value; renderAss(); };
     $('rAll').onclick = function () { $('reportDlg').querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = true; }); };
     $('rNone').onclick = function () { $('reportDlg').querySelectorAll('input[name=part]').forEach(function (c) { c.checked = false; }); };
@@ -754,19 +787,19 @@
     var f = $('rForm'), parts = [].map.call(f.querySelectorAll('input[name=part]:checked'), function (c) { return c.value; });
     var assSel = [].map.call(f.querySelectorAll('input[name=ass]:checked'), function (c) { return +c.value; }), own = notesLines();
     if (!parts.length && !assSel.length && !own.length) { $('rHint').textContent = 'Kies minstens één onderdeel.'; return null; }
-    var o = OUT, head = '<section class="card"><h1 style="font-size:20px">Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1><p class="small">NBN EN 1991-1-4:2005 + ANB:2010 · rapport opgemaakt op ' + new Date().toLocaleString('nl-BE') + ' · terreincategorie ' + o.P.cat + ' · ' + o.vols.map(function (v) { return v.name + ': ' + (v.closed ? 'gesloten' : 'open'); }).join(' · ') + '</p><p class="small">Technisch rekenhulpmiddel – vervangt niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur.</p></section>';
+    var o = OUT, head = '<section class="card"><h1 style="font-size:20px">Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1><p class="small">Windtool versie ' + APP_VERSION + ' · NBN EN 1991-1-4:2005 + ANB:2010 · rapport opgemaakt op ' + new Date().toLocaleString('nl-BE') + ' · terreincategorie ' + o.P.cat + ' · ' + o.vols.map(function (v) { return v.name + ': ' + (v.closed ? 'gesloten' : 'open'); }).join(' · ') + '</p><p class="small">Technisch rekenhulpmiddel – vervangt niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur.</p></section>';
     var html = head;
     parts.forEach(function (id) {
       if (id === 'snap3d') {
         var cv = document.querySelector('#viewer canvas'), img = null;
         try { img = cv ? cv.toDataURL('image/png') : null; } catch (e) { img = null; }
-        html += '<section class="card"><h2>3D-model</h2>' + (img ? '<img alt="3D-model van de loods" src="' + img + '" style="width:100%;border:1px solid #d6dde5;border-radius:6px">' : '<p class="small">3D-afbeelding niet beschikbaar.</p>') + '<p class="small">' + ($('viewInfo').textContent || '') + '</p></section>';
+        html += '<section class="card"><h2>3D-model</h2>' + (img ? '<img alt="3D-model van de loods" src="' + img + '" style="width:100%;border:1px solid #d6dde5;border-radius:6px">' : '<p class="small">3D-afbeelding niet beschikbaar.</p>') + '<p class="small">' + $('viewInfo').innerHTML.replace(/<br\s*\/?>/g, ' · ') + '</p></section>';
         return;
       }
       if (id === 'inputs') { html += '<section class="card"><h2>Invoergegevens (uitgangspunten)</h2>' + inputsTable() + '</section>'; return; }
       if (id === 'zones') {
         var dirs = [].map.call(f.querySelectorAll('input[name=dir]:checked'), function (c) { return c.value; }), cases = [].map.call(f.querySelectorAll('input[name=case]:checked'), function (c) { return +c.value; });
-        html += '<section class="card"><h2>Rapport per zone</h2>' + reportHTML({ scen: f.scen.value, meas: f.meas.value, signs: [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; }), mode: f.mode.value, dirs: dirs, cases: cases, walls: f.walls.checked }) + '</section>';
+        html += '<section class="card zonesec"><h2>Rapport per zone</h2>' + reportHTML({ scen: f.scen.value, meas: f.meas.value, signs: [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; }), mode: f.mode.value, dirs: dirs, cases: cases, walls: f.walls.checked }) + '</section>';
         return;
       }
       var sec = document.getElementById(id); if (!sec) return;

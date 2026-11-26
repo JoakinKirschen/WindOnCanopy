@@ -13,10 +13,11 @@ def rd(p): return open(p, encoding='utf-8').read()
 import base64
 logo = rd(os.path.join(src, 'logo.svg')).strip()
 icon = '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + base64.b64encode(logo.encode('utf-8')).decode('ascii') + '">'
-T = rd(os.path.join(src, 'template.html')).replace('<!--INPUTS-->', '').replace('<!--LOGO-->', logo.replace('<svg ', '<svg width="40" height="40" aria-hidden="true" style="flex:0 0 auto" ', 1))
+VERSION = rd(os.path.join(root, 'VERSION')).strip()
+T = rd(os.path.join(src, 'template.html')).replace('<!--INPUTS-->', '').replace('<!--VERSION-->', VERSION).replace('<!--LOGO-->', logo.replace('<svg ', '<svg width="40" height="40" aria-hidden="true" style="flex:0 0 auto" ', 1))
 files = ['canopy.js', 'engine.js', 'defaults.js', 'ui.js', 'view.js']
 for f in files: assert '</script' not in rd(os.path.join(src, f)).lower(), f
-own = ''.join('<script>\n' + rd(os.path.join(src, f)) + '\n</script>\n' for f in files)
+own = '<script>var APP_VERSION = "' + VERSION + '";</script>\n' + ''.join('<script>\n' + rd(os.path.join(src, f)) + '\n</script>\n' for f in files)
 def make(head, btns, libs):
     t = T
     for k, v in [('<!--HEAD-->', head), ('<!--EXPORTBTNS-->', btns), ('<!--SCRIPTS-->', libs + own)]:

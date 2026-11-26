@@ -17,6 +17,7 @@ a{color:var(--accent)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:#16324f}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:#16324f;color:#fff;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 header .sub{font-size:12px;opacity:.85}
+header .ver{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:10px;padding:0 7px;margin-right:6px;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
 header .btns{display:flex;flex-wrap:wrap;gap:6px}
 button,.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:6px 10px;border-radius:6px;cursor:pointer}
 button:hover{background:var(--soft)}
@@ -147,14 +148,20 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 #reportDlg textarea{font:inherit;font-size:13px;width:100%;border:1px solid var(--line);border-radius:6px;padding:6px;resize:vertical}
 .dlgbtns{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;position:sticky;bottom:-16px;background:#fff;padding:10px 0 4px;border-top:1px solid var(--line)}
 #reportDlg{max-height:calc(100vh - 32px);overflow:auto}
+#saveDlg{border:1px solid var(--line);border-radius:10px;padding:16px 18px;max-width:min(520px,calc(100vw - 32px));width:100%;color:var(--ink);background:#fff}
+#saveDlg::backdrop{background:rgba(23,50,77,.45)}
+#saveDlg .dlgbtns{position:static;border-top:none}
 .dlgbtns .primary{background:var(--accent2);color:#fff;border-color:var(--accent2)}
 @media (max-width:600px){.dlgcols{grid-template-columns:minmax(0,1fr)}}
-@page{size:A4;margin:12mm 11mm}
+@page{size:A4;margin:16mm 14mm 16mm 16mm}
 @media print{
   html,body{font-size:10.5px;background:#fff !important}
   body::before{display:none}
   body.printing > *:not(#printArea){display:none !important}
-  body.printing #printArea{display:block}
+  body.printing #printArea{display:block;padding:0 3mm}
+  main.rep{padding:0 3mm !important}
+  .zonesec{break-before:page}
+  .rcase > h3,.rcase > p{break-after:avoid}
   header{position:static}
   header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
   .layout{display:block;padding:0}
@@ -186,7 +193,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 <header>
   <div style="display:flex;gap:10px;align-items:center"><!--LOGO--><div>
     <h1>Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1>
-    <div class="sub">NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
+    <div class="sub"><span class="ver">versie <!--VERSION--></span> NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
   </div></div>
   <div class="btns">
     <button class="primary" id="btnCalc" title="Herbereken alle resultaten">Herberekenen</button>
@@ -358,6 +365,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 </div>
 
 <dialog id="reportDlg" aria-label="Rapport samenstellen"></dialog>
+<dialog id="saveDlg" aria-label="Bestand opslaan"><form method="dialog"><h2 style="margin-top:0">Bestand opslaan</h2><label for="saveName">Bestandsnaam</label><input id="saveName" type="text" style="width:100%;font:inherit;padding:6px;border:1px solid var(--line);border-radius:6px;margin:4px 0 8px"><p class="small" id="saveInfo"></p><div class="dlgbtns"><span style="flex:1"></span><button value="cancel">Annuleren</button><button type="button" id="saveOk" class="primary">Opslaan</button></div></form></dialog>
 <div id="printArea"></div>
 <input type="file" id="fileIn" accept=".json,application/json" hidden>
 <!--SCRIPTS-->

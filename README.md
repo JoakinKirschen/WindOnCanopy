@@ -1,5 +1,7 @@
 # Windbelasting tijdelijke bouwfase – loods met luifel (Gent)
 
+Versie: zie [`VERSION`](VERSION) (ook zichtbaar in de blauwe balk bovenaan de tool).
+
 Interactieve rekentool voor windbelasting volgens **NBN EN 1991-1-4:2005 + Belgische Nationale Bijlage (ANB:2010)**, met 3D-visualisatie van de drukzones. Gemaakt voor een loods met open luifel in een tijdelijke bouwfase (deel van het dak verwijderd, gevel gedeeltelijk geopend), maar universeel opgezet: daken en wanden kunnen per overspanning aan- of uitgezet worden.
 
 **Openen:** download [`dist/windberekening_loods_gent.html`](dist/windberekening_loods_gent.html) (of `index.html`) en open het in een browser. Eén bestand, werkt offline.
@@ -14,7 +16,7 @@ Interactieve rekentool voor windbelasting volgens **NBN EN 1991-1-4:2005 + Belgi
 - **Open overkapping (EN 7.3):** tabel 7.7, meerdere velden (tabel 7.8 / fig. 7.18), blokkering φ per windrichting (7.3(4)), belastingsopstellingen fig. 7.17, wrijving (7.5).
 - **3D-model** (Three.js) met zones, kleuren, drukpijlen, labels, maatvoering en vlotte navigatie.
 - **Rapport per zone** voor alle windrichtingen en dakgevallen; rapportdialoog om onderdelen te kiezen, af te drukken of als HTML te exporteren.
-- **Project opslaan/openen** (.json), export CSV/JSON.
+- **Project opslaan/openen** (.json) met een venster “Opslaan als” (map en naam kiezen in Chrome/Edge; andere browsers vragen eerst een bestandsnaam), export CSV/JSON.
 - **Verificatie:** automatische controles, handberekening en vergelijking met een externe berekening (WInt) en een manuele spreadsheet.
 
 ## Structuur
@@ -37,6 +39,8 @@ Interactieve rekentool voor windbelasting volgens **NBN EN 1991-1-4:2005 + Belgi
 ```bash
 python3 build.py
 ```
+
+Verhoog `VERSION` bij elke nieuwe versie; de build zet het nummer in de kop, het rapport, de projectbestanden en de JSON-export.
 
 ## Belangrijk
 
