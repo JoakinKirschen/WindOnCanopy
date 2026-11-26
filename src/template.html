@@ -15,7 +15,8 @@ h3{font-size:15px;margin:16px 0 6px}
 p{margin:6px 0}
 a{color:var(--accent)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:#16324f}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:#16324f;color:#fff;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:#16324f;color:#fff;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:0;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+header .hrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 header .sub{font-size:12px;opacity:.85}
 header .ver{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:10px;padding:0 7px;margin-right:6px;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
 header .btns{display:flex;flex-wrap:wrap;gap:6px}
@@ -24,9 +25,38 @@ button:hover{background:var(--soft)}
 header button{background:#24486e;color:#fff;border-color:#3a6290}
 header button:hover{background:#2f5a87}
 header button.primary{background:var(--accent2);border-color:var(--accent2)}
-.layout{display:grid;grid-template-columns:340px minmax(0,1fr);gap:14px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1700px;margin:0 auto}
-aside{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;align-self:start;position:sticky;top:64px;max-height:calc(100vh - 78px);overflow:auto}
-main{min-width:0;display:flex;flex-direction:column;gap:14px}
+.pane{max-width:1700px;margin:0 auto;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px;min-width:0}
+/* verborgen tabblad blijft opgemaakt (3D-weergave en afbeeldingen behouden hun afmetingen) maar is onzichtbaar */
+.pane.off{position:fixed;inset:0;overflow:hidden;visibility:hidden;pointer-events:none;z-index:-1}
+.inlayout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(380px,1fr);gap:14px;align-items:start}
+.inpanel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0}
+.inpanel .inhint{margin:0 0 10px}
+#inputs{columns:2 300px;column-gap:12px}
+#inputs details.grp{break-inside:avoid;display:block}
+.preview{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(var(--hdr,112px) + 12px);max-height:calc(100vh - var(--hdr,112px) - 24px);overflow:auto;min-width:0;border-radius:10px}
+.preview .grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+section.card{scroll-margin-top:calc(var(--hdr,112px) + 10px)}
+nav.tabs{display:flex;gap:4px;align-items:flex-end;margin-top:8px;flex-wrap:wrap}
+nav.tabs button[role=tab]{background:transparent;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;color:#cfe0f1;padding:7px 16px;font-size:14px;font-weight:600}
+nav.tabs button[role=tab]:hover{background:rgba(255,255,255,.08);color:#fff}
+nav.tabs button[role=tab][aria-selected=true]{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+nav.tabs .tabstat{margin-left:auto;font-size:12px;color:#cfe0f1;padding:0 2px 8px}
+nav.tabs .tabstat b{color:#fff}
+.gonext{display:block;width:100%;margin-top:8px;background:var(--accent2);border-color:var(--accent2);color:#fff;font-weight:600}
+.gonext:hover{background:#c96a14}
+details.menu{position:relative}
+details.menu>summary{list-style:none;cursor:pointer;font-size:13px;background:#24486e;color:#fff;border:1px solid #3a6290;padding:6px 12px;border-radius:6px;user-select:none}
+details.menu>summary::-webkit-details-marker{display:none}
+details.menu>summary::after{content:" ▾"}
+details.menu[open]>summary{background:#2f5a87}
+.menupop{position:absolute;right:0;top:calc(100% + 4px);z-index:40;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column;min-width:260px}
+.menupop button{background:#fff !important;color:var(--ink) !important;border:0 !important;text-align:left;padding:7px 10px;border-radius:5px}
+.menupop button:hover{background:var(--soft) !important}
+.menupop hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
+.elemfig{margin:8px 0}
+.elemfig svg{max-height:520px}
+.f.txt{grid-template-columns:minmax(0,1fr)}
+.f.txt input{font-family:var(--mono);font-size:12px}
 section.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
 details.grp{border:1px solid var(--line);border-radius:8px;margin:0 0 8px;background:#fff}
 details.grp>summary{cursor:pointer;padding:7px 10px;font-weight:600;background:var(--soft);border-radius:8px;list-style:none}
@@ -97,7 +127,7 @@ tr.gov td{background:#fff3e0 !important}
 nav.toc{display:flex;flex-wrap:wrap;gap:6px}
 nav.toc a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:2px 9px;background:#fff}
 .filterbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
-.filterbar select{font:inherit;font-size:13px;padding:3px 6px;border:1px solid var(--line);border-radius:5px}
+.filterbar select{font:inherit;font-size:13px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;max-width:calc(100vw - 130px)}
 /* 3D */
 .ctrlbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 10px}
 .ctrl{display:flex;flex-direction:column;gap:3px}
@@ -133,8 +163,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 .ctrl{min-width:0;max-width:100%}
 .ctrl select{font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;max-width:100%;background:#fff;color:var(--ink)}
 .grid2>div{min-width:0}
-@media (max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}aside{position:static;max-height:none}.grid2{grid-template-columns:minmax(0,1fr)}.viewer-wrap{height:520px}}
-@media (max-width:600px){.ctrl{width:100%}.ctrl select{width:100%}.layout{padding-block:8px}.viewer-wrap{height:440px}#legend{width:170px}#viewInfo{max-width:210px}.navhelp{display:none}.seg label{padding:5px 8px}.ctrlbar{gap:8px}}
+@media (max-width:1100px){.inlayout{grid-template-columns:minmax(0,1fr)}.preview{position:static;max-height:none;overflow:visible}.grid2{grid-template-columns:minmax(0,1fr)}.viewer-wrap{height:520px}}
+@media (max-width:600px){.ctrl{width:100%}.ctrl select{width:100%}.pane{padding-block:8px}nav.tabs .tabstat{display:none}nav.tabs button[role=tab]{padding:6px 10px;font-size:13px}.viewer-wrap{height:440px}#legend{width:170px}#viewInfo{max-width:210px}.navhelp{display:none}.seg label{padding:5px 8px}.ctrlbar{gap:8px}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto !important}}
 #printArea{display:none}
 #fileMsg{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;max-width:min(440px,calc(100vw - 32px));box-shadow:0 4px 14px rgba(0,0,0,.18);margin:0}
@@ -170,9 +200,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   .zonesec,.newpage{break-before:page}
   .rcase > h3,.rcase > p{break-after:avoid}
   header{position:static}
-  header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
-  .layout{display:block;padding:0}
-  main{display:block}
+  header .btns, nav.tabs, #panel, .gonext, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
+  .pane,.pane.off{display:block;position:static;visibility:visible;padding:0;max-width:none}
+  .inlayout{display:block}.preview{position:static;max-height:none;overflow:visible}
+  .elemfig svg{max-height:120mm}
   section.card{border:none;border-radius:0;padding:0;margin:0 0 6mm;break-inside:auto}
   h1{font-size:16px} h2{font-size:14px;margin-bottom:2mm;break-after:avoid} h3{font-size:12px;margin:3mm 0 1.5mm;break-after:avoid}
   p{margin:1mm 0}
@@ -202,38 +233,52 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 </style>
 
 <header>
+  <div class="hrow">
   <div style="display:flex;gap:10px;align-items:center"><!--LOGO--><div>
     <h1>Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1>
     <div class="sub"><span class="ver">versie <!--VERSION--></span><span class="ver" id="projName" hidden></span> NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
   </div></div>
   <div class="btns">
-    <button class="primary" id="btnCalc" title="Herbereken alle resultaten">Herberekenen</button>
-    <button id="btnReset">Standaardwaarden herstellen</button>
     <!--EXPORTBTNS-->
   </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Tabbladen">
+    <button type="button" role="tab" id="tab-in" aria-controls="pane-in" aria-selected="true">1 · Invoer en model</button>
+    <button type="button" role="tab" id="tab-out" aria-controls="pane-out" aria-selected="false" tabindex="-1">2 · Resultaten</button>
+    <span class="tabstat" id="statusMini" aria-live="polite"></span>
+  </nav>
 </header>
+<div id="fileMsg" class="banner info" hidden role="status"></div>
+<div id="exportBox" class="banner info" hidden style="max-width:1700px;margin:10px auto 0"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b id="exportMsg"></b><button id="exportClose">Sluiten</button></div><textarea id="exportText" readonly aria-label="Exporttekst"></textarea></div>
 
-<div class="layout">
-<aside id="panel">
-  <!--INPUTS-->
-</aside>
-
-<main>
+<div class="pane" id="pane-in" role="tabpanel" aria-labelledby="tab-in">
+<div class="inlayout">
+  <div id="panel" class="inpanel">
+    <p class="small inhint">Wijzigingen worden meteen doorgerekend; het model rechts toont welke theorie per volume geldt. Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen.</p>
+    <!--INPUTS-->
+  </div>
+  <div class="preview">
   <section class="card" id="sec-status">
-    <nav class="toc"><a href="#sec-model">Model</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D</a><a href="#sec-report">Rapport per zone</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
-    <div id="statusBox" style="margin-top:10px"></div>
-    <div id="fileMsg" class="banner info" hidden role="status"></div>
-    <div id="exportBox" class="banner info" hidden><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b id="exportMsg"></b><button id="exportClose">Sluiten</button></div><textarea id="exportText" readonly aria-label="Exporttekst"></textarea></div>
+    <div id="statusBox"></div>
+    <button type="button" class="gonext" id="btnToOut">Naar de resultaten →</button>
   </section>
 
   <section class="card" id="sec-model">
     <h2>1. Model en automatisch gekozen theorie</h2>
-    <p class="small">Daken en wanden worden in het linkerpaneel in- of uitgeschakeld. Overspanningen die niet door een aanwezige tussenwand (as 7, as 13) gescheiden zijn, vormen één volume. Per volume bepaalt het programma uit de openingspercentages welke theorie geldt: <b>≥ 2 vlakken met meer dan 30 % openingen</b> ⇒ open constructie (dak EN 7.3, wanden EN 7.4, EN 7.2.9(2)); anders gesloten gebouw (EN 7.2, c<sub>pi</sub> volgens 7.2.9: dominante zijde of fig. 7.13, plus +0,2/−0,3).</p>
+    <p class="small">Daken en wanden worden in het invoerpaneel in- of uitgeschakeld. Overspanningen die niet door een aanwezige tussenwand (as 7, as 13) gescheiden zijn, vormen één volume. Per volume bepaalt het programma uit de openingspercentages welke theorie geldt: <b>≥ 2 vlakken met meer dan 30 % openingen</b> ⇒ open constructie (dak EN 7.3, wanden EN 7.4, EN 7.2.9(2)); anders gesloten gebouw (EN 7.2, c<sub>pi</sub> volgens 7.2.9: dominante zijde of fig. 7.13, plus +0,2/−0,3).</p>
     <div class="grid2"><div><div class="svgbox" id="svgPlan"></div></div><div><div class="svgbox" id="svgSec"></div></div></div>
     <h3>Volumes en openingspercentages</h3>
     <div class="tablewrap"><table id="tblVol"></table></div>
     <h3>Berekende delen</h3>
     <div class="tablewrap"><table id="tblParts"></table></div>
+  </section>
+  </div>
+</div>
+</div>
+
+<div class="pane off" id="pane-out" role="tabpanel" aria-labelledby="tab-out">
+  <section class="card" id="sec-toc">
+    <nav class="toc"><a href="#sec-model">Model (invoer)</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D</a><a href="#sec-report">Rapport per zone</a><a href="#sec-elem">Per element</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
   </section>
 
   <section class="card" id="sec-summary">
@@ -299,6 +344,21 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
       <button type="button" id="btnReport2">Rapport samenstellen…</button>
     </div>
     <div id="reportBox"></div>
+  </section>
+
+  <section class="card" id="sec-elem">
+    <h2>3c. Belastingen per constructie-element</h2>
+    <p class="small">Windbelasting omgerekend naar de draagconstructie: lijnlasten per spant (invloedsbreedte), reacties per kolomlijn (maatgevend voor fundering en verankering), gordingen, gevelregels, gevelkolommen en windverbanden. Spantposities en h.o.h.-afstanden in de invoer (groep Draagconstructie).</p>
+    <div class="filterbar">
+      <label>Spant <select id="e_frame"></select></label>
+      <label>Richting <select id="e_dir"></select></label>
+      <label>Dakgeval <select id="e_case"></select></label>
+      <label>c<sub>pi</sub> <select id="e_scen"></select></label>
+      <label>Overkapping <select id="e_sign"><option value="min">opwaarts (min)</option><option value="max">neerwaarts (max)</option></select></label>
+      <label>Opstelling <select id="e_lay"><option value="beide">beide hellingen</option><option value="links">linker helling</option><option value="rechts">rechter helling</option></select></label>
+      <label>Waarde <select id="e_mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label>
+    </div>
+    <div id="elemInfo"></div>
   </section>
 
   <section class="card" id="sec-geo">
@@ -372,7 +432,6 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
     <div id="helpInfo"></div>
     <p class="banner warn"><b>Disclaimer.</b> Dit is een technisch rekenhulpmiddel. De resultaten vervangen niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur.</p>
   </section>
-</main>
 </div>
 
 <dialog id="reportDlg" aria-label="Rapport samenstellen"></dialog>
