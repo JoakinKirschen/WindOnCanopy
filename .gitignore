@@ -1,0 +1,7 @@
+# normen, plannen en projectbestanden niet publiceren
+*.pdf
+*.xls
+*.xlsx
+*.zip
+__pycache__/
+.DS_Store
