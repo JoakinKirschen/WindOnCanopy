@@ -20,6 +20,7 @@ var DEFAULTS = {
   scen: { S1: true, S2: true, S3: true, S4: false, S5: true },
   i5pos: true, zeDtop: false,
   can: { n: 1, alpha: 8.53, he: 14.23, phiMode: 'dir', phi: 100, phiDir: { R: 100, L: 0, A: 0, P: 0 }, zeMode: 'eave', ze: 14.23, cfr: 0.04 },
+  str: { frames: '0,000; 7,034; 14,362; 21,690; 29,018; 36,346; 43,674; 51,006; 58,338; 65,671; 73,003; 80,335; 87,692; 95,048; 102,405; 109,439', sP: 1.5, sR: 1.5, sCol: 7.5, cfrB: 0.04 },
   cscd: 1.0, gammaQ: 1.5, KFI: 1.0,
   mode: 'k',
   notes: ''

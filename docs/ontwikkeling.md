@@ -78,3 +78,8 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - Project opslaan/openen (.json, formaat "windbelasting-loods-gent", onbekende velden genegeerd, ook slepen op invoerpaneel)
 - CSV/JSON/project/rapport: offline als download; gepubliceerde pagina via downloads-capability (klembord als terugval)
 - Rapport…-dialoog: onderdelen, windrichtingen, dakgevallen, gevelaanzichten, instellingen → Afdrukken/PDF (offline) of Exporteren als HTML
+
+## Versie 1.5.0 – belastingen per element en tabbladen
+- nieuw `src/elements.js`: spantposities (standaard 16 spanten A–P uit plan 2161/A), invloedsbreedtes, lijnlasten per spant (c_pe,10, c_s c_d), dakliggers scharnierend per overspanning/luifelveld → reacties per kolomlijn; kolommen in kopgevels (opening fase 2 in rekening); omhullende over richting × dakgeval × c_pi × overkappingsopstelling; gordingen/gevelregels met c_pe(A = L·h.o.h.); gevelkolommen A/P; windverbanden langsrichting met wrijving (EN 5.3(4)-toets)
+- controles: Σ spanten = totale dak- en kopgevelkracht (alle combinaties), Σ overkapping = fig. 7.17, evenwicht per spant, invloedsbreedtes sluitend
+- interface: tabblad "Invoer en model" (invoer in kolommen + live model en status) en "Resultaten"; menu "Bestand"; statusregel in de kop

@@ -15,7 +15,7 @@ logo = rd(os.path.join(src, 'logo.svg')).strip()
 icon = '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + base64.b64encode(logo.encode('utf-8')).decode('ascii') + '">'
 VERSION = rd(os.path.join(root, 'VERSION')).strip()
 T = rd(os.path.join(src, 'template.html')).replace('<!--INPUTS-->', '').replace('<!--VERSION-->', VERSION).replace('<!--LOGO-->', logo.replace('<svg ', '<svg width="40" height="40" aria-hidden="true" style="flex:0 0 auto" ', 1))
-files = ['canopy.js', 'engine.js', 'defaults.js', 'ui.js', 'view.js']
+files = ['canopy.js', 'engine.js', 'elements.js', 'defaults.js', 'ui.js', 'view.js']
 for f in files: assert '</script' not in rd(os.path.join(src, f)).lower(), f
 own = '<script>var APP_VERSION = "' + VERSION + '";</script>\n' + ''.join('<script>\n' + rd(os.path.join(src, f)) + '\n</script>\n' for f in files)
 def make(head, btns, libs):
@@ -23,12 +23,16 @@ def make(head, btns, libs):
     for k, v in [('<!--HEAD-->', head), ('<!--EXPORTBTNS-->', btns), ('<!--SCRIPTS-->', libs + own)]:
         assert t.count(k) == 1, k; t = t.replace(k, v)
     return t
-btn = '<button id="btnReportDlg">Rapport…</button>\n    <button id="btnSave">Project opslaan</button>\n    <button id="btnOpen">Project openen</button>\n    <button id="btnCsv">CSV</button>\n    <button id="btnJson">JSON</button>'
+def menu(extra):
+    return ('<button class="primary" id="btnReportDlg">Rapport…</button>\n    <details class="menu" id="fileMenu"><summary>Bestand</summary><div class="menupop">'
+            '<button id="btnOpen">Project openen…</button><button id="btnSave">Project opslaan…</button><hr>'
+            '<button id="btnCsv">Exporteren CSV (zones)</button><button id="btnJson">Exporteren JSON (alle resultaten)</button>' + extra +
+            '<hr><button id="btnReset">Standaardwaarden herstellen</button></div></details>')
 lib_in = '<script>\n' + rd(os.path.join(three, 'three.min.js')) + '\n</script>\n<script>\n' + rd(os.path.join(three, 'OrbitControls.js')) + '\n</script>\n'
 off = make('<!DOCTYPE html>\n<html lang="nl">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<title>Windbelasting loods Gent</title>\n' + icon,
-           '<button id="btnPrint">Afdrukken pagina</button>\n    ' + btn, lib_in) + '</html>\n'
+           menu('<button id="btnPrint">Pagina afdrukken</button>'), lib_in) + '</html>\n'
 lib_cdn = '<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>\n<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>\n'
-pg = make('<title>Windbelasting loods Gent</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n' + icon, btn, lib_cdn)
+pg = make('<title>Windbelasting loods Gent</title>\n<meta name="claude:viewport-fit-sides" content="cover">\n' + icon, menu(''), lib_cdn)
 os.makedirs(dist, exist_ok=True)
 open(os.path.join(dist, 'windberekening_loods_gent.html'), 'w', encoding='utf-8').write(off)
 open(os.path.join(dist, 'artifact.html'), 'w', encoding='utf-8').write(pg)
