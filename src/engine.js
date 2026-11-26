@@ -204,7 +204,7 @@ var WE = (function () {
       var A = 0; for (var i = 0; i < pts.length - 1; i++) A += (pts[i + 1] - pts[i]) * (zAt(s, pts[i]) + zAt(s, pts[i + 1])) / 2; return A;
     }
     out.spans = spans; out.X = X; out.B = B;
-    var aPlan = Math.atan(P.pitchPct / 100) * 180 / Math.PI;
+    var aPlan = P.pitchDeg;
     spans.forEach(function (s) {
       s.aGeom = Math.atan((s.zt - (s.zl + s.zr) / 2) / (s.w / (2 * s.nb))) * 180 / Math.PI;
       s.alpha = s.luifel ? Cn.alpha : (P.pitchMode === 'plan' ? aPlan : s.aGeom);

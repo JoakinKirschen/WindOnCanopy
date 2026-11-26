@@ -44,8 +44,8 @@
     { k: 'geo.hV7', l: 'Kilgoot as 7 [m]', t: 'num', min: 2, max: 50, step: 0.01, st: 'conf' },
     { k: 'geo.hR', l: 'Nok as 1–13 [m]', t: 'num', min: 2, max: 60, step: 0.01, st: 'conf' },
     { k: 'geo.hV13', l: 'Kilgoot as 13 [m]', t: 'num', min: 2, max: 50, step: 0.01, st: 'conf' },
-    { k: 'pitchMode', l: 'Helling as 1–13 voor c<sub>pe</sub>', t: 'sel', o: [['plan', 'volgens plan (%)'], ['geom', 'uit niveaus']], st: 'der' },
-    { k: 'pitchPct', l: 'Dakhelling [%]', s: 'plan: 15 %', t: 'num', min: 1, max: 100, step: 0.1, st: 'conf' },
+    { k: 'pitchMode', l: 'Helling as 1–13 voor c<sub>pe</sub>', t: 'sel', o: [['plan', 'ingegeven waarde'], ['geom', 'uit niveaus']], st: 'der' },
+    { k: 'pitchDeg', l: 'As 1–13: helling α [°]', s: 'plan: 15 % ≈ 8,53°', t: 'num', min: 1, max: 60, step: 0.01, st: 'conf' },
     { k: 'can.n', l: 'As 13–14: aantal velden', s: 'fig. 7.18 (indien open)', t: 'num', min: 1, max: 20, step: 1, st: 'conf' },
     { k: 'can.alpha', l: 'As 13–14: helling α [°]', s: 'fig. 7.17: + nok, − kil', t: 'num', min: -20, max: 45, step: 0.01, st: 'conf' },
     { k: 'can.he', l: 'As 13–14: goothoogte [m]', t: 'num', min: 1, max: 60, step: 0.01, st: 'conf' },
@@ -169,7 +169,7 @@
     if (P.roofs[2].on && P.walls.W3.on && P.walls.A2.on && P.walls.P2.on) { /* gesloten luifel: helling moet binnen tabel 7.4 liggen */ x(P.can.alpha >= 5, 'Gesloten as 13–14: helling ≥ 5° nodig voor tabel 7.4.', 'can.alpha'); }
     $('in_dirDeg').disabled = P.cdirMode !== 'dir'; $('in_cdirMan').disabled = P.cdirMode !== 'man';
     $('in_month0').disabled = !P.useSeason; $('in_cprobMan').disabled = P.cprobMode !== 'manual';
-    $('in_pitchPct').disabled = P.pitchMode !== 'plan';
+    $('in_pitchDeg').disabled = P.pitchMode !== 'plan';
     [0, 1, 2].forEach(function (i) { $('in_roofs_' + i + '_rem').disabled = !P.roofs[i].on; });
     ['y0', 'L', 'H'].forEach(function (k) { $('in_fase2_' + k).disabled = !P.fase2.on || !P.walls.W0.on; });
     $('in_can_ze').disabled = P.can.zeMode !== 'manual';
@@ -584,8 +584,8 @@
       + '  k_r = 0,19·(0,30/0,05)^0,07 = 0,215389 ; ln(17,44/0,30) = 4,062739 ; c_r = 0,875071 ; v_m = 22,7518 m/s\n'
       + '  I_v = 0,95/4,062739 = 0,233832 ; q_p = 2,636827 · 0,625 · 22,7518² = 853,09 N/m²\n'
       + 'Dak as 7–13, zone F (hoek as 13/A), wind van rechts, FGH−/IJ−, S1 (c_pi = +0,2), A = 1 m²:\n'
-      + '  dak as 7–13 = eerste aanwezige overspanning → factor 1,0 ; c_pe,1 = −2,5 + 0,5·0,35308 = −2,32346\n'
-      + '  w = 0,85309 · (−2,32346 − 0,20) = −2,1527 kN/m²\n'
+      + '  α = 8,53° → t = (8,53 − 5)/10 = 0,353 ; dak as 7–13 = eerste aanwezige overspanning → factor 1,0 ; c_pe,1 = −2,5 + 0,5·0,353 = −2,3235\n'
+      + '  w = 0,85309 · (−2,3235 − 0,20) = −2,1527 kN/m²\n'
       + 'Wand as 13, zone D, wind van rechts, S2 (c_pi = −0,3), globaal:\n'
       + '  h/d = 17,44/89,52 = 0,195 → c_pe,10 = +0,70 ; w = 0,85309 · 1,00 = 0,8531 kN/m²\n'
       + '  A = 109,439 · 14,23 = 1557,32 m² → F = 1328,5 kN ; M_voet = 1328,5 · 14,23/2 = 9452 kNm</div>';
@@ -593,7 +593,7 @@
     var rD = OUT.rows.filter(function (r) { return r.part === 'W2' && r.dir === 'R' && r.scen === 'S2'; })[0];
     var tD = OUT.totals.filter(function (t) { return t.part === 'W2' && t.dir === 'R' && t.scen === 'S2'; })[0];
     var v1 = OUT.vols[0];
-    if (rF && rD && tD && v1.closed && Math.abs(v1.h - 17.44) < 1e-9 && OUT.P.vb0 === 26 && OUT.P.cat === 'III' && OUT.vb.cdir === 1 && OUT.P.Aloc === 1 && OUT.P.cpiPos === 0.2 && OUT.P.cpiNeg === -0.3 && OUT.P.pitchMode === 'plan' && OUT.P.pitchPct === 15) {
+    if (rF && rD && tD && v1.closed && Math.abs(v1.h - 17.44) < 1e-9 && OUT.P.vb0 === 26 && OUT.P.cat === 'III' && OUT.vb.cdir === 1 && OUT.P.Aloc === 1 && OUT.P.cpiPos === 0.2 && OUT.P.cpiNeg === -0.3 && OUT.P.pitchMode === 'plan' && OUT.P.pitchDeg === 8.53) {
       var cmp = [['q_p [N/m²]', HAND.qp, v1.prof.qp, 0.01], ['w zone F [kN/m²]', HAND.wF, rF.wLoc, 1e-4], ['w zone D [kN/m²]', HAND.wD, rD.wGlob, 1e-4], ['F wand as 13 [kN]', HAND.FD, tD.Fn, 0.05], ['M_voet [kNm]', HAND.M, tD.Mbase, 0.5]];
       h += '<div class="tablewrap"><table><tr><th class="l">Grootheid</th><th>Hand</th><th>Script</th><th>Status</th></tr>' + cmp.map(function (c) { var ok = Math.abs(c[2] - c[1]) <= c[3]; return '<tr><td class="l">' + c[0] + '</td><td>' + fmt(c[1], 4) + '</td><td>' + c[2].toPrecision(10) + '</td><td>' + (ok ? '<span class="chip ok">OK</span>' : '<span class="chip bad">afwijking</span>') + '</td></tr>'; }).join('') + '</table></div>';
     } else h += '<p class="ref">Vergelijking enkel bij de standaardconfiguratie (Standaardwaarden herstellen).</p>';
@@ -604,7 +604,7 @@
     var c = WE.c74Ref(8.25, OUT.P.i5pos), t = WE.t71Ref(17.4 / 44.7), q = WE.windProfile(17.4, { cat: 'III', c0: 1, vbBase: 26, vbRed: 26, kIformula: false }).qp;
     var W = { qp: 852.4245409333421, F: [-1.44, -2.3375, 0.065], G: [-1.07, -1.8375, 0.065], H: [-0.5025, -0.9075, 0.065], I: [-0.535, -0.535, 0.135], J: [-0.73, -0.8925, 0.135], D: 0.7185682326621924, E: -0.3371364653243848, cpi: 0.646711409395973 };
     var M = { F: [-1.44, -2.3375], G: [-1.07, -1.8375], H: [-0.5025, -0.9075], I: [-0.535, -0.535], J: [-0.73, -0.8925], cpi: -0.5244664025 };
-    var Pd = JSON.parse(JSON.stringify(DEFAULTS)); Pd.pitchMode = 'plan'; Pd.pitchPct = Math.tan(8.25 * Math.PI / 180) * 100;
+    var Pd = JSON.parse(JSON.stringify(DEFAULTS)); Pd.pitchMode = 'plan'; Pd.pitchDeg = 8.25;
     var od = WE.compute(Pd), s3 = od.cpiDetail[0] && od.cpiDetail[0].L ? od.cpiDetail[0].L : null;
     var rows = [['q<sub>p</sub>(17,4 m) [N/m²]', W.qp, null, q]];
     ['F', 'G', 'H', 'I', 'J'].forEach(function (z) { rows.push([z + ' c<sub>pe,10</sub> (−)', W[z][0], M[z][0], c[z].n[0]]); rows.push([z + ' c<sub>pe,1</sub> (−)', W[z][1], M[z][1], c[z].n[1]]); rows.push([z + ' c<sub>pe</sub> (+)', W[z][2], null, c[z].p[0]]); });
@@ -706,6 +706,7 @@
       var inv = obj && obj.formaat === FORMAT ? obj.invoer : (obj && obj.invoer ? obj.invoer : null);
       if (!inv || typeof inv !== 'object') { note('Dit bestand bevat geen invoer van deze tool (veld “invoer” ontbreekt).', 'err'); return; }
       var P = clone(DEFAULTS), skipped = [];
+      if (typeof inv.pitchPct === 'number' && typeof inv.pitchDeg !== 'number') { inv.pitchDeg = Math.round(Math.atan(inv.pitchPct / 100) * 180 / Math.PI * 100) / 100; delete inv.pitchPct; }
       mergeKnown(P, inv, '', skipped);
       setInputs(P); recalc();
       note('Project “' + file.name + '” geopend' + (skipped.length ? '; genegeerd: ' + skipped.slice(0, 6).join(', ') + (skipped.length > 6 ? '…' : '') : '') + '.', skipped.length ? 'warn' : 'info');
