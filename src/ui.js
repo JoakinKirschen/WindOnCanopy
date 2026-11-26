@@ -660,12 +660,38 @@
   var dlP = null;
   function dlCap() { if (!dlP) dlP = (window.claude && window.claude.use) ? window.claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null); return dlP; }
   function note(msg, kind) { var b = $('fileMsg'); b.hidden = false; b.className = 'banner ' + (kind || 'info'); b.textContent = msg; clearTimeout(note.t); note.t = setTimeout(function () { b.hidden = true; }, 7000); }
+  var MEM = {};   // laatst gebruikte bestandshandle per soort ('project', 'export')
+  function idb(mode, key, val) {
+    return new Promise(function (res) {
+      try {
+        var rq = indexedDB.open('windtool', 1);
+        rq.onupgradeneeded = function () { rq.result.createObjectStore('kv'); };
+        rq.onerror = function () { res(null); };
+        rq.onsuccess = function () {
+          try {
+            var tx = rq.result.transaction('kv', mode === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+            var r2 = mode === 'get' ? st.get(key) : st.put(val, key);
+            r2.onsuccess = function () { res(mode === 'get' ? r2.result || null : true); };
+            r2.onerror = function () { res(null); };
+          } catch (e) { res(null); }
+        };
+      } catch (e) { res(null); }
+    });
+  }
+  function lsGet(k) { try { return localStorage.getItem('windtool.' + k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem('windtool.' + k, v); } catch (e) { } }
+  function rememberHandle(kind, h) { MEM[kind] = h; idb('put', 'handle.' + kind, h); if (h && h.name) { lsSet('name.' + kind, h.name); showProjName(kind); } }
+  function lastHandle(kind) { return MEM[kind] ? Promise.resolve(MEM[kind]) : idb('get', 'handle.' + kind).then(function (h) { if (h) MEM[kind] = h; return h; }); }
+  function showProjName(kind) { if (kind !== 'project') return; var n = lsGet('name.project'), el = $('projName'); if (el) { el.textContent = n ? 'project: ' + n : ''; el.hidden = !n; } }
   function mimeFor(name) { var e = name.split('.').pop(); return { json: ['application/json', 'Projectbestand / JSON'], csv: ['text/csv', 'CSV-bestand'], html: ['text/html', 'HTML-rapport'] }[e] || ['text/plain', 'Bestand']; }
-  function deliver(name, text, type) {
+  function deliver(name, text, type, kind) {
+    kind = kind || 'export';
+    var lastN = lsGet('name.' + kind);
+    if (kind === 'project' && lastN) name = lastN;
     if (PAGE) {
       dlCap().then(function (dl) {
         if (!dl) { clip(name, text); return; }
-        dl.save({ filename: name, data: text }).then(function () { note(name + ' opgeslagen.'); }, function (e) {
+        dl.save({ filename: name, data: text }).then(function () { lsSet('name.' + kind, name); showProjName(kind); note(name + ' opgeslagen.'); }, function (e) {
           var c = e && e.code;
           if (c === 'declined') note('Opslaan van ' + name + ' geannuleerd.', 'warn');
           else if (c === 'rate_limited') note('Er staat al een opslagvenster open; probeer zo dadelijk opnieuw.', 'warn');
@@ -679,19 +705,24 @@
     if (window.showSaveFilePicker) {
       var m = mimeFor(name), ext = '.' + name.split('.').pop(), acc = {}; acc[m[0]] = [ext];
       var picked = false;
-      window.showSaveFilePicker({ suggestedName: name, types: [{ description: m[1], accept: acc }] }).then(function (h) {
+      lastHandle(kind).then(function (lh) {
+        var opt = { id: kind === 'project' ? 'windproject' : 'windexport', suggestedName: name, types: [{ description: m[1], accept: acc }] };
+        if (lh) opt.startIn = lh;   // zelfde map als de laatste keer
+        var pick = function (o) { return window.showSaveFilePicker(o); };
+        return pick(opt).catch(function (e) { if (e && e.name !== 'AbortError' && opt.startIn) { delete opt.startIn; return pick(opt); } throw e; });
+      }).then(function (h) {
         picked = true;
-        return h.createWritable().then(function (w) { return w.write(new Blob([text], { type: type })).then(function () { return w.close(); }); }).then(function () { note((h.name || name) + ' opgeslagen.'); });
+        return h.createWritable().then(function (w) { return w.write(new Blob([text], { type: type })).then(function () { return w.close(); }); }).then(function () { rememberHandle(kind, h); note((h.name || name) + ' opgeslagen.'); });
       }).catch(function (e) {
         if (e && e.name === 'AbortError') return;
-        if (!picked) askName(name, text, type); else note('Opslaan mislukt: ' + (e && e.message ? e.message : e), 'err');
+        if (!picked) askName(name, text, type, kind); else note('Opslaan mislukt: ' + (e && e.message ? e.message : e), 'err');
       });
       return;
     }
-    askName(name, text, type);
+    askName(name, text, type, kind);
   }
   // browsers zonder “Opslaan als”-venster (bv. Firefox, Safari): eerst bestandsnaam vragen, dan downloaden
-  function askName(name, text, type) {
+  function askName(name, text, type, kind) {
     var d = $('saveDlg'), inp = $('saveName');
     inp.value = name;
     $('saveInfo').textContent = 'Deze browser laat een pagina geen map kiezen. Het bestand gaat naar je downloadmap, of de browser vraagt zelf waar het moet komen als dat zo is ingesteld (“Altijd vragen waar bestanden moeten worden opgeslagen”).';
@@ -700,7 +731,7 @@
       n = n.replace(/[\\/:*?"<>|]/g, '_');
       if (n.toLowerCase().slice(-ext.length) !== ext) n += ext;
       if (d.close) d.close(); else d.removeAttribute('open');
-      download(n, text, type);
+      lsSet('name.' + (kind || 'export'), n); showProjName(kind); download(n, text, type);
     };
     if (d.showModal) d.showModal(); else d.setAttribute('open', '');
     inp.focus(); inp.select();
@@ -725,11 +756,32 @@
 
   /* ---------- project opslaan / openen ---------- */
   var FORMAT = 'windbelasting-loods-gent';
+  function reportSettings() {
+    var f = $('rForm'), q = function (sel) { return [].map.call(f.querySelectorAll(sel), function (c) { return c.value; }); };
+    return {
+      onderdelen: q('input[name=part]:checked'), richtingen: q('input[name=dir]:checked'), dakgevallen: q('input[name=case]:checked').map(Number),
+      gevelaanzichten: f.walls.checked, cpi: f.scen.value, coefficienten: f.meas.value, overkapping: q('input[name=csign]:checked'), waarde: f.mode.value,
+      aannames: q('input[name=ass]:checked').map(Number),
+      sectieRapportPerZone: { cpi: $('r_scen').value, coefficienten: $('r_meas').value, overkapping: $('r_sign').value, waarde: $('r_mode').value, richting: $('r_dir').value }
+    };
+  }
+  function applyReportSettings(r) {
+    if (!r || typeof r !== 'object') return false;
+    var f = $('rForm');
+    function boxes(name, list, num) { if (!Array.isArray(list)) return; f.querySelectorAll('input[name=' + name + ']').forEach(function (c) { c.checked = list.map(String).indexOf(num ? String(+c.value) : c.value) >= 0; }); }
+    function sel(el, v) { if (typeof v === 'string' && [].some.call(el.options, function (o) { return o.value === v; })) el.value = v; }
+    boxes('part', r.onderdelen); boxes('dir', r.richtingen); boxes('case', r.dakgevallen, true); boxes('csign', r.overkapping); boxes('ass', r.aannames, true);
+    if (typeof r.gevelaanzichten === 'boolean') f.walls.checked = r.gevelaanzichten;
+    sel(f.scen, r.cpi); sel(f.meas, r.coefficienten); sel(f.mode, r.waarde);
+    var z = r.sectieRapportPerZone;
+    if (z && typeof z === 'object') { sel($('r_scen'), z.cpi); sel($('r_meas'), z.coefficienten); sel($('r_sign'), z.overkapping); sel($('r_mode'), z.waarde); sel($('r_dir'), z.richting); }
+    return true;
+  }
   function saveProject() {
     var R = readInputs(), P = R.P;
     ['cseason', 'T', 'monthsDur'].forEach(function (k) { delete P[k]; });
     P.notes = NOTES;
-    deliver('windproject_loods_gent.json', JSON.stringify({ formaat: FORMAT, versie: 1, programmaversie: APP_VERSION, opgeslagen: new Date().toISOString(), opmerking: 'Invoer van de windtool (NBN EN 1991-1-4 + ANB). Openen via “Project openen”.', invoer: P }, null, 2), 'application/json');
+    deliver('windproject_loods_gent.json', JSON.stringify({ formaat: FORMAT, versie: 1, programmaversie: APP_VERSION, opgeslagen: new Date().toISOString(), opmerking: 'Invoer en rapportinstellingen van de windtool (NBN EN 1991-1-4 + ANB). Openen via “Project openen”.', invoer: P, rapport: reportSettings() }, null, 2), 'application/json', 'project');
   }
   function mergeKnown(base, src, path, skipped) {
     Object.keys(src || {}).forEach(function (k) {
@@ -756,8 +808,9 @@
       if (typeof inv.pitchPct === 'number' && typeof inv.pitchDeg !== 'number') { inv.pitchDeg = Math.round(Math.atan(inv.pitchPct / 100) * 180 / Math.PI * 100) / 100; delete inv.pitchPct; }
       mergeKnown(P, inv, '', skipped);
       NOTES = typeof inv.notes === 'string' ? inv.notes : ''; if ($('rNotes')) $('rNotes').value = NOTES;
+      var rOk = applyReportSettings(obj.rapport);
       setInputs(P); recalc();
-      note('Project “' + file.name + '” geopend' + (skipped.length ? '; genegeerd: ' + skipped.slice(0, 6).join(', ') + (skipped.length > 6 ? '…' : '') : '') + '.', skipped.length ? 'warn' : 'info');
+      note('Project “' + file.name + '” geopend' + (rOk ? ' (met rapportinstellingen)' : '') + (skipped.length ? '; genegeerd: ' + skipped.slice(0, 6).join(', ') + (skipped.length > 6 ? '…' : '') : '') + '.', skipped.length ? 'warn' : 'info');
     };
     rd.readAsText(file);
   }
@@ -861,7 +914,19 @@
     var openDlg = function () { var d = $('reportDlg'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); };
     $('btnReportDlg').onclick = openDlg; if ($('btnReport2')) $('btnReport2').onclick = openDlg;
     $('btnSave').onclick = saveProject;
-    $('btnOpen').onclick = function () { $('fileIn').value = ''; $('fileIn').click(); };
+    $('btnOpen').onclick = function () {
+      if (!PAGE && window.showOpenFilePicker) {
+        lastHandle('project').then(function (lh) {
+          var opt = { id: 'windproject', types: [{ description: 'Projectbestand', accept: { 'application/json': ['.json'] } }] };
+          if (lh) opt.startIn = lh;
+          return window.showOpenFilePicker(opt).catch(function (e) { if (e && e.name !== 'AbortError' && opt.startIn) { delete opt.startIn; return window.showOpenFilePicker(opt); } throw e; });
+        }).then(function (hs) { var h = hs[0]; return h.getFile().then(function (file) { rememberHandle('project', h); openProject(file); }); })
+          .catch(function (e) { if (e && e.name === 'AbortError') return; $('fileIn').value = ''; $('fileIn').click(); });
+        return;
+      }
+      $('fileIn').value = ''; $('fileIn').click();
+    };
+    showProjName('project');
     $('fileIn').onchange = function () { openProject(this.files && this.files[0]); };
     var panel = $('panel');
     panel.addEventListener('dragover', function (e) { e.preventDefault(); });

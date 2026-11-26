@@ -16,7 +16,7 @@ Interactieve rekentool voor windbelasting volgens **NBN EN 1991-1-4:2005 + Belgi
 - **Open overkapping (EN 7.3):** tabel 7.7, meerdere velden (tabel 7.8 / fig. 7.18), blokkering φ per windrichting (7.3(4)), belastingsopstellingen fig. 7.17, wrijving (7.5).
 - **3D-model** (Three.js) met zones, kleuren, drukpijlen, labels, maatvoering en vlotte navigatie.
 - **Rapport per zone** voor alle windrichtingen en dakgevallen; rapportdialoog om onderdelen te kiezen, af te drukken of als HTML te exporteren.
-- **Project opslaan/openen** (.json) met een venster “Opslaan als” (map en naam kiezen in Chrome/Edge; andere browsers vragen eerst een bestandsnaam), export CSV/JSON.
+- **Project opslaan/openen** (.json) met een venster “Opslaan als” (map en naam kiezen in Chrome/Edge; andere browsers vragen eerst een bestandsnaam). De map en naam van het laatst opgeslagen of geopende project worden onthouden; het projectbestand bevat ook de rapport- en afdrukinstellingen. Export CSV/JSON.
 - **Verificatie:** automatische controles, handberekening en vergelijking met een externe berekening (WInt) en een manuele spreadsheet.
 
 ## Structuur
