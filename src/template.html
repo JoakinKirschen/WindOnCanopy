@@ -44,7 +44,8 @@ details.grp[open]>summary::before{content:"▾ "}
 .f .err{grid-column:1/-1;color:var(--bad);font-size:11.5px;display:none}
 .f.invalid input,.f.invalid select{border-color:var(--bad);background:#fdecea}
 .f.invalid .err{display:block}
-.f.derived input{background:#f4f6f9;color:var(--muted)}
+.f input:disabled,.f select:disabled,.f input[readonly]{background:#e9edf2;color:#8a96a3;border-color:#dfe4ea;cursor:not-allowed}
+.f input:not(:disabled):not([readonly]),.f select:not(:disabled){background:#fff;color:var(--ink)}
 .legend-mini{font-size:11.5px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
 .chip{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11.5px;border:1px solid}
 .chip.conf{background:var(--conf-bg);border-color:var(--conf-line);color:#1d5c34}
@@ -142,27 +143,51 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 #reportDlg legend{font-weight:600;font-size:13px}
 #reportDlg label{font-size:13px}
 #reportDlg select{font:inherit;font-size:13px;margin-left:4px}
-.dlgbtns{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.dlgwide{grid-column:1/-1;margin-top:10px}
+#reportDlg textarea{font:inherit;font-size:13px;width:100%;border:1px solid var(--line);border-radius:6px;padding:6px;resize:vertical}
+.dlgbtns{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;position:sticky;bottom:-16px;background:#fff;padding:10px 0 4px;border-top:1px solid var(--line)}
+#reportDlg{max-height:calc(100vh - 32px);overflow:auto}
 .dlgbtns .primary{background:var(--accent2);color:#fff;border-color:var(--accent2)}
 @media (max-width:600px){.dlgcols{grid-template-columns:minmax(0,1fr)}}
+@page{size:A4;margin:12mm 11mm}
 @media print{
+  html,body{font-size:10.5px;background:#fff !important}
+  body::before{display:none}
   body.printing > *:not(#printArea){display:none !important}
-  body.printing #printArea{display:flex;flex-direction:column;gap:10px}
-  .rcase{break-inside:avoid-page}
-  header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp{display:none !important}
+  body.printing #printArea{display:block}
+  header{position:static}
+  header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
   .layout{display:block;padding:0}
-  section.card{break-inside:avoid-page;border:none;padding:6px 0}
-  .tablewrap{overflow:visible;border:none}
-  th{position:static}
-  body{background:#fff}
+  main{display:block}
+  section.card{border:none;border-radius:0;padding:0;margin:0 0 6mm;break-inside:auto}
+  h1{font-size:16px} h2{font-size:14px;margin-bottom:2mm;break-after:avoid} h3{font-size:12px;margin:3mm 0 1.5mm;break-after:avoid}
+  p{margin:1mm 0}
+  .tablewrap{overflow:visible !important;border:none;max-height:none !important}
+  table{font-size:8.5px} th,td{padding:1.5px 4px;white-space:normal} td.wrap{min-width:0} th{position:static}
+  tr,img,figure,.kpi,.svgbox,.rgrid > div:first-child{break-inside:avoid}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:2mm}
+  .kpi{padding:2mm 2.5mm} .kpi .v{font-size:13px} .kpi .s,.kpi .t{font-size:8.5px}
+  .grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:4mm}
+  .svgbox{padding:0;border:none}
+  .svgbox svg{max-height:85mm;width:auto !important;max-width:100%;margin:0 auto}
+  .formula{white-space:pre-wrap;font-size:8px;padding:2mm}
+  .rcase{border:none;padding:0;margin:0 0 4mm;break-inside:auto}
+  .rcase + .rcase{break-before:page}
+  .rgrid{grid-template-columns:minmax(0,56fr) minmax(0,44fr) !important;gap:3mm}
+  .rgrid svg{max-height:160mm}
+  .rwalls{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:2mm}
+  .rwalls figcaption{font-size:8px}
+  .rgrid td.l{white-space:nowrap}
+  img.snap{max-height:110mm;width:auto;max-width:100%;display:block;margin:0 auto}
+  .asslist li{margin:1mm 0}
 }
 </style>
 
 <header>
-  <div>
+  <div style="display:flex;gap:10px;align-items:center"><!--LOGO--><div>
     <h1>Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1>
     <div class="sub">NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
-  </div>
+  </div></div>
   <div class="btns">
     <button class="primary" id="btnCalc" title="Herbereken alle resultaten">Herberekenen</button>
     <button id="btnReset">Standaardwaarden herstellen</button>
@@ -196,9 +221,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   <section class="card" id="sec-summary">
     <h2>2. Samenvatting maatgevende waarden</h2>
     <div class="small" id="sumMode"></div>
-    <h3>Behouden dakdeel</h3>
+    <h3>Daken en overkappingen</h3>
     <div class="kpis" id="kpiRoof"></div>
-    <h3>Rechtergevel (as 13)</h3>
+    <h3>Gevels en wanden</h3>
     <div class="kpis" id="kpiWall"></div>
     <h3>Tabel maatgevende windbelastingen</h3>
     <div class="tablewrap"><table id="tblGov"></table></div>

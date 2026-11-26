@@ -21,6 +21,7 @@ var DEFAULTS = {
   i5pos: true, zeDtop: false,
   can: { n: 1, alpha: 8.53, he: 14.23, phiMode: 'dir', phi: 100, phiDir: { R: 100, L: 0, A: 0, P: 0 }, zeMode: 'eave', ze: 14.23, cfr: 0.04 },
   cscd: 1.0, gammaQ: 1.5, KFI: 1.0,
-  mode: 'k'
+  mode: 'k',
+  notes: ''
 };
 if (typeof module !== 'undefined') module.exports = DEFAULTS;

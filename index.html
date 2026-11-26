@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Windbelasting loods Gent</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMxNzMyNGQiLz48cGF0aCBkPSJNMjcgNTJWMzVsMTMtOC41TDUzIDM1djE3eiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0yNSAzNS41IDQwIDI2bDE1IDkuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTA3YTFmIiBzdHJva2Utd2lkdGg9IjQuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHJlY3QgeD0iMzYiIHk9IjQyIiB3aWR0aD0iOCIgaGVpZ2h0PSIxMCIgcng9IjEiIGZpbGw9IiMxNzMyNGQiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiM1Y2NmZDAiIHN0cm9rZS13aWR0aD0iMy40IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjxwYXRoIGQ9Ik02IDI0aDE0YTQuNSA0LjUgMCAxIDAtNC41LTQuNSIvPjxwYXRoIGQ9Ik02IDMzaDE2Ii8+PHBhdGggZD0iTTYgNDJoMTJhNC41IDQuNSAwIDEgMS00LjUgNC41Ii8+PC9nPjwvc3ZnPg==">
 <style>
 :root{
   --bg:#f3f4f6; --panel:#ffffff; --ink:#1f2933; --muted:#5f6b7a; --line:#d9dee5; --soft:#eef1f5;
@@ -49,7 +50,8 @@ details.grp[open]>summary::before{content:"▾ "}
 .f .err{grid-column:1/-1;color:var(--bad);font-size:11.5px;display:none}
 .f.invalid input,.f.invalid select{border-color:var(--bad);background:#fdecea}
 .f.invalid .err{display:block}
-.f.derived input{background:#f4f6f9;color:var(--muted)}
+.f input:disabled,.f select:disabled,.f input[readonly]{background:#e9edf2;color:#8a96a3;border-color:#dfe4ea;cursor:not-allowed}
+.f input:not(:disabled):not([readonly]),.f select:not(:disabled){background:#fff;color:var(--ink)}
 .legend-mini{font-size:11.5px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
 .chip{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11.5px;border:1px solid}
 .chip.conf{background:var(--conf-bg);border-color:var(--conf-line);color:#1d5c34}
@@ -147,27 +149,51 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 #reportDlg legend{font-weight:600;font-size:13px}
 #reportDlg label{font-size:13px}
 #reportDlg select{font:inherit;font-size:13px;margin-left:4px}
-.dlgbtns{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.dlgwide{grid-column:1/-1;margin-top:10px}
+#reportDlg textarea{font:inherit;font-size:13px;width:100%;border:1px solid var(--line);border-radius:6px;padding:6px;resize:vertical}
+.dlgbtns{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;position:sticky;bottom:-16px;background:#fff;padding:10px 0 4px;border-top:1px solid var(--line)}
+#reportDlg{max-height:calc(100vh - 32px);overflow:auto}
 .dlgbtns .primary{background:var(--accent2);color:#fff;border-color:var(--accent2)}
 @media (max-width:600px){.dlgcols{grid-template-columns:minmax(0,1fr)}}
+@page{size:A4;margin:12mm 11mm}
 @media print{
+  html,body{font-size:10.5px;background:#fff !important}
+  body::before{display:none}
   body.printing > *:not(#printArea){display:none !important}
-  body.printing #printArea{display:flex;flex-direction:column;gap:10px}
-  .rcase{break-inside:avoid-page}
-  header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp{display:none !important}
+  body.printing #printArea{display:block}
+  header{position:static}
+  header .btns, aside, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
   .layout{display:block;padding:0}
-  section.card{break-inside:avoid-page;border:none;padding:6px 0}
-  .tablewrap{overflow:visible;border:none}
-  th{position:static}
-  body{background:#fff}
+  main{display:block}
+  section.card{border:none;border-radius:0;padding:0;margin:0 0 6mm;break-inside:auto}
+  h1{font-size:16px} h2{font-size:14px;margin-bottom:2mm;break-after:avoid} h3{font-size:12px;margin:3mm 0 1.5mm;break-after:avoid}
+  p{margin:1mm 0}
+  .tablewrap{overflow:visible !important;border:none;max-height:none !important}
+  table{font-size:8.5px} th,td{padding:1.5px 4px;white-space:normal} td.wrap{min-width:0} th{position:static}
+  tr,img,figure,.kpi,.svgbox,.rgrid > div:first-child{break-inside:avoid}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:2mm}
+  .kpi{padding:2mm 2.5mm} .kpi .v{font-size:13px} .kpi .s,.kpi .t{font-size:8.5px}
+  .grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;gap:4mm}
+  .svgbox{padding:0;border:none}
+  .svgbox svg{max-height:85mm;width:auto !important;max-width:100%;margin:0 auto}
+  .formula{white-space:pre-wrap;font-size:8px;padding:2mm}
+  .rcase{border:none;padding:0;margin:0 0 4mm;break-inside:auto}
+  .rcase + .rcase{break-before:page}
+  .rgrid{grid-template-columns:minmax(0,56fr) minmax(0,44fr) !important;gap:3mm}
+  .rgrid svg{max-height:160mm}
+  .rwalls{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:2mm}
+  .rwalls figcaption{font-size:8px}
+  .rgrid td.l{white-space:nowrap}
+  img.snap{max-height:110mm;width:auto;max-width:100%;display:block;margin:0 auto}
+  .asslist li{margin:1mm 0}
 }
 </style>
 
 <header>
-  <div>
+  <div style="display:flex;gap:10px;align-items:center"><svg width="40" height="40" aria-hidden="true" style="flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#17324d"/><path d="M27 52V35l13-8.5L53 35v17z" fill="#ffffff"/><path d="M25 35.5 40 26l15 9.5" fill="none" stroke="#e07a1f" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="36" y="42" width="8" height="10" rx="1" fill="#17324d"/><g fill="none" stroke="#5ccfd0" stroke-width="3.4" stroke-linecap="round"><path d="M6 24h14a4.5 4.5 0 1 0-4.5-4.5"/><path d="M6 33h16"/><path d="M6 42h12a4.5 4.5 0 1 1-4.5 4.5"/></g></svg><div>
     <h1>Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1>
     <div class="sub">NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
-  </div>
+  </div></div>
   <div class="btns">
     <button class="primary" id="btnCalc" title="Herbereken alle resultaten">Herberekenen</button>
     <button id="btnReset">Standaardwaarden herstellen</button>
@@ -206,9 +232,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   <section class="card" id="sec-summary">
     <h2>2. Samenvatting maatgevende waarden</h2>
     <div class="small" id="sumMode"></div>
-    <h3>Behouden dakdeel</h3>
+    <h3>Daken en overkappingen</h3>
     <div class="kpis" id="kpiRoof"></div>
-    <h3>Rechtergevel (as 13)</h3>
+    <h3>Gevels en wanden</h3>
     <div class="kpis" id="kpiWall"></div>
     <h3>Tabel maatgevende windbelastingen</h3>
     <div class="tablewrap"><table id="tblGov"></table></div>
@@ -2269,7 +2295,8 @@ var DEFAULTS = {
   i5pos: true, zeDtop: false,
   can: { n: 1, alpha: 8.53, he: 14.23, phiMode: 'dir', phi: 100, phiDir: { R: 100, L: 0, A: 0, P: 0 }, zeMode: 'eave', ze: 14.23, cfr: 0.04 },
   cscd: 1.0, gammaQ: 1.5, KFI: 1.0,
-  mode: 'k'
+  mode: 'k',
+  notes: ''
 };
 if (typeof module !== 'undefined') module.exports = DEFAULTS;
 
@@ -2628,7 +2655,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
           var x = PX(e.x0 + z.x0), y = PY(e.y0 + z.y1), ww = (z.x1 - z.x0) * sc, hh = (z.y1 - z.y0) * sc;
           s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
           s += lab(x, y, ww, hh, ['<tspan font-weight="700">' + z.name + '</tspan> ' + fmt(cp, 2, true), fmt(w, 2, true)], w);
-          rows.push([PN[e.part] + ' (overkapping ' + sTxt + ', veld ' + z.bay + ', ' + z.pitch + ')', z.name, z.A, cp, null, w]);
+          rows.push(['Overkapping ' + (o.canopies.length > 1 ? o.spans[e.span].name + ' ' : '') + sTxt + (c.geo.n > 1 ? ', veld ' + z.bay : '') + ' (' + z.pitch + ')', z.name, z.A, cp, null, w]);
         });
         else c.pitches.forEach(function (pt) {
           var Bb = c.bays[pt.bay - 1], x0 = pt.pitch === 'L' ? Bb.x0 : Bb.xm, x1 = pt.pitch === 'L' ? Bb.xm : Bb.x1;
@@ -2636,7 +2663,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
           var x = PX(e.x0 + x0), y = PY(e.y0 + c.geo.b), ww = (x1 - x0) * sc, hh = c.geo.b * sc;
           s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
           s += lab(x, y, ww, hh, ['c<tspan font-size="8" dy="2">f</tspan><tspan dy="-2">·ψ ' + fmt(cf, 2, true) + '</tspan>', 'w ' + fmt(w, 2, true), 'F ' + fmt(F, 0, true) + ' kN'], w);
-          rows.push([PN[e.part] + ' (overkapping ' + sTxt + ', veld ' + pt.bay + ', ' + (pt.pitch === 'L' ? 'links' : 'rechts') + ')', 'c_f', pt.A, cf, null, w]);
+          rows.push(['Overkapping ' + (o.canopies.length > 1 ? o.spans[e.span].name + ' ' : '') + sTxt + (c.geo.n > 1 ? ', veld ' + pt.bay : '') + ' (' + pt.pitch + ')', 'c_f', pt.A, cf, null, w]);
         });
       });
       [[0, '1'], [X[1], '7'], [X[2], '13'], [X[3], '14']].forEach(function (q) { s += '<text x="' + PX(q[0]) + '" y="' + (oy - 6) + '" text-anchor="middle" font-size="11" fill="#555">as ' + q[1] + '</text>'; });
@@ -2904,8 +2931,8 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
     return h;
   }
 
-  function renderAss() {
-    var A = [
+  function assList() {
+    return [
       ['Terreincategorie', 'III volgens opdracht; plan vermeldt WindCAT II (+35 % q<sub>p</sub>).'],
       ['Volumes', 'Een aanwezige tussenwand (as 7, as 13) scheidt volumes; openingen in tussenwanden worden niet als verbinding gerekend. Zonder tussenwand vormen de overspanningen één volume.'],
       ['Theoriekeuze', 'EN 7.2.9(2): ≥ 2 vlakken met > 30 % openingen ⇒ dak als overkapping (7.3), wanden als vrijstaande wand (7.4). De 30 %-toets gebruikt de bruto-oppervlakken per vlak (dak, beide eindwanden, gevel A, gevel P).'],
@@ -2916,7 +2943,14 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
       ['Stabiliteit', 'Overdracht van de krachten tijdens de fasen niet uit de plannen af te leiden.'],
       ['c<sub>s</sub>c<sub>d</sub> = 1,0', 'h > 15 m: te verantwoorden.']
     ];
-    $('assInfo').innerHTML = '<ul class="asslist">' + A.map(function (a) { return '<li><b>' + a[0] + '.</b> ' + a[1] + '</li>'; }).join('') + '</ul>';
+  }
+  var NOTES = '';
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+  function notesLines() { return NOTES.split(/\r?\n/).map(function (t) { return t.trim(); }).filter(Boolean); }
+  function renderAss() {
+    var A = assList();
+    var own = notesLines();
+    $('assInfo').innerHTML = '<ul class="asslist">' + A.map(function (a) { return '<li><b>' + a[0] + '.</b> ' + a[1] + '</li>'; }).join('') + own.map(function (t) { return '<li><b>Eigen aanname.</b> ' + esc(t) + '</li>'; }).join('') + '</ul>' + (own.length ? '' : '<p class="small">Eigen aannames voeg je toe in het venster “Rapport…”; ze worden mee bewaard in het projectbestand.</p>');
   }
   function renderRef() {
     var R = [['EN 1991-1-4 §4.2–4.5 + ANB tabellen 4.2–4.5, 4.9', 'v<sub>b</sub>, c<sub>dir</sub>, c<sub>season</sub>, c<sub>prob</sub>, c<sub>r</sub>, I<sub>v</sub>, q<sub>p</sub>'], ['EN §6.2(1); ANB 6.3.1', 'c<sub>s</sub>c<sub>d</sub>'], ['EN §7.2.1, fig. 7.2; ANB 7.2.1', 'c<sub>pe,1</sub>/c<sub>pe,10</sub>'], ['EN §7.2.2, fig. 7.4–7.5, tabel 7.1; ANB 7.2.2, 5.3(5)', 'gevels'], ['EN §7.2.5, fig. 7.8, tabel 7.4a/b', 'zadeldaken'], ['EN §7.2.7, fig. 7.10', 'geschakelde daken'], ['EN §7.2.9(2)–(7), (7.1)–(7.3), fig. 7.13; ANB 7.2.9', 'inwendige druk, dominante zijde, theoriekeuze'], ['EN §7.3, tabel 7.7–7.8, fig. 7.15–7.18; ANB 7.3', 'open overkappingen'], ['EN §7.4.1, tabel 7.9, fig. 7.19', 'vrijstaande wanden'], ['EN §7.5, tabel 7.10', 'wrijving'], ['EN 1990 (niet aangeleverd)', 'γ<sub>Q</sub>, ψ, K<sub>FI</sub>']];
@@ -2965,6 +2999,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
   function saveProject() {
     var R = readInputs(), P = R.P;
     ['cseason', 'T', 'monthsDur'].forEach(function (k) { delete P[k]; });
+    P.notes = NOTES;
     deliver('windproject_loods_gent.json', JSON.stringify({ formaat: FORMAT, versie: 1, opgeslagen: new Date().toISOString(), opmerking: 'Invoer van de windtool (NBN EN 1991-1-4 + ANB). Openen via “Project openen”.', invoer: P }, null, 2), 'application/json');
   }
   function mergeKnown(base, src, path, skipped) {
@@ -2991,6 +3026,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
       var P = clone(DEFAULTS), skipped = [];
       if (typeof inv.pitchPct === 'number' && typeof inv.pitchDeg !== 'number') { inv.pitchDeg = Math.round(Math.atan(inv.pitchPct / 100) * 180 / Math.PI * 100) / 100; delete inv.pitchPct; }
       mergeKnown(P, inv, '', skipped);
+      NOTES = typeof inv.notes === 'string' ? inv.notes : ''; if ($('rNotes')) $('rNotes').value = NOTES;
       setInputs(P); recalc();
       note('Project “' + file.name + '” geopend' + (skipped.length ? '; genegeerd: ' + skipped.slice(0, 6).join(', ') + (skipped.length > 6 ? '…' : '') : '') + '.', skipped.length ? 'warn' : 'info');
     };
@@ -2998,8 +3034,8 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
   }
 
   /* ---------- rapportdialoog ---------- */
-  var RSECT = [['sec-model', 'Model en gekozen theorie'], ['sec-summary', 'Samenvatting maatgevende waarden'], ['snap3d', '3D-afbeelding (huidig beeld)'], ['zones', 'Rapport per zone (dak- en gevelaanzichten)'], ['sec-geo', 'Geometrie'], ['sec-qp', 'Stuwdruk'], ['sec-cpe', 'Coëfficiënten en zones'], ['sec-cpi', 'Inwendige druk'], ['sec-res', 'Resultaten per zone (tabel, huidige filter)'], ['sec-tot', 'Totale krachten'], ['sec-open', 'Open delen (7.3 / 7.4)'], ['sec-temp', 'Tijdelijke situatie'], ['sec-ver', 'Verificatie'], ['sec-ass', 'Aannames'], ['sec-ref', 'Normartikelen']];
-  var RDEF = { 'sec-model': true, 'sec-summary': true, snap3d: true, zones: true };
+  var RSECT = [['sec-model', 'Model en gekozen theorie'], ['sec-summary', 'Samenvatting maatgevende waarden'], ['snap3d', '3D-afbeelding (huidig beeld)'], ['zones', 'Rapport per zone (dak- en gevelaanzichten)'], ['sec-geo', 'Geometrie'], ['sec-qp', 'Stuwdruk'], ['sec-cpe', 'Coëfficiënten en zones'], ['sec-cpi', 'Inwendige druk'], ['sec-res', 'Resultaten per zone (tabel, huidige filter)'], ['sec-tot', 'Totale krachten'], ['sec-open', 'Open delen (7.3 / 7.4)'], ['sec-temp', 'Tijdelijke situatie'], ['sec-ver', 'Verificatie'], ['inputs', 'Invoergegevens (uitgangspunten)'], ['sec-ref', 'Normartikelen']];
+  var RDEF = { 'sec-model': true, 'sec-summary': true, snap3d: true, zones: true, inputs: true };
   function buildDialog() {
     var h = '<form method="dialog" id="rForm"><h2 style="margin-top:0">Rapport samenstellen</h2><div class="dlgcols"><fieldset><legend>Onderdelen</legend>' + RSECT.map(function (q) { return '<label><input type="checkbox" name="part" value="' + q[0] + '"' + (RDEF[q[0]] ? ' checked' : '') + '> ' + q[1] + '</label>'; }).join('') + '</fieldset>';
     h += '<fieldset><legend>Rapport per zone</legend><div class="small">Windrichtingen</div>' + WE.DIRS.map(function (d) { return '<label><input type="checkbox" name="dir" value="' + d.id + '" checked> ' + d.short + '</label>'; }).join('');
@@ -3007,9 +3043,11 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
     h += '<label style="margin-top:6px"><input type="checkbox" name="walls" checked> gevelaanzichten</label>';
     h += '<div class="small" style="margin-top:6px">Instellingen</div><label>c<sub>pi</sub> <select name="scen">' + [['S1', 'S1 gesloten (+0,2)'], ['S2', 'S2 gesloten (−0,3)'], ['S3', 'S3 openingen'], ['S4', 'S4 handmatig'], ['S5', 'S5 open grensvlak']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === 'S3' ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
     h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">Overkapping <label><input type="checkbox" name="csign" value="min" checked> opwaarts</label><label><input type="checkbox" name="csign" value="max" checked> neerwaarts</label></div><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label></fieldset></div>';
+    h += '<fieldset class="dlgwide"><legend>Aannames</legend>' + assList().map(function (a, i) { return '<label><input type="checkbox" name="ass" value="' + i + '" checked> ' + a[0] + '</label>'; }).join('') + '<label for="rNotes" style="margin-top:6px">Eigen aannames en opmerkingen (één per regel; worden mee bewaard in het projectbestand)</label><textarea id="rNotes" rows="4"></textarea></fieldset>';
     h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button value="cancel">Annuleren</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
     $('reportDlg').innerHTML = h;
     $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF.' : 'Afdrukken opent het afdrukvenster van de browser (kies “Opslaan als PDF” voor een PDF). Exporteren bewaart een losstaand HTML-rapport.';
+    $('rNotes').value = NOTES; $('rNotes').oninput = function () { NOTES = this.value; renderAss(); };
     $('rAll').onclick = function () { $('reportDlg').querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = true; }); };
     $('rNone').onclick = function () { $('reportDlg').querySelectorAll('input[name=part]').forEach(function (c) { c.checked = false; }); };
     if ($('rPrint')) $('rPrint').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); printDoc(d); };
@@ -3018,7 +3056,8 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
   function closeDlg() { var d = $('reportDlg'); if (d.close) d.close(); else d.removeAttribute('open'); }
   function docBody() {
     var f = $('rForm'), parts = [].map.call(f.querySelectorAll('input[name=part]:checked'), function (c) { return c.value; });
-    if (!parts.length) { $('rHint').textContent = 'Kies minstens één onderdeel.'; return null; }
+    var assSel = [].map.call(f.querySelectorAll('input[name=ass]:checked'), function (c) { return +c.value; }), own = notesLines();
+    if (!parts.length && !assSel.length && !own.length) { $('rHint').textContent = 'Kies minstens één onderdeel.'; return null; }
     var o = OUT, head = '<section class="card"><h1 style="font-size:20px">Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1><p class="small">NBN EN 1991-1-4:2005 + ANB:2010 · rapport opgemaakt op ' + new Date().toLocaleString('nl-BE') + ' · terreincategorie ' + o.P.cat + ' · ' + o.vols.map(function (v) { return v.name + ': ' + (v.closed ? 'gesloten' : 'open'); }).join(' · ') + '</p><p class="small">Technisch rekenhulpmiddel – vervangt niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur.</p></section>';
     var html = head;
     parts.forEach(function (id) {
@@ -3028,6 +3067,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
         html += '<section class="card"><h2>3D-model</h2>' + (img ? '<img alt="3D-model van de loods" src="' + img + '" style="width:100%;border:1px solid #d6dde5;border-radius:6px">' : '<p class="small">3D-afbeelding niet beschikbaar.</p>') + '<p class="small">' + ($('viewInfo').textContent || '') + '</p></section>';
         return;
       }
+      if (id === 'inputs') { html += '<section class="card"><h2>Invoergegevens (uitgangspunten)</h2>' + inputsTable() + '</section>'; return; }
       if (id === 'zones') {
         var dirs = [].map.call(f.querySelectorAll('input[name=dir]:checked'), function (c) { return c.value; }), cases = [].map.call(f.querySelectorAll('input[name=case]:checked'), function (c) { return +c.value; });
         html += '<section class="card"><h2>Rapport per zone</h2>' + reportHTML({ scen: f.scen.value, meas: f.meas.value, signs: [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; }), mode: f.mode.value, dirs: dirs, cases: cases, walls: f.walls.checked }) + '</section>';
@@ -3041,7 +3081,27 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
       c.removeAttribute('id');
       html += c.outerHTML;
     });
+    if (assSel.length || own.length) {
+      var A = assList();
+      html += '<section class="card"><h2>Aannames en te bevestigen gegevens</h2><ul class="asslist">' + assSel.map(function (k) { return '<li><b>' + A[k][0] + '.</b> ' + A[k][1] + '</li>'; }).join('') + own.map(function (t) { return '<li><b>Eigen aanname.</b> ' + esc(t) + '</li>'; }).join('') + '</ul></section>';
+    }
     return html;
+  }
+  function inputsTable() {
+    var h = '<div class="tablewrap"><table><tr><th class="l">Parameter</th><th class="l">Waarde</th></tr>';
+    FIELDS.forEach(function (f) {
+      if (f.g) { h += '<tr><td class="l" colspan="2"><b>' + f.g + '</b></td></tr>'; return; }
+      if (!f.k) return;
+      var id = iid(f.k), v;
+      if (f.t === 'pair') v = $(id + '_on').checked ? 'aanwezig · openingen ' + esc($(id + '_op').value) + ' m²' : 'afwezig';
+      else if (f.t === 'chk') v = $(id).checked ? 'ja' : 'nee';
+      else if (f.t === 'sel') { var el = $(id); v = esc(el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : el.value); }
+      else v = esc(String($(id).value).replace('.', ','));
+      if ($(id) && $(id).disabled) return;
+      h += '<tr><td class="l">' + f.l.replace(/^· /, '') + '</td><td class="l">' + v + '</td></tr>';
+    });
+    var nl2 = notesLines();
+    return h + '</table></div>' + (nl2.length ? '<p class="small">Eigen aannames: zie onderdeel Aannames.</p>' : '');
   }
   function printDoc(html) {
     var a = $('printArea'); a.innerHTML = html; document.body.classList.add('printing');
