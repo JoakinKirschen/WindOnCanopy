@@ -260,7 +260,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
     <div class="filterbar">
       <label>c<sub>pi</sub>-scenario <select id="r_scen"><option value="S1">S1 gesloten (+0,2)</option><option value="S2">S2 gesloten (−0,3)</option><option value="S3" selected>S3 openingen (7.2.9)</option><option value="S4">S4 handmatig</option><option value="S5">S5 open grensvlak (WInt)</option></select></label>
       <label>Coëfficiënten <select id="r_meas"><option value="loc">lokaal (A_lok)</option><option value="glob">globaal (c_pe,10 / c_f)</option></select></label>
-      <label>Overkapping <select id="r_sign"><option value="min">opwaarts (min)</option><option value="max">neerwaarts (max)</option></select></label>
+      <label>Overkapping <select id="r_sign"><option value="min">opwaarts (min)</option><option value="max">neerwaarts (max)</option><option value="both">beide</option></select></label>
       <label>Waarde <select id="r_mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label>
       <label>Richting <select id="r_dir"><option value="all">alle (4)</option><option value="R">van rechts</option><option value="L">van links</option><option value="A">van as A</option><option value="P">van as P</option></select></label>
       <button type="button" id="btnReport2">Rapport samenstellen…</button>
@@ -2581,11 +2581,11 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
   function txtCol(w, m) { return Math.abs(w) / m > 0.6 ? '#fff' : '#1c2733'; }
   function renderReport() {
     var rd0 = $('r_dir').value;
-    $('reportBox').innerHTML = reportHTML({ scen: $('r_scen').value, meas: $('r_meas').value, sign: $('r_sign').value, mode: $('r_mode').value, dirs: rd0 === 'all' ? ['R', 'L', 'A', 'P'] : [rd0], cases: [0, 1, 2, 3], walls: true });
+    $('reportBox').innerHTML = reportHTML({ scen: $('r_scen').value, meas: $('r_meas').value, signs: $('r_sign').value === 'both' ? ['min', 'max'] : [$('r_sign').value], mode: $('r_mode').value, dirs: rd0 === 'all' ? ['R', 'L', 'A', 'P'] : [rd0], cases: [0, 1, 2, 3], walls: true });
   }
   function reportHTML(opts) {
     var o = OUT; if (!o) return;
-    var rs = opts.scen, meas = opts.meas, sign = opts.sign, mode = opts.mode;
+    var rs = opts.scen, meas = opts.meas, signs = opts.signs || [opts.sign], mode = opts.mode, sign = signs[0] || 'min';
     var loc = meas === 'loc', up = sign === 'min', mf = o.vb.red * (mode === 'd' ? o.P.gammaQ * o.P.KFI : 1);
     var X = o.X, B = o.B, sp = o.spans;
     var wm = 0;
@@ -2605,14 +2605,14 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
       if (w >= 10 && h >= 12) return '<text x="' + (x + w / 2) + '" y="' + (y + h / 2 + 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="' + c + '">' + first + '</text>';
       return '';
     }
-    function planSVG(dir, cid) {
+    function planSVG(dir, cid, sgn, canopyOnly) {
       var W = 680, mg = 46, sc = (W - 2 * mg) / X[3], H = B * sc + 2 * mg, ox = mg, oy = mg;
       var PX = function (x) { return ox + x * sc; }, PY = function (y) { return oy + (B - y) * sc; };
       var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,Arial">';
       s += '<rect x="' + PX(0) + '" y="' + PY(B) + '" width="' + X[3] * sc + '" height="' + B * sc + '" fill="#f7f8fa" stroke="#bbb"/>';
       sp.forEach(function (q) { if (q.rem > 0) s += '<rect x="' + PX(q.x0) + '" y="' + PY(q.yr[1]) + '" width="' + q.w * sc + '" height="' + (q.yr[1] - q.yr[0]) * sc + '" fill="none" stroke="#9db4d6" stroke-dasharray="5 4"/><text x="' + PX(q.xm) + '" y="' + PY((q.yr[0] + q.yr[1]) / 2) + '" text-anchor="middle" font-size="12" fill="#2b5fb3">dak ' + q.name + ' afwezig</text>'; });
       var rows = [];
-      o.zones.filter(function (z) { return z.kind === 'roof' && z.dir === dir; }).forEach(function (z) {
+      o.zones.filter(function (z) { return !canopyOnly && z.kind === 'roof' && z.dir === dir; }).forEach(function (z) {
         var rr = z.res[cid], p = rr && rr.per[rs]; if (!p) return;
         var w = (loc ? p.wLoc : p.wGlob) * mf, cpe = loc ? rr.cLoc : rr.cGlob;
         var x = PX(z.x0), y = PY(z.y1), ww = (z.x1 - z.x0) * sc, hh = (z.y1 - z.y0) * sc;
@@ -2621,13 +2621,14 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
         rows.push([PN[z.part] + ' (' + z.pitch + ')', z.name, z.A, cpe, p.cpi, w]);
       });
       o.canopies.forEach(function (e) {
-        var c = e.byDir[dir];
+        if (!sgn) return;
+        var c = e.byDir[dir], up = sgn === 'min', sTxt = up ? 'opwaarts' : 'neerwaarts';
         if (loc) c.zones.forEach(function (z) {
           var w = (up ? z.wMin : z.wMax) * mf, cp = up ? z.cpMin : z.cpMax;
           var x = PX(e.x0 + z.x0), y = PY(e.y0 + z.y1), ww = (z.x1 - z.x0) * sc, hh = (z.y1 - z.y0) * sc;
           s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
           s += lab(x, y, ww, hh, ['<tspan font-weight="700">' + z.name + '</tspan> ' + fmt(cp, 2, true), fmt(w, 2, true)], w);
-          rows.push([PN[e.part] + ' (overkapping, veld ' + z.bay + ', ' + z.pitch + ')', z.name, z.A, cp, null, w]);
+          rows.push([PN[e.part] + ' (overkapping ' + sTxt + ', veld ' + z.bay + ', ' + z.pitch + ')', z.name, z.A, cp, null, w]);
         });
         else c.pitches.forEach(function (pt) {
           var Bb = c.bays[pt.bay - 1], x0 = pt.pitch === 'L' ? Bb.x0 : Bb.xm, x1 = pt.pitch === 'L' ? Bb.xm : Bb.x1;
@@ -2635,7 +2636,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
           var x = PX(e.x0 + x0), y = PY(e.y0 + c.geo.b), ww = (x1 - x0) * sc, hh = c.geo.b * sc;
           s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
           s += lab(x, y, ww, hh, ['c<tspan font-size="8" dy="2">f</tspan><tspan dy="-2">·ψ ' + fmt(cf, 2, true) + '</tspan>', 'w ' + fmt(w, 2, true), 'F ' + fmt(F, 0, true) + ' kN'], w);
-          rows.push([PN[e.part] + ' (overkapping, veld ' + pt.bay + ', ' + (pt.pitch === 'L' ? 'links' : 'rechts') + ')', 'c_f', pt.A, cf, null, w]);
+          rows.push([PN[e.part] + ' (overkapping ' + sTxt + ', veld ' + pt.bay + ', ' + (pt.pitch === 'L' ? 'links' : 'rechts') + ')', 'c_f', pt.A, cf, null, w]);
         });
       });
       [[0, '1'], [X[1], '7'], [X[2], '13'], [X[3], '14']].forEach(function (q) { s += '<text x="' + PX(q[0]) + '" y="' + (oy - 6) + '" text-anchor="middle" font-size="11" fill="#555">as ' + q[1] + '</text>'; });
@@ -2689,17 +2690,17 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
       return '<div class="tablewrap"><table><tr><th class="l">Vlak</th><th>Zone</th><th>A [m²]</th><th>c<sub>pe</sub> / c<sub>p,net</sub> / c<sub>f</sub></th><th>c<sub>pi</sub></th><th>w [kN/m²]</th></tr>' + rows.map(function (r) { return '<tr><td class="l">' + r[0] + '</td><td>' + r[1] + '</td><td>' + fmt(r[2], 1) + '</td><td>' + (r[1] === 'A' || r[1] === 'B' || r[1] === 'C' || r[1] === 'D' ? (String(r[0]).indexOf('vrijstaand') >= 0 ? '±' + fmt(r[3], 2) : fmt(r[3], 3, true)) : fmt(r[3], 3, true)) + '</td><td>' + (r[4] === null ? '–' : fmt(r[4], 2, true)) + '</td><td class="' + cls(r[5]) + '">' + (String(r[0]).indexOf('vrijstaand') >= 0 ? '±' + fmt(Math.abs(r[5]), 3) : fmt(r[5], 3, true)) + '</td></tr>'; }).join('') + '</table></div>';
     }
     var scName = { S1: 'S1 gesloten gebouw', S2: 'S2 gesloten gebouw', S3: 'S3 openingen (7.2.9)', S4: 'S4 handmatig', S5: 'S5 open grensvlak (WInt)' }[rs];
-    var h = '<p class="small"><b>Instellingen:</b> ' + scName + ' · ' + (loc ? 'lokale' : 'globale') + ' coëfficiënten · overkapping ' + (up ? 'opwaarts' : 'neerwaarts') + ' · ' + (mode === 'd' ? 'ontwerpwaarden (γ<sub>Q</sub>·K<sub>FI</sub>·r)' : 'karakteristieke waarden') + '. Labels: zone, c<sub>pe</sub> / c<sub>pi</sub>, daaronder w in kN/m². Vrijstaande wanden: ± (beide richtingen).</p>' + legend;
+    var h = '<p class="small"><b>Instellingen:</b> ' + scName + ' · ' + (loc ? 'lokale' : 'globale') + ' coëfficiënten · overkapping ' + (signs.length ? signs.map(function (q) { return q === 'min' ? 'opwaarts' : 'neerwaarts'; }).join(' en ') : 'niet weergegeven') + ' · ' + (mode === 'd' ? 'ontwerpwaarden (γ<sub>Q</sub>·K<sub>FI</sub>·r)' : 'karakteristieke waarden') + '. Labels: zone, c<sub>pe</sub> / c<sub>pi</sub>, daaronder w in kN/m². Vrijstaande wanden: ± (beide richtingen).</p>' + legend;
     var cvol = o.vols.filter(function (v) { return v.closed; })[0];
     WE.DIRS.filter(function (d) { return opts.dirs.indexOf(d.id) >= 0; }).forEach(function (d) {
-      var wallsDone = false, firstCase = null;
+      var wallsDone = false, canDone = false, firstCase = null;
       var cases = (d.id === 'L' || d.id === 'R') ? ['FGH−/IJ−', 'FGH−/IJ+', 'FGH+/IJ−', 'FGH+/IJ+'] : ['θ=90°'];
       var det = cvol ? o.cpiDetail[cvol.i][d.id] : null, cpiTxt = det ? ' · c<sub>pi</sub> (' + rs + ') = ' + fmt(det.cpiS[rs], 3, true) : '';
       var phiTxt = o.canopies.length ? ' · φ overkapping = ' + fmt(o.canopies[0].byDir[d.id].P.phi, 0) + ' %' : '';
       cases.forEach(function (cid, ci) {
         if (cases.length > 1 && opts.cases.indexOf(ci) < 0) return;
         if (firstCase === null) firstCase = ci + 1;
-        var pl = planSVG(d.id, cid), rows = pl.rows.slice();
+        var pl = planSVG(d.id, cid, signs[0] || null, false), rows = pl.rows.slice();
         h += '<div class="rcase"><h3>' + d.name + ' – ' + (cid === 'θ=90°' ? 'θ = 90° (één geval)' : 'dakgeval ' + (ci + 1) + '/4: ' + cid) + '</h3><p class="small">' + cpiTxt.replace(/^ · /, '') + phiTxt + '</p><div class="rgrid"><div>' + pl.svg + '</div><div>';
         var wallHtml = '';
         if (opts.walls && !wallsDone) {
@@ -2712,7 +2713,12 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
           Object.keys(fparts).forEach(function (pid) { var r = wallSVG(d.id, pid, fparts[pid], true); figs += '<figure>' + r.svg + '<figcaption>' + PN[pid] + ' – vrijstaande wand (7.4)</figcaption></figure>'; rows = rows.concat(r.rows); });
           if (figs) wallHtml = '<div class="rwalls">' + figs + '</div>';
         } else wallHtml = opts.walls ? '<p class="small">Gevels: zie dakgeval ' + firstCase + ' van deze windrichting (onafhankelijk van het dakgeval).</p>' : '';
-        h += table(rows) + '</div></div>' + wallHtml + '</div>';
+        var canHtml = '';
+        if (signs.length > 1 && o.canopies.length) {
+          if (!canDone) { canDone = true; var p2 = planSVG(d.id, cid, signs[1], true); rows = rows.concat(p2.rows); canHtml = '<div class="rwalls"><figure>' + p2.svg + '<figcaption>Overkapping – ' + (signs[1] === 'min' ? 'opwaarts' : 'neerwaarts') + ' (onafhankelijk van het dakgeval)</figcaption></figure></div>'; }
+          else canHtml = '<p class="small">Overkapping ' + (signs[1] === 'min' ? 'opwaarts' : 'neerwaarts') + ': zie dakgeval ' + firstCase + ' van deze windrichting.</p>';
+        }
+        h += table(rows) + '</div></div>' + canHtml + wallHtml + '</div>';
       });
     });
     return h;
@@ -3000,7 +3006,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
     h += '<div class="small" style="margin-top:6px">Dakgevallen (wind ⟂ nok, tabel 7.4a)</div>' + ['FGH−/IJ−', 'FGH−/IJ+', 'FGH+/IJ−', 'FGH+/IJ+'].map(function (c, i) { return '<label><input type="checkbox" name="case" value="' + i + '" checked> ' + (i + 1) + ': ' + c + '</label>'; }).join('');
     h += '<label style="margin-top:6px"><input type="checkbox" name="walls" checked> gevelaanzichten</label>';
     h += '<div class="small" style="margin-top:6px">Instellingen</div><label>c<sub>pi</sub> <select name="scen">' + [['S1', 'S1 gesloten (+0,2)'], ['S2', 'S2 gesloten (−0,3)'], ['S3', 'S3 openingen'], ['S4', 'S4 handmatig'], ['S5', 'S5 open grensvlak']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === 'S3' ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
-    h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><label>Overkapping <select name="sign"><option value="min">opwaarts</option><option value="max">neerwaarts</option></select></label><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label></fieldset></div>';
+    h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">Overkapping <label><input type="checkbox" name="csign" value="min" checked> opwaarts</label><label><input type="checkbox" name="csign" value="max" checked> neerwaarts</label></div><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label></fieldset></div>';
     h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button value="cancel">Annuleren</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
     $('reportDlg').innerHTML = h;
     $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF.' : 'Afdrukken opent het afdrukvenster van de browser (kies “Opslaan als PDF” voor een PDF). Exporteren bewaart een losstaand HTML-rapport.';
@@ -3024,7 +3030,7 @@ if (typeof module !== 'undefined') module.exports = DEFAULTS;
       }
       if (id === 'zones') {
         var dirs = [].map.call(f.querySelectorAll('input[name=dir]:checked'), function (c) { return c.value; }), cases = [].map.call(f.querySelectorAll('input[name=case]:checked'), function (c) { return +c.value; });
-        html += '<section class="card"><h2>Rapport per zone</h2>' + reportHTML({ scen: f.scen.value, meas: f.meas.value, sign: f.sign.value, mode: f.mode.value, dirs: dirs, cases: cases, walls: f.walls.checked }) + '</section>';
+        html += '<section class="card"><h2>Rapport per zone</h2>' + reportHTML({ scen: f.scen.value, meas: f.meas.value, signs: [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; }), mode: f.mode.value, dirs: dirs, cases: cases, walls: f.walls.checked }) + '</section>';
         return;
       }
       var sec = document.getElementById(id); if (!sec) return;
