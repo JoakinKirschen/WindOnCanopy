@@ -143,3 +143,19 @@ Overspanning 3: aantal velden || Span 3: number of bays || Portée 3 : nombre de
 Overspanning 3: helling α [°] || Span 3: pitch α [°] || Portée 3 : pente α [°]
 Overspanning 3: goothoogte [m] || Span 3: eaves height [m] || Portée 3 : hauteur de gouttière [m]
 · begin y vanaf A [m] || · start y from A [m] || · début y depuis A [m]
+zonder dak hoort niet bij het gebouw. Het overdekte deel || without a roof is not part of the building. The covered part || sans toiture ne fait pas partie du bâtiment. La partie couverte
+is het gebouw; het open grensvlak is een opening met || is the building; the open boundary is an opening with || est le bâtiment ; la limite ouverte est une ouverture avec
+uit tabel 7.1 van het overdekte deel (EN 7.2.9). De kopgevel van de dakloze overspanning is in S3 een vrijstaande wand (EN 7.4.1, 7.4.2), zie §11. || from table 7.1 of the covered part (EN 7.2.9). In S3 the end wall of the roofless span is a free-standing wall (EN 7.4.1, 7.4.2), see §11. || du tableau 7.1 de la partie couverte (EN 7.2.9). En S3, le pignon de la portée sans toiture est un mur isolé (EN 7.4.1, 7.4.2), voir §11.
+Open grensvlak naar de dakloze overspanning || Open boundary to the roofless span || Limite ouverte vers la portée sans toiture
+S3 – kopgevel van de dakloze overspanning als vrijstaande wand (EN 7.4.1, 7.4.2) || S3 – end wall of the roofless span as a free-standing wall (EN 7.4.1, 7.4.2) || S3 – pignon de la portée sans toiture comme mur isolé (EN 7.4.1, 7.4.2)
+uit tabel 7.9 (φ = 1, l/h = || from table 7.9 (φ = 1, l/h = || du tableau 7.9 (φ = 1, l/h =
+omgezette einden || return corners || retours d'angle
+% van h || % of h || % de h
+m. Beschutting door het overdekte deel als dat bovenwinds staat en minstens even hoog is (hoogte gebouw || m. Shelter by the covered part when it is upwind and at least as high (building height || m. Abri par la partie couverte lorsqu'elle est au vent et au moins aussi haute (hauteur du bâtiment
+(fig. 7.20, φ = 1; formules tabel C.10 van EN 1991-1-4:2026). Geen || (fig. 7.20, φ = 1; formulas of table C.10 of EN 1991-1-4:2026). No || (fig. 7.20, φ = 1 ; formules du tableau C.10 de l'EN 1991-1-4:2026). Pas de
+binnen h van de uiteinden (7.4.2(2)). || within h of the ends (7.4.2(2)). || à moins de h des extrémités (7.4.2(2)).
+, + = druk op de buitenzijde; || , + = pressure on the outer face; || , + = pression sur la face extérieure ;
+EN §7.4.2, fig. 7.20 (EN 1991-1-4:2026 tabel C.10) || EN §7.4.2, fig. 7.20 (EN 1991-1-4:2026 table C.10) || EN §7.4.2, fig. 7.20 (EN 1991-1-4:2026 tableau C.10)
+beschuttingsfactor || shelter factor || coefficient d'abri
+Teken: q en F + = naar het vlak toe || Sign: q and F + = towards the surface || Signe : q et F + = vers la surface
+V + = druk op de fundering, − = trek/ || V + = compression on the foundation, − = tension/ || V + = compression sur la fondation, − = traction/

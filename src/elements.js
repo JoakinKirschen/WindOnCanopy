@@ -74,7 +74,7 @@ var WEL = (function () {
       if (!anyClosed) return [null];
       var zr = closedRoof.filter(function (z) { return z.dir === d; }), zall = O.zones.filter(function (z) { return z.dir === d; });
       var cids = zr.length ? Object.keys(zr[0].res) : ['-'];
-      var sc = O.scen.filter(function (s) { return s.on && zall.every(function (z) { var r = z.res[z.kind === 'roof' ? cids[0] : '-']; return r && r.per[s.id]; }); }).map(function (s) { return s.id; });
+      var sc = O.scen.filter(function (s) { return s.on && zall.every(function (z) { var r = z.res[z.kind === 'roof' ? cids[0] : '-']; return (z.scens && z.scens.indexOf(s.id) < 0) || (r && r.per[s.id]); }); }).map(function (s) { return s.id; });
       var o = []; cids.forEach(function (c) { sc.forEach(function (s) { o.push({ dir: d, cid: c, scen: s }); }); });
       return o.length ? o : [null];
     }
@@ -118,7 +118,7 @@ var WEL = (function () {
         var wl = W[z.part], H = wl.H, w = wOf(z, z.res['-'], z.res['-'].per[cb.scen], null), n = O.normal(z), sgn = -n[0];
         var o = walls[z.part] || (walls[z.part] = { part: z.part, x: wl.x, line: X.indexOf(wl.x), H: H, side: n[0], segs: [], names: [] });
         if (o.names.indexOf(z.name) < 0) o.names.push(z.name);
-        o.w = w; o.cpe = cpeOf(z.res['-'], null); o.cpi = z.res['-'].per[cb.scen].cpi; o.cl = clTxt(z.A, z.A);
+        o.w = w; o.cpe = cpeOf(z.res['-'], null); o.cpi = z.res['-'].per[cb.scen].cpi; o.cl = z.free ? 'c_p,net,s' : clTxt(z.A, z.A);
         var hO = 0, dyo = 0;
         if (z.part === 'W0' && P.fase2.on) { dyo = ov(z.a0, z.a1, Math.max(fr.ya, P.fase2.y0), Math.min(fr.yb, P.fase2.y0 + P.fase2.L)); hO = Math.min(P.fase2.H, H); }
         if (dyo > 1e-9 && hO > 0) { o.segs.push({ z0: 0, z1: hO, q: cscd * w * (dy - dyo) * sgn, w: w }); o.segs.push({ z0: hO, z1: H, q: cscd * w * dy * sgn, w: w }); }

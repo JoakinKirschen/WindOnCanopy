@@ -178,6 +178,14 @@ var WE = (function () {
   // EN tabel 7.9 – vrijstaande wanden: φ = 1 per l/h [A, B, C, D]; φ = 0,8 overal 1,2
   NORM.t79 = [{ lh: 3, v: [2.3, 1.4, 1.2, 1.2] }, { lh: 5, v: [2.9, 1.8, 1.4, 1.2] }, { lh: 10, v: [3.4, 2.1, 1.7, 1.2] }];
   NORM.t79p8 = [1.2, 1.2, 1.2, 1.2];
+  NORM.t79ret = [2.1, 1.8, 1.4, 1.2]; // φ = 1, met omgezette einden met lengte ≥ h
+  // EN fig. 7.20 (ANB: geen wijziging) – beschuttingsfactor ψ_s; lijnstukken zoals tabel C.10 van EN 1991-1-4:2026
+  function psiShelter(xh, phi) {
+    function f1(x) { return x <= 5 ? 0.3 : x <= 10 ? 0.07 * x - 0.05 : x <= 15 ? 0.04 * x + 0.25 : x <= 20 ? 0.03 * x + 0.40 : 1.0; }
+    function f8(x) { return x <= 5 ? 0.3 : x <= 10 ? 0.03 * x + 0.15 : x <= 15 ? 0.04 * x + 0.05 : x <= 20 ? 0.07 * x - 0.40 : 1.0; }
+    var p = Math.max(0.8, Math.min(1, phi));
+    return Math.min(1, lerp(p, 0.8, 1, f8(xh), f1(xh)));
+  }
 
   var PART_NAMES = { R0: 'Dak overspanning 1', R1: 'Dak overspanning 2', R2: 'Dak overspanning 3', W0: 'Linkergevel (overspanning 1)', W1: 'Wand overspanning 1|2', W2: 'Wand overspanning 2|3', W3: 'Rechtergevel (overspanning 3)', A0: 'Gevel A · overspanning 1', A1: 'Gevel A · overspanning 2', A2: 'Gevel A · overspanning 3', P0: 'Gevel P · overspanning 1', P1: 'Gevel P · overspanning 2', P2: 'Gevel P · overspanning 3' };
 
@@ -341,6 +349,17 @@ var WE = (function () {
       var outerWalls = [v.left, v.right].filter(function (w) { return !sharedClosed(w, v); }).concat(v.spans.map(function (i) { return 'A' + i; }), v.spans.map(function (i) { return 'P' + i; }));
       v.outerWalls = outerWalls;
       out.cpiDetail[v.i] = {};
+      // S3: een dakloze eindoverspanning hoort niet bij het gebouw. Het overdekte deel is het gebouw (open grensvlak =
+      // opening, EN 7.2.9); de kopgevel van de dakloze overspanning is een vrijstaande wand (EN 7.4.1) met beschutting (7.4.2).
+      v.split = (function () {
+        var cov = v.spans.filter(function (i) { return spans[i].roofOn; }); if (!cov.length || cov.length === v.spans.length) return null;
+        var gone = v.spans.filter(function (i) { return i < cov[0] || i > cov[cov.length - 1]; }); if (!gone.length) return null;
+        var bd = [], ends = [];
+        if (gone.indexOf(v.spans[0]) >= 0) { bd.push({ x: X[cov[0]], H: WL['W' + cov[0]].H, wid: 'W' + cov[0] }); ends.push(v.left); }
+        if (gone.indexOf(v.spans[v.spans.length - 1]) >= 0) { var k1 = cov[cov.length - 1] + 1; bd.push({ x: X[k1], H: WL['W' + k1].H, wid: 'W' + k1 }); ends.push(v.right); }
+        return { cov: cov, gone: gone, bd: bd, ends: ends, walls: ends.filter(function (w) { return WL[w].on; }), x0: X[cov[0]], x1: X[cov[cov.length - 1] + 1], h: Math.max.apply(null, cov.map(function (i) { return spans[i].top; })) };
+      })();
+      var SPL = v.split;
       DIRS.forEach(function (d) {
         var t = isLR(d.id) ? v.t71LR : v.t71AP;
         // gemiddelde cpe,10 van een wand over een bereik
@@ -358,50 +377,7 @@ var WE = (function () {
           });
           return den > 0 ? num / den : 0;
         }
-        var ops = [];
-        function add(face, label, A, cpe) { if (A > 1e-9) ops.push({ face: face, label: label, A: A, cpe: cpe }); }
-        v.spans.forEach(function (i) {
-          var s = spans[i];
-          if (s.rem > 0) add('roof', 'Dak ' + s.name + (s.rem >= B - 1e-9 ? ' afwezig' : ' deels verwijderd (' + nl(s.rem, 1) + ' m)'), s.w * s.rem, roofAvg(s, s.yr[0], s.yr[1]));
-        });
-        [v.left, v.right].forEach(function (wid) {
-          if (sharedClosed(wid, v)) return;
-          var w = WL[wid], full = wallAvg(wid, 0, B);
-          if (!w.on) add(wid, PART_NAMES[wid] + ' afwezig', w.A, full);
-          else {
-            if (wid === 'W0' && f2A > 0) add(wid, 'Gevelopening linkergevel (fase 2)', f2A, wallAvg(wid, F2.y0, F2.y0 + F2.L));
-            add(wid, 'Openingen ' + PART_NAMES[wid], Math.min(w.extra, w.A), full);
-          }
-        });
-        v.spans.forEach(function (i) {
-          ['A', 'P'].forEach(function (f) {
-            var w = WL[f + i], c = wallAvg(f + i, spans[i].x0, spans[i].x1);
-            if (!w.on) add(f, PART_NAMES[f + i] + ' afwezig', w.A, c); else add(f, 'Openingen ' + PART_NAMES[f + i], Math.min(w.extra, w.A), c);
-          });
-        });
-        // basisdoorlatendheid
-        var perm = P.perm / 100;
-        add('roof', 'Basisdoorlatendheid dak', perm * v.faces[0].A, (function () { var n = 0, dd = 0; v.spans.forEach(function (i) { if (spans[i].roofOn) { var c = roofAvg(spans[i], spans[i].yp[0], spans[i].yp[1]), A = spans[i].w * (spans[i].yp[1] - spans[i].yp[0]); n += c * A; dd += A; } }); return dd ? n / dd : 0; })());
-        [v.left, v.right].forEach(function (wid) { if (WL[wid].on && !sharedClosed(wid, v)) add(wid, 'Basisdoorlatendheid ' + PART_NAMES[wid], perm * WL[wid].A, wallAvg(wid, 0, B)); });
-        ['A', 'P'].forEach(function (f) { var A = 0; v.spans.forEach(function (i) { if (WL[f + i].on) A += WL[f + i].A; }); add(f, 'Basisdoorlatendheid gevel ' + f, perm * A, wallAvg(f + v.spans[0], v.x0, v.x1)); });
-        var per = {}, faceIds = ['roof', v.left, v.right, 'A', 'P'];
-        faceIds.forEach(function (f) { per[f] = 0; });
-        ops.forEach(function (o) { per[o.face] += o.A; });
-        var totA = ops.reduce(function (a, o) { return a + o.A; }, 0), dom = null;
-        faceIds.forEach(function (f) { if (dom === null || per[f] > per[dom]) dom = f; });
-        var others = totA - per[dom], ratio = per[dom] > 0 ? (others > 0 ? per[dom] / others : Infinity) : 0;
-        var hd = isLR(d.id) ? v.hdLR : v.hdAP, det = { ops: ops, per: per, tot: totA, dom: dom, domName: dom === 'roof' ? 'dak' : dom === 'A' || dom === 'P' ? 'gevel ' + dom : PART_NAMES[dom], ratio: ratio, hd: hd };
-        if (totA <= 0) { det.method = 'geen'; det.cpi = null; }
-        else if (ratio >= 2) {
-          det.cpeDom = ops.filter(function (o) { return o.face === dom; }).reduce(function (a, o) { return a + o.cpe * o.A; }, 0) / per[dom];
-          det.k = ratio >= 3 ? 0.9 : lerp(ratio, 2, 3, 0.75, 0.9);
-          det.method = 'dominant'; det.cpi = det.k * det.cpeDom;
-        } else {
-          det.mu = ops.filter(function (o) { return o.cpe <= 0; }).reduce(function (a, o) { return a + o.A; }, 0) / totA;
-          det.method = 'mu'; det.cpi = fig713(det.mu, hd);
-        }
-        // S5: overdekt deel als afzonderlijk gebouw, open grensvlak naar het verwijderde dak = dominante opening
-        det.s5 = (function () {
+        var s5 = (function () {
           var cov = v.spans.filter(function (i) { return spans[i].roofOn; }), gone = v.spans.filter(function (i) { return !spans[i].roofOn; });
           if (!cov.length || !gone.length) return null;
           var c0 = spans[cov[0]].x0, c1 = spans[cov[cov.length - 1]].x1, dsub = c1 - c0, hsub = Math.max.apply(null, cov.map(function (i) { return spans[i].top; }));
@@ -418,6 +394,52 @@ var WE = (function () {
           }
           return { cpe: cpe, cpi: 0.9 * cpe, d: dsub, h: hsub, hd: isLR(d.id) ? hsub / dsub : hsub / B, side: side };
         })();
+        var ops = [], opSpans = SPL ? SPL.cov : v.spans;
+        function add(face, label, A, cpe) { if (A > 1e-9) ops.push({ face: face, label: label, A: A, cpe: cpe }); }
+        opSpans.forEach(function (i) {
+          var s = spans[i];
+          if (s.rem > 0) add('roof', 'Dak ' + s.name + (s.rem >= B - 1e-9 ? ' afwezig' : ' deels verwijderd (' + nl(s.rem, 1) + ' m)'), s.w * s.rem, roofAvg(s, s.yr[0], s.yr[1]));
+        });
+        if (SPL) SPL.bd.forEach(function (g) { add(g.wid, 'Open grensvlak naar de dakloze overspanning (x = ' + nl(g.x, 2) + ' m)', B * g.H, s5.cpe); });
+        [v.left, v.right].forEach(function (wid) {
+          if (sharedClosed(wid, v) || (SPL && SPL.ends.indexOf(wid) >= 0)) return;
+          var w = WL[wid], full = wallAvg(wid, 0, B);
+          if (!w.on) add(wid, PART_NAMES[wid] + ' afwezig', w.A, full);
+          else {
+            if (wid === 'W0' && f2A > 0) add(wid, 'Gevelopening linkergevel (fase 2)', f2A, wallAvg(wid, F2.y0, F2.y0 + F2.L));
+            add(wid, 'Openingen ' + PART_NAMES[wid], Math.min(w.extra, w.A), full);
+          }
+        });
+        opSpans.forEach(function (i) {
+          ['A', 'P'].forEach(function (f) {
+            var w = WL[f + i], c = wallAvg(f + i, spans[i].x0, spans[i].x1);
+            if (!w.on) add(f, PART_NAMES[f + i] + ' afwezig', w.A, c); else add(f, 'Openingen ' + PART_NAMES[f + i], Math.min(w.extra, w.A), c);
+          });
+        });
+        // basisdoorlatendheid
+        var perm = P.perm / 100;
+        add('roof', 'Basisdoorlatendheid dak', perm * opSpans.reduce(function (a, i) { return a + spans[i].w * B; }, 0), (function () { var n = 0, dd = 0; opSpans.forEach(function (i) { if (spans[i].roofOn) { var c = roofAvg(spans[i], spans[i].yp[0], spans[i].yp[1]), A = spans[i].w * (spans[i].yp[1] - spans[i].yp[0]); n += c * A; dd += A; } }); return dd ? n / dd : 0; })());
+        [v.left, v.right].forEach(function (wid) { if (WL[wid].on && !sharedClosed(wid, v) && !(SPL && SPL.ends.indexOf(wid) >= 0)) add(wid, 'Basisdoorlatendheid ' + PART_NAMES[wid], perm * WL[wid].A, wallAvg(wid, 0, B)); });
+        ['A', 'P'].forEach(function (f) { var A = 0; opSpans.forEach(function (i) { if (WL[f + i].on) A += WL[f + i].A; }); add(f, 'Basisdoorlatendheid gevel ' + f, perm * A, wallAvg(f + opSpans[0], spans[opSpans[0]].x0, spans[opSpans[opSpans.length - 1]].x1)); });
+        var per = {}, faceIds = ['roof', v.left, v.right, 'A', 'P'].concat(SPL ? SPL.bd.map(function (g) { return g.wid; }) : []).filter(function (f, i, a) { return a.indexOf(f) === i; });
+        faceIds.forEach(function (f) { per[f] = 0; });
+        ops.forEach(function (o) { per[o.face] += o.A; });
+        var totA = ops.reduce(function (a, o) { return a + o.A; }, 0), dom = null;
+        faceIds.forEach(function (f) { if (dom === null || per[f] > per[dom]) dom = f; });
+        var others = totA - per[dom], ratio = per[dom] > 0 ? (others > 0 ? per[dom] / others : Infinity) : 0;
+        var hd = SPL && s5 ? s5.hd : isLR(d.id) ? v.hdLR : v.hdAP, det = { ops: ops, per: per, tot: totA, dom: dom, domName: dom === 'roof' ? 'dak' : dom === 'A' || dom === 'P' ? 'gevel ' + dom : PART_NAMES[dom], ratio: ratio, hd: hd };
+        if (totA <= 0) { det.method = 'geen'; det.cpi = null; }
+        else if (ratio >= 2) {
+          det.cpeDom = ops.filter(function (o) { return o.face === dom; }).reduce(function (a, o) { return a + o.cpe * o.A; }, 0) / per[dom];
+          det.k = ratio >= 3 ? 0.9 : lerp(ratio, 2, 3, 0.75, 0.9);
+          det.method = 'dominant'; det.cpi = det.k * det.cpeDom;
+        } else {
+          det.mu = ops.filter(function (o) { return o.cpe <= 0; }).reduce(function (a, o) { return a + o.A; }, 0) / totA;
+          det.method = 'mu'; det.cpi = fig713(det.mu, hd);
+        }
+        // S5: overdekt deel als afzonderlijk gebouw, open grensvlak naar het verwijderde dak = dominante opening
+        det.s5 = s5;
+        det.split = SPL ? { cov: SPL.cov, gone: SPL.gone } : null;
         det.cpiS = { S1: P.cpiPos, S2: P.cpiNeg, S3: det.cpi, S4: P.cpiMan, S5: det.s5 ? det.s5.cpi : null };
         out.cpiDetail[v.i][d.id] = det;
         if (det.method === 'geen' && P.scen.S3) out.warnings.push(v.name + ', ' + d.short + ': geen openingen → S3 niet van toepassing; S1/S2 (gesloten gebouw) gelden.');
@@ -451,9 +473,32 @@ var WE = (function () {
             var zeZ = ze, prZ = pr;
             if (P.zeDtop && z.name === 'D') { zeZ = w.kind === 'end' ? w.H : spans[w.span].top; prZ = windProfile(zeZ, PP); }
             var zone = { part: wid, kind: w.kind, vol: v.i, pitch: '-', dir: d.id, name: z.name, idx: zi_, a0: a0, a1: a1, H: w.H, A: A, Aplan: A, ze: zeZ, qp: prZ.qp, res: {} };
+            if (SPL && SPL.walls.indexOf(wid) >= 0) zone.scens = scen.map(function (q) { return q.id; }).filter(function (id) { return id !== 'S3'; });
             zone.res['-'] = evalZone(zone, t[z.name][0], t[z.name][1], det, '-', prZ, pri);
             zones.push(zone);
           });
+        });
+        /* --- S3: kopgevel van de dakloze overspanning als vrijstaande wand (EN 7.4.1, tabel 7.9) met beschutting ψ_s (7.4.2, fig. 7.20) --- */
+        if (SPL) SPL.walls.forEach(function (wid) {
+          var w = WL[wid], hW = w.H, l = B, lh = l / hW, prW = windProfile(hW, PP), isL = wid === v.left;
+          var gs = spans[isL ? v.spans[0] : v.spans[v.spans.length - 1]], ret = WL['A' + gs.i].on && WL['P' + gs.i].on ? Math.min(1, gs.w / hW) : 0;
+          var c0 = interpTable(NORM.t79, 'lh', lh, function (r) { return r.v; }), cp = c0.map(function (x, k) { return lerp(ret, 0, 1, x, NORM.t79ret[k]); });
+          var g = SPL.bd[isL ? 0 : SPL.bd.length - 1], xs = Math.abs(g.x - w.x), hObs = SPL.h;
+          // beschutting enkel als het overdekte deel bovenwinds staat en minstens even hoog is (7.4.2(1)); φ = 1 (gesloten gebouw)
+          var upwind = (d.id === 'R' && isL) || (d.id === 'L' && !isL), psi = upwind && hObs >= hW - 1e-9 ? psiShelter(xs / hW, 1) : 1;
+          var sgn = d.id === (isL ? 'L' : 'R') ? 1 : -1; // + = druk op de buitenzijde (wind naar het gebouw toe)
+          var br = [0, l]; [0.3, 1, 2, 4].forEach(function (f) { [f * hW, l - f * hW].forEach(function (y) { if (y > 0 && y < l) br.push(y); }); });
+          br.sort(function (a, b) { return a - b; }); br = br.filter(function (y, i, a) { return i === 0 || y - a[i - 1] > 1e-9; });
+          for (var j = 0; j < br.length - 1; j++) {
+            var a0 = br[j], a1 = br[j + 1], dm = Math.min((a0 + a1) / 2, l - (a0 + a1) / 2), k = dm < 0.3 * hW ? 0 : dm < 2 * hW ? 1 : dm < 4 * hW ? 2 : 3;
+            var ps = dm < hW ? 1 : psi, ce = sgn * ps * cp[k], A = (a1 - a0) * hW;
+            if (wid === 'W0' && f2A > 0) A -= Math.max(0, Math.min(a1, F2.y0 + F2.L) - Math.max(a0, F2.y0)) * Math.min(F2.H, hW);
+            if (A < 1e-9) continue;
+            var zone = { part: wid, kind: 'end', vol: v.i, pitch: '-', dir: d.id, name: ['A', 'B', 'C', 'D'][k], idx: 100 + j, a0: a0, a1: a1, H: hW, A: A, Aplan: A, ze: hW, qp: prW.qp, res: {}, scens: ['S3'],
+              free: { cpnet: cp[k], psi: ps, psiWall: psi, xs: xs, hObs: hObs, lh: lh, ret: ret, upwind: upwind, sgn: sgn } };
+            zone.res['-'] = evalZone(zone, ce, ce, { cpiS: { S3: 0 } }, '-', prW, prW);
+            zones.push(zone);
+          }
         });
       });
     });
@@ -466,7 +511,7 @@ var WE = (function () {
     function evalZone(zone, c10, c1, det, cid, pr, pri) {
       var cLoc = cpeArea(c1, c10, P.Aloc), cGlob = cpeArea(c1, c10, zone.A), per = {};
       scen.forEach(function (s) {
-        var cpi = det.cpiS[s.id]; if (cpi === null || cpi === undefined) return;
+        var cpi = det.cpiS[s.id]; if (cpi === null || cpi === undefined || (zone.scens && zone.scens.indexOf(s.id) < 0)) return;
         var wLoc = (pr.qp * cLoc - pri.qp * cpi) / 1000, wGlob = (pr.qp * cGlob - pri.qp * cpi) / 1000, Fk = P.cscd * wGlob * zone.A;
         var r = { scen: s.id, on: s.on, cpi: cpi, wLoc: wLoc, wGlob: wGlob, Fk: Fk, red: red, gF: gF, wLocD: gF * wLoc * red, wGlobD: gF * wGlob * red, Fd: gF * Fk * red };
         per[s.id] = r;
@@ -535,7 +580,8 @@ var WE = (function () {
         Object.keys(zs[0].res).forEach(function (cid) {
           scen.forEach(function (s) {
             var F = [0, 0, 0], Fn = 0, M = [0, 0, 0], Atot = 0, ok = true;
-            zs.forEach(function (z) {
+            var zsS = zs.filter(function (z) { return !z.scens || z.scens.indexOf(s.id) >= 0; }); if (!zsS.length) return;
+            zsS.forEach(function (z) {
               var r = z.res[cid] && z.res[cid].per[s.id]; if (!r) { ok = false; return; }
               var n = normal(z), f = r.Fk; F[0] -= f * n[0]; F[1] -= f * n[1]; F[2] -= f * n[2]; Fn += f; Atot += z.A;
               var c = z.kind === 'roof' ? [(z.x0 + z.x1) / 2, (z.y0 + z.y1) / 2, 0] : z.kind === 'end' ? [WL[z.part].x, (z.a0 + z.a1) / 2, z.H / 2] : [(z.a0 + z.a1) / 2, z.kind === 'A' ? 0 : B, 0];
