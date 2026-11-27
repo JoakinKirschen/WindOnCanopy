@@ -108,3 +108,6 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 ## Versie 1.9.0 – diagram en c_pe-basis voor elementen
 - §3c-diagram: elke sectie krijgt haar waarde (smalle secties verticaal), kleiner lettertype, eenheden achter alle waarden (q kN/m, w kN/m², F/V/H kN); overkapping toont ook de gelijkwaardige lijnlast per helling
 - keuze c_pe voor spanten, kolommen en elementen: volgens belaste oppervlakte (fig. 7.2, standaard), c_pe,10 of c_pe,1; ook in het rapport §3c; de controle Σ spanten = totalen blijft op de standaardbasis
+
+## Versie 1.9.1 – c_pe,1 / c_pe,10 expliciet
+- overal waar een uitwendige coëfficiënt getoond wordt, staat nu c_pe,1, c_pe,10 of c_pe(A) volgens de werkelijk gebruikte belaste oppervlakte (fig. 7.2): samenvatting, rapport per zone (ondertitel, labels, tabel), 3D-labels, §3c-diagram en -tabellen (spanten, gordingen, gevelregels, gevelkolommen); overkapping blijft ψ·c_p,net / ψ·c_f

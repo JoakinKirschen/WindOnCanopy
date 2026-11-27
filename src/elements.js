@@ -33,6 +33,10 @@ var WEL = (function () {
     var MODE = (opt && opt.cpe) || 'A'; // 'A' = volgens belaste oppervlakte (fig. 7.2), '10' = c_pe,10, '1' = c_pe,1
     // c_pe volgens de gekozen basis: Aref = belaste oppervlakte (null = zoneoppervlakte → c_pe zoals in de zonetabellen)
     function cpeOf(r, Aref) { return MODE === '10' ? r.c10 : MODE === '1' ? r.c1 : (Aref ? WE.cpeArea(r.c1, r.c10, Aref) : r.cGlob); }
+    // label van de gebruikte coëfficiënt (zones met oppervlakte amin…amax)
+    function clKey(amin, amax) { return MODE === '10' ? '10' : MODE === '1' ? '1' : amin >= 10 - 1e-9 ? '10' : amax <= 1 + 1e-9 ? '1' : 'A'; }
+    function clTxt(amin, amax) { var k = clKey(amin, amax); return k === 'A' ? 'c_pe(A)' : 'c_pe,' + k; }
+    function clHtml(amin, amax) { var k = clKey(amin, amax); return k === 'A' ? 'c<sub>pe</sub>(A)' : 'c<sub>pe,' + k + '</sub>'; }
     function wOf(z, r, p, Aref) { return p.wGlob + z.qp * (cpeOf(r, Aref) - r.cGlob) / 1000; }
     var P = O.P, S = P.str, B = O.B, spans = O.spans, X = O.X, W = O.walls;
     var cscd = P.cscd, res = { checks: [], warnings: [] };
@@ -92,17 +96,17 @@ var WEL = (function () {
         xs = xs.filter(function (v, i, a) { return i === 0 || v - a[i - 1] > 1e-9; });
         var ca = Math.cos(s.alpha * Math.PI / 180);
         for (var i = 0; i < xs.length - 1; i++) {
-          var a = xs[i], b = xs[i + 1], xm = (a + b) / 2, q = 0, qh = 0, names = [], wsum = 0, wdy = 0, pitch = null, csum = 0, cpi = null;
+          var a = xs[i], b = xs[i + 1], xm = (a + b) / 2, q = 0, qh = 0, names = [], wsum = 0, wdy = 0, pitch = null, csum = 0, cpi = null, amin = Infinity, amax = 0;
           zs.forEach(function (z) {
             if (xm < z.x0 || xm > z.x1) return;
             var dy = ov(z.y0, z.y1, fr.ya, fr.yb), w = wOf(z, z.res[cb.cid], z.res[cb.cid].per[cb.scen], null), n = O.normal(z), qq = cscd * w * dy;
-            q += qq; qh += -qq / ca * n[0]; wsum += w * dy; wdy += dy; pitch = z.pitch; csum += cpeOf(z.res[cb.cid], null) * dy; cpi = z.res[cb.cid].per[cb.scen].cpi;
+            q += qq; qh += -qq / ca * n[0]; wsum += w * dy; wdy += dy; pitch = z.pitch; csum += cpeOf(z.res[cb.cid], null) * dy; cpi = z.res[cb.cid].per[cb.scen].cpi; amin = Math.min(amin, z.A); amax = Math.max(amax, z.A);
             if (names.indexOf(z.name) < 0) names.push(z.name);
           });
           if (wdy < 1e-9) continue;
           var last = C.segs[C.segs.length - 1];
           if (last && last.span === s.i && Math.abs(last.x1 - a) < 1e-9 && Math.abs(last.q - q) < 1e-9 && last.pitch === pitch && last.zones === names.join('+')) { last.x1 = b; }
-          else C.segs.push({ span: s.i, pitch: pitch, zones: names.join('+'), x0: a, x1: b, w: wsum / wdy, q: q, qh: qh, ca: ca, cpe: csum / wdy, cpi: cpi });
+          else C.segs.push({ span: s.i, pitch: pitch, zones: names.join('+'), x0: a, x1: b, w: wsum / wdy, q: q, qh: qh, ca: ca, cpe: csum / wdy, cpi: cpi, cl: clTxt(amin, amax), clh: clHtml(amin, amax) });
         }
       });
       C.segs.forEach(function (g) { addPoint(C, g.span, (g.x0 + g.x1) / 2, g.q * (g.x1 - g.x0), g.qh * (g.x1 - g.x0)); });
