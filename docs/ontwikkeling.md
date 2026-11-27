@@ -83,3 +83,9 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - nieuw `src/elements.js`: spantposities (standaard 16 spanten A–P uit plan 2161/A), invloedsbreedtes, lijnlasten per spant (c_pe,10, c_s c_d), dakliggers scharnierend per overspanning/luifelveld → reacties per kolomlijn; kolommen in kopgevels (opening fase 2 in rekening); omhullende over richting × dakgeval × c_pi × overkappingsopstelling; gordingen/gevelregels met c_pe(A = L·h.o.h.); gevelkolommen A/P; windverbanden langsrichting met wrijving (EN 5.3(4)-toets)
 - controles: Σ spanten = totale dak- en kopgevelkracht (alle combinaties), Σ overkapping = fig. 7.17, evenwicht per spant, invloedsbreedtes sluitend
 - interface: tabblad "Invoer en model" (invoer in kolommen + live model en status) en "Resultaten"; menu "Bestand"; statusregel in de kop
+
+## Versie 1.6.0 – drie talen
+- taalkeuze English / Nederlands / Français in de kop, standaard English, onthouden in localStorage
+- `src/i18n.js`: woordenboekvertaling in één doorgang (langste fragment eerst, woordgrenzen), haken op innerHTML / insertAdjacentHTML / textContent, vaste paginatekst opnieuw ingevuld vanuit het Nederlands; "as n" → axis/axe; Engels met decimaalpunt
+- `src/lang/d1–d4.txt`: ca. 870 fragmenten; build.py zet ze om naar I18N_DICT en weigert dubbele sleutels met verschillende vertaling
+- rapport (afdrukken en HTML-export) in de gekozen taal; eigen opmerkingen en bestandsnamen worden niet vertaald

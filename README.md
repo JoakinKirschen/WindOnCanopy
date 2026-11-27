@@ -15,6 +15,7 @@ Interactieve rekentool voor windbelasting volgens **NBN EN 1991-1-4:2005 + Belgi
 - **Inwendige druk (EN 7.2.9):** dominante zijde (0,75–0,90·c<sub>pe</sub>) of fig. 7.13 (μ), plus gesloten-gebouwscenario's +0,2/−0,3, handmatig, en een veilige variant met open grensvlak (S5).
 - **Open overkapping (EN 7.3):** tabel 7.7, meerdere velden (tabel 7.8 / fig. 7.18), blokkering φ per windrichting (7.3(4)), belastingsopstellingen fig. 7.17, wrijving (7.5).
 - **Belastingen per constructie-element:** lijnlasten per spant (invloedsbreedte uit de spantposities), steunpuntsreacties per kolomlijn met omhullende en maatgevende druk/trek, kolommen in de kopgevels, gordingen, gevelregels, gevelkolommen en windverbanden in langsrichting (incl. wrijving EN 5.3/7.5).
+- **Drie talen:** English (standaard), Nederlands, Français – keuze in de kop, onthouden in de browser; ook het rapport volgt de gekozen taal.
 - **Twee tabbladen:** *Invoer en model* (invoer met live modelweergave en status) en *Resultaten*.
 - **3D-model** (Three.js) met zones, kleuren, drukpijlen, labels, maatvoering en vlotte navigatie.
 - **Rapport per zone** voor alle windrichtingen en dakgevallen; rapportdialoog om onderdelen te kiezen, af te drukken of als HTML te exporteren.
@@ -27,6 +28,7 @@ Interactieve rekentool voor windbelasting volgens **NBN EN 1991-1-4:2005 + Belgi
 |---|---|
 | `src/engine.js` | rekenkern (gebouw, volumes, c<sub>pe</sub>/c<sub>pi</sub>, totalen, controles) |
 | `src/canopy.js` | rekenkern open overkapping (EN 7.3) |
+| `src/i18n.js`, `src/lang/*.txt` | vertaallaag en woordenboek NL → EN/FR |
 | `src/elements.js` | belastingen per constructie-element (spanten, kolommen, gordingen, regels, verbanden) |
 | `src/ui.js` | invoer, rapportering, export, rapportdialoog |
 | `src/view.js` | 3D-weergave |

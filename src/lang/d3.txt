@@ -1,0 +1,220 @@
+S1 gesloten gebouw (+) || S1 closed building (+) || S1 bâtiment fermé (+)
+S1 gesloten gebouw || S1 closed building || S1 bâtiment fermé
+S1 gesloten (+0,2) || S1 closed (+0,2) || S1 fermé (+0,2)
+S1 – gesloten gebouw, c_pi = || S1 – closed building, c_pi = || S1 – bâtiment fermé, c_pi =
+S2 gesloten gebouw (−) || S2 closed building (−) || S2 bâtiment fermé (−)
+S2 gesloten gebouw || S2 closed building || S2 bâtiment fermé
+S2 gesloten (−0,3) || S2 closed (−0,3) || S2 fermé (−0,3)
+S2 – gesloten gebouw, c_pi = || S2 – closed building, c_pi = || S2 – bâtiment fermé, c_pi =
+S3 openingen (7.2.9: dominante zijde / fig. 7.13) || S3 openings (7.2.9: dominant face / fig. 7.13) || S3 ouvertures (7.2.9 : face dominante / fig. 7.13)
+S3 openingen (7.2.9) || S3 openings (7.2.9) || S3 ouvertures (7.2.9)
+S3 openingen || S3 openings || S3 ouvertures
+S3 per richting uit de ingevoerde openingen; c || S3 per direction from the entered openings; c || S3 par direction à partir des ouvertures saisies ; c
+S3 – openingen: dominante zijde of fig. 7.13 || S3 – openings: dominant face or fig. 7.13 || S3 – ouvertures : face dominante ou fig. 7.13
+S4 handmatig || S4 manual || S4 manuel
+S4 – handmatige c_pi = || S4 – manual c_pi = || S4 – c_pi manuel =
+S5 grensvlak verwijderd dak = open loefgevel (veilig, cf. WInt) || S5 boundary with removed roof = open windward wall (safe, cf. WInt) || S5 interface toiture enlevée = façade au vent ouverte (sécuritaire, cf. WInt)
+S5 open grensvlak (WInt) || S5 open boundary (WInt) || S5 interface ouverte (WInt)
+S5 open grensvlak || S5 open boundary || S5 interface ouverte
+S5 wind van links = 0,9·c_pe,D van het overdekte deel (tabel 7.1, h/d = || S5 wind from the left = 0,9·c_pe,D of the covered part (table 7.1, h/d = || S5 vent de gauche = 0,9·c_pe,D de la partie couverte (tableau 7.1, h/d =
+S5 – grensvlak met verwijderd dak als open buitengevel (veilig, cf. WInt) || S5 – boundary with removed roof as open external wall (safe, cf. WInt) || S5 – interface avec la toiture enlevée comme façade extérieure ouverte (sécuritaire, cf. WInt)
+Samenvatting maatgevende waarden || Summary of governing values || Résumé des valeurs déterminantes
+Som van w || Sum of w || Somme de w
+Som zonekrachten = totaal ( || Sum of zone forces = total ( || Somme des forces des zones = total (
+Som zoneoppervlakken = dakoppervlak || Sum of zone areas = roof area || Somme des surfaces des zones = surface de toiture
+Som zoneoppervlakken || Sum of zone areas || Somme des surfaces des zones
+Som zones || Sum of zones || Somme des zones
+Spantposities vanaf as A [m] || Frame positions from axis A [m] || Positions des portiques depuis l'axe A [m]
+Spantposities voorbij de lengte B = || Frame positions beyond the length B = || Positions de portiques au-delà de la longueur B =
+Stabiliteit tijdens fasen 1–3 || Stability during phases 1–3 || Stabilité pendant les phases 1–3
+Standaardinvoer: v_b,0 = 26 m/s, cat. III, c_dir = c_0 = 1, volume 1 gesloten (h = 17,44 m) || Default input: v_b,0 = 26 m/s, cat. III, c_dir = c_0 = 1, volume 1 closed (h = 17,44 m) || Données par défaut : v_b,0 = 26 m/s, cat. III, c_dir = c_0 = 1, volume 1 fermé (h = 17,44 m)
+Steunpuntsreacties spant || Support reactions frame || Réactions d'appui portique
+Tabel 7.4a zone I bij 5°: ook +0,2 || Table 7.4a zone I at 5°: also +0,2 || Tableau 7.4a zone I à 5° : aussi +0,2
+Tabel maatgevende windbelastingen || Table of governing wind loads || Tableau des charges de vent déterminantes
+Technisch rekenhulpmiddel – vervangt niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur. || Technical calculation aid – does not replace checking and approval by a qualified structural engineer. || Outil de calcul technique – ne remplace pas le contrôle et l'approbation par un ingénieur en stabilité qualifié.
+Teken: + = druk naar het oppervlak toe (dak: neerwaarts; gevel: naar binnen), − = zuiging van het oppervlak af. Luifel: c || Sign: + = pressure towards the surface (roof: downward; wall: inward), − = suction away from the surface. Canopy: c || Signe : + = pression vers la surface (toiture : vers le bas ; façade : vers l'intérieur), − = dépression s'éloignant de la surface. Auvent : c
+Teken: c_f,max ≥ 0 (neerwaarts), c_f,min || Sign: c_f,max ≥ 0 (downward), c_f,min || Signe : c_f,max ≥ 0 (vers le bas), c_f,min
+Theorie / normartikel || Theory / code clause || Théorie / article de norme
+Tijdelijke reductie enkel indien aangevinkt || Temporary reduction only if ticked || Réduction temporaire uniquement si cochée
+Tijdelijke situatie (ANB) || Temporary situation (ANB) || Situation temporaire (ANB)
+Tijdelijke situatie || Temporary situation || Situation temporaire
+Toegelaten: || Allowed: || Autorisé :
+Totale krachten || Total forces || Forces totales
+Van as A ∥ gevel || From axis A ∥ wall || Depuis l'axe A ∥ façade
+Van as P ∥ gevel || From axis P ∥ wall || Depuis l'axe P ∥ façade
+Van links || From the left || De gauche
+Van rechts ⟂ gevel || From the right ⟂ wall || De droite ⟂ façade
+Vergelijking enkel bij de standaardconfiguratie (Standaardwaarden herstellen). || Comparison only with the default configuration (Restore defaults). || Comparaison uniquement avec la configuration par défaut (Rétablir les valeurs par défaut).
+Vergelijking met WInt v1.3.2 en handberekening (Wind.xlsx) || Comparison with WInt v1.3.2 and hand calculation (Wind.xlsx) || Comparaison avec WInt v1.3.2 et calcul manuel (Wind.xlsx)
+Verschillen: zone I (+) bij 5°: WInt +0,2 (vinkje “tabel 7.4a zone I bij 5°”), NBN-tekst enkel −0,6. S3 met dezelfde helling: kleine afwijking door b = 109,439 m i.p.v. 110 m in Wind.xlsx. S5: h/d = 17,44/44,76 i.p.v. 17,4/44,7. WInt neemt voor zone D z || Differences: zone I (+) at 5°: WInt +0,2 (checkbox “table 7.4a zone I at 5°”), NBN text only −0,6. S3 with the same pitch: small difference due to b = 109,439 m instead of 110 m in Wind.xlsx. S5: h/d = 17,44/44,76 instead of 17,4/44,7. WInt takes for zone D z || Différences : zone I (+) à 5° : WInt +0,2 (case « tableau 7.4a zone I à 5° »), texte NBN seulement −0,6. S3 avec la même pente : petit écart dû à b = 109,439 m au lieu de 110 m dans Wind.xlsx. S5 : h/d = 17,44/44,76 au lieu de 17,4/44,7. WInt prend pour la zone D z
+Verwijderen vanaf as A || Remove from axis A || Enlever depuis l'axe A
+Volumes dekken alle overspanningen precies één keer || Volumes cover all spans exactly once || Les volumes couvrent toutes les portées exactement une fois
+Volumes en openingspercentages || Volumes and opening percentages || Volumes et pourcentages d'ouverture
+Voor (as A) || Front (axis A) || Avant (axe A)
+Vrijstaande wanden (EN 7.4.1, tabel 7.9, fig. 7.19) || Free-standing walls (EN 7.4.1, table 7.9, fig. 7.19) || Murs isolés (EN 7.4.1, tableau 7.9, fig. 7.19)
+Vrijstaande wand || Free-standing wall || Mur isolé
+WInt/AC; NBN-tekst: enkel −0,6 || WInt/AC; NBN text: only −0,6 || WInt/AC ; texte NBN : seulement −0,6
+Wand as 13 (rechtergevel) || Wall axis 13 (right wall) || Paroi axe 13 (façade droite)
+Wand as 13, zone D, wind van rechts, S2 (c_pi = −0,3), globaal: || Wall axis 13, zone D, wind from the right, S2 (c_pi = −0,3), global: || Paroi axe 13, zone D, vent de droite, S2 (c_pi = −0,3), global :
+Wand as 7 || Wall axis 7 || Paroi axe 7
+Wanden: aanwezig + openingen [m²] || Walls: present + openings [m²] || Parois : présentes + ouvertures [m²]
+WebGL is niet beschikbaar – 3D uitgeschakeld. || WebGL is not available – 3D disabled. || WebGL n'est pas disponible – 3D désactivée.
+Weergave: || View: || Affichage :
+Wijzigingen worden meteen doorgerekend; het model rechts toont welke theorie per volume geldt. Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen. || Changes are recalculated immediately; the model on the right shows which theory applies per volume. Grey fields are derived or not applicable. You can drag a project file (.json) here. || Les modifications sont recalculées immédiatement ; le modèle à droite indique la théorie applicable par volume. Les champs gris sont dérivés ou sans objet. Vous pouvez glisser un fichier de projet (.json) ici.
+Wind en terrein (ANB) || Wind and terrain (ANB) || Vent et terrain (ANB)
+Wind van as A – evenwijdig aan rechtergevel || Wind from axis A – parallel to right wall || Vent depuis l'axe A – parallèle à la façade droite
+Wind van as P – evenwijdig aan rechtergevel || Wind from axis P – parallel to right wall || Vent depuis l'axe P – parallèle à la façade droite
+Wind van links (as 1) – tegenoverliggende zijde || Wind from the left (axis 1) – opposite side || Vent de gauche (axe 1) – côté opposé
+Wind van rechts (luifelzijde) – loodrecht op rechtergevel || Wind from the right (canopy side) – perpendicular to right wall || Vent de droite (côté auvent) – perpendiculaire à la façade droite
+Windbelasting omgerekend naar de draagconstructie: lijnlasten per spant (invloedsbreedte), reacties per kolomlijn (maatgevend voor fundering en verankering), gordingen, gevelregels, gevelkolommen en windverbanden. Spantposities en h.o.h.-afstanden in de invoer (groep Draagconstructie). || Wind load converted to the structure: line loads per frame (tributary width), reactions per column line (governing for foundations and anchorage), purlins, side rails, wall columns and wind bracing. Frame positions and spacings in the input (group Structure). || Charge de vent convertie vers la structure : charges linéiques par portique (largeur d'influence), réactions par file de poteaux (déterminantes pour fondations et ancrages), pannes, lisses, poteaux de façade et contreventements. Positions des portiques et entraxes dans les données (groupe Structure porteuse).
+Windbelasting tijdelijke bouwfase – loods met luifel, Gent || Wind load temporary construction stage – shed with canopy, Ghent || Charge de vent phase de construction temporaire – hangar avec auvent, Gand
+Windrapport loods Gent || Wind report shed Ghent || Rapport vent hangar Gand
+Windrichting (waaruit) [°] || Wind direction (from) [°] || Direction du vent (provenance) [°]
+Windtool versie || Wind tool version || Outil vent version
+Windverbanden in langsrichting (wind van as A / as P) || Longitudinal wind bracing (wind from axis A / axis P) || Contreventements longitudinaux (vent depuis l'axe A / axe P)
+Wrijving (7.3(7), 7.5): wind ∥ nok || Friction (7.3(7), 7.5): wind ∥ ridge || Frottement (7.3(7), 7.5) : vent ∥ faîtage
+Wrijving c || Friction c || Frottement c
+Zee / kust || Sea / coast || Mer / côte
+Zone(s) || Zone(s) || Zone(s)
+Zones overlappen niet en liggen binnen de overkapping || Zones do not overlap and lie within the canopy || Les zones ne se chevauchent pas et sont dans la toiture isolée
+[kN] (+ omhoog) || [kN] (+ upward) || [kN] (+ vers le haut)
+aanwezig · openingen || present · openings || présente · ouvertures
+alle (4) || all (4) || toutes (4)
+alle combinaties (geval × scenario) || all combinations (case × scenario) || toutes les combinaisons (cas × scénario)
+andere overschrijdingskans dan 0,02/jaar; T voor uitvoeringsfase volgt uit EN 1991-1-6 §3.1(5) (niet aangeleverd) || probability of exceedance other than 0,02/year; T for the execution stage follows from EN 1991-1-6 §3.1(5) (not provided) || probabilité de dépassement autre que 0,02/an ; T pour la phase d'exécution selon EN 1991-1-6 §3.1(5) (non fourni)
+apart na te gaan || to be checked separately || à vérifier séparément
+apart scenario || separate scenario || scénario séparé
+as 1 (keerwand + bekleding), as 13 gesloten, as 7 geen, as 14 open || axis 1 (retaining wall + cladding), axis 13 closed, axis 7 none, axis 14 open || axe 1 (mur de soutènement + bardage), axe 13 fermé, axe 7 aucun, axe 14 ouvert
+as 1-zijde links || axis 1 side left || côté axe 1 à gauche
+as 13–14 kolom || axis 13–14 column || axe 13–14 poteau
+as A links, as P rechts || axis A left, axis P right || axe A à gauche, axe P à droite
+beide hellingen || both pitches || deux versants
+bevat alle invoer; het model ernaast toont meteen de volumes en de gekozen theorie. Schakel || contains all input; the model next to it immediately shows the volumes and the selected theory. Switch || contient toutes les données ; le modèle à côté montre immédiatement les volumes et la théorie choisie. Activez ou désactivez les
+bevat alle uitkomsten; de knoppen bovenaan springen naar een onderdeel. || contains all results; the buttons at the top jump to a section. || contient tous les résultats ; les boutons en haut mènent à une partie.
+bewaart alle invoer als .json-bestand; || saves all input as a .json file; || enregistre toutes les données dans un fichier .json ;
+bewaren de resultaten. || save the results. || enregistrent les résultats.
+bij A = L·h.o.h. (fig. 7.2); overkapping: ψ·c || at A = L·spacing (fig. 7.2); canopy: ψ·c || pour A = L·entraxe (fig. 7.2) ; toiture isolée : ψ·c
+blauw = zuiging / opwaarts · rood = druk / neerwaarts || blue = suction / upward · red = pressure / downward || bleu = dépression / vers le haut · rouge = pression / vers le bas
+bovenkant (veilig) = || top (safe) = || sommet (sécuritaire) =
+bovenkant (veilig) || top (safe) || sommet (sécuritaire)
+c_prob én c_season toegepast: dubbele duurreductie – enkel met motivering. || c_prob and c_season applied: double duration reduction – only with justification. || c_prob et c_season appliqués : double réduction de durée – uniquement avec justification.
+combinaties, max. verschil || combinations, max. difference || combinaisons, écart max.
+coëfficiënten · overkapping || coefficients · canopy || coefficients · toiture isolée
+dak verwijderd || roof removed || toiture enlevée
+daken (gesloten) || roofs (closed) || toitures (fermées)
+deels verwijderd ( || partly removed ( || partiellement enlevée (
+deels verwijderd || partly removed || partiellement enlevée
+dominante dakopening, wind van links (S3) || dominant roof opening, wind from the left (S3) || ouverture dominante en toiture, vent de gauche (S3)
+dominante zijde || dominant face || face dominante
+en w, zoals in het 3D-model. Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting. || and w, as in the 3D model. Walls are independent of the roof case and are shown with the first case of each direction. || et w, comme dans le modèle 3D. Les façades sont indépendantes du cas de toiture et figurent avec le premier cas de chaque direction.
+enkel linker || left only || gauche uniquement
+enkel rechter || right only || droite uniquement
+enkele dagen (≤ 3 dagen) || a few days (≤ 3 days) || quelques jours (≤ 3 jours)
+enkele weken (≤ 3 maanden) || a few weeks (≤ 3 months) || quelques semaines (≤ 3 mois)
+fase 1: volledig (109,439) || phase 1: complete (109,439) || phase 1 : complète (109,439)
+fig. 7.17: + nok, − kil || fig. 7.17: + ridge, − trough || fig. 7.17 : + faîtage, − noue
+fig. 7.18 (indien open) || fig. 7.18 (if open) || fig. 7.18 (si ouvert)
+fig. 7.4 / ANB 4.5 Opm. 3 (WInt); uit = h (veilig) || fig. 7.4 / ANB 4.5 Note 3 (WInt); off = h (safe) || fig. 7.4 / ANB 4.5 Note 3 (WInt) ; désactivé = h (sécuritaire)
+geen basis voor lagere waarde || no basis for a lower value || pas de base pour une valeur inférieure
+geen noordpijl || no north arrow || pas de flèche nord
+geen openingen || no openings || pas d'ouvertures
+gekopieerd naar het klembord. || copied to the clipboard. || copié dans le presse-papiers.
+geschakeld dak (fig. 7.10d, 7.2.7(2)): eerste aanwezige overspanning aan loefzijde F/G/H/J/I × 1,0 ; tweede H/I × 0,8 ; volgende × 0,6 || multispan roof (fig. 7.10d, 7.2.7(2)): first present span on the windward side F/G/H/J/I × 1,0 ; second H/I × 0,8 ; next × 0,6 || toiture multiple (fig. 7.10d, 7.2.7(2)) : première portée présente au vent F/G/H/J/I × 1,0 ; deuxième H/I × 0,8 ; suivantes × 0,6
+geschakelde daken || multispan roofs || toitures multiples
+gescheiden door ; · plan 2161/A: 16 spanten A–P || separated by ; · drawing 2161/A: 16 frames A–P || séparées par ; · plan 2161/A : 16 portiques A–P
+gesloten (7.2) || closed (7.2) || fermé (7.2)
+gesloten wand || closed wall || paroi fermée
+gevel A || wall A || façade A
+gevel P || wall P || façade P
+gevel, tabel 7.1 (7.2.2) + c || wall, table 7.1 (7.2.2) + c || façade, tableau 7.1 (7.2.2) + c
+gevels (gesloten) || walls (closed) || façades (fermées)
+gevolgklasse, projectbeslissing || consequence class, project decision || classe de conséquences, décision de projet
+glad (staal, glad beton) || smooth (steel, smooth concrete) || lisse (acier, béton lisse)
+globaal (c_pe,10 / c_f) || global (c_pe,10 / c_f) || global (c_pe,10 / c_f)
+globaal (c || global (c || global (c
+globale zuiging || global suction || dépression globale
+grondplan 2161/A || floor plan 2161/A || plan 2161/A
+h tot dakrand (fig. 7.17) || h to eaves (fig. 7.17) || h jusqu'à la rive (fig. 7.17)
+h tot dakrand, fig. 7.17 || h to eaves, fig. 7.17 || h jusqu'à la rive, fig. 7.17
+h tot de dakrand (fig. 7.17) = || h to the eaves (fig. 7.17) = || h jusqu'à la rive (fig. 7.17) =
+h/d = 17,44/89,52 = 0,195 → c_pe,10 = +0,70 ; w = 0,85309 · 1,00 = 0,8531 kN/m² || h/d = 17,44/89,52 = 0,195 → c_pe,10 = +0,70 ; w = 0,85309 · 1,00 = 0,8531 kN/m² || h/d = 17,44/89,52 = 0,195 → c_pe,10 = +0,70 ; w = 0,85309 · 1,00 = 0,8531 kN/m²
+h/d ≤ 0,25 en ≥ 1 || h/d ≤ 0,25 and ≥ 1 || h/d ≤ 0,25 et ≥ 1
+handmatig = || manual = || manuel =
+handmatig [m] || manual [m] || manuel [m]
+hier hoofdbelasting || here leading action || ici action principale
+in of uit en geef openingen in m². Het programma vormt volumes en kiest per volume automatisch de theorie (zie §1). Het tabblad || on or off and enter openings in m². The program forms volumes and automatically selects the theory per volume (see §1). The tab || et saisissez les ouvertures en m². Le programme forme des volumes et choisit automatiquement la théorie par volume (voir §1). L'onglet
+in rekening gebracht || taken into account || pris en compte
+ingegeven waarde || entered value || valeur saisie
+invoer gebruiker || user input || donnée utilisateur
+invoer niet geldig || input not valid || données non valides
+inwendige druk, dominante zijde, theoriekeuze || internal pressure, dominant face, choice of theory || pression intérieure, face dominante, choix de la théorie
+kN (+ = richting as 14) · Σ V = || kN (+ = towards axis 14) · Σ V = || kN (+ = vers l'axe 14) · Σ V =
+kN, wind ⟂ nok || kN, wind ⟂ ridge || kN, vent ⟂ faîtage
+kN/m². Tabel 7.7 geïnterpoleerd: c || kN/m². Table 7.7 interpolated: c || kN/m². Tableau 7.7 interpolé : c
+karakteristiek (zonder r en γ_Q); V + = druk, H + = richting as 14 || characteristic (without r and γ_Q); V + = compression, H + = towards axis 14 || caractéristique (sans r et γ_Q) ; V + = compression, H + = vers l'axe 14
+karakteristieke waarden || characteristic values || valeurs caractéristiques
+kolommen) – op te nemen door portaalwerking of stabiliteitsverband || columns) – to be resisted by frame action or stability bracing || poteaux) – à reprendre par effet portique ou contreventement
+lijgevel [kN] || leeward wall [kN] || façade sous le vent [kN]
+lijzijde van blokkering → 0 (7.3(4)) || downwind of blockage → 0 (7.3(4)) || sous le vent de l'obstruction → 0 (7.3(4))
+linker helling || left pitch || versant gauche
+loefgevel D = bovenkant gevel”). || windward wall D = top of wall”). || façade au vent D = sommet de façade »).
+loefgevel D = bovenkant gevel || windward wall D = top of wall || façade au vent D = sommet de façade
+loefgevel [kN] || windward wall [kN] || façade au vent [kN]
+lok. / glob. || loc. / glob. || loc. / glob.
+lokaal (A = || local (A = || local (A =
+lokaal (A_lok) || local (A_loc) || local (A_loc)
+lokaal c || local c || c local
+lokale druk || local pressure || pression locale
+lokale zuiging || local suction || dépression locale
+m (bk wandplaten 110,00 m) || m (outside of wall sheeting 110,00 m) || m (extérieur des bardages 110,00 m)
+m ; breedte (x) = || m ; width (x) = || m ; largeur (x) =
+m ; gevels h/d = || m ; walls h/d = || m ; façades h/d =
+m ; lengte b = || m ; length b = || m ; longueur b =
+m genegeerd. || m ignored. || m ignorées.
+m · invloedsbreedte || m · tributary width || m · largeur d'influence
+m; incl. c || m; incl. c || m ; incl. c
+maatgevend (min) || governing (min) || déterminant (min)
+maatgevend per zone (druk + zuiging) || governing per zone (pressure + suction) || déterminant par zone (pression + dépression)
+mag verwaarloosd worden, EN 5.3(4) || may be neglected, EN 5.3(4) || peut être négligé, EN 5.3(4)
+max druk V [kN] || max compression V [kN] || compression max V [kN]
+max trek V [kN] || max tension V [kN] || traction max V [kN]
+max. druk || max. pressure || pression max.
+max. zuiging || max. suction || dépression max.
+met r = eventuele tijdelijke reductie. || with r = any temporary reduction. || avec r = réduction temporaire éventuelle.
+m² (plan) || m² (plan) || m² (en plan)
+m²; evenwijdig || m²; parallel || m² ; parallèle
+neerwaarts (max) || downward (max) || vers le bas (max)
+netto ± (7.4) || net ± (7.4) || net ± (7.4)
+niet in omhullende || not in envelope || pas dans l'enveloppe
+niet op plan – aanname || not on drawing – assumption || pas sur le plan – hypothèse
+niet toegepast op secundaire elementen. || not applied to secondary members. || non appliqué aux éléments secondaires.
+niet uit plannen af te leiden || cannot be derived from the drawings || non déductible des plans
+niet weergegeven || not shown || non affiché
+noordpijl ontbreekt → 1,0 || north arrow missing → 1,0 || flèche nord absente → 1,0
+ontwerpwaarden (γ || design values (γ || valeurs de calcul (γ
+op dak en kopgevels voorbij min(2b; 4h) vanaf de loefrand || on roof and gable walls beyond min(2b; 4h) from the windward edge || sur la toiture et les pignons au-delà de min(2b ; 4h) depuis le bord au vent
+opdracht III · plan: WindCAT II || brief III · drawing: WindCAT II || énoncé III · plan : WindCAT II
+open (7.3/7.4) || open (7.3/7.4) || ouvert (7.3/7.4)
+open delen (7.3 / 7.4) || open parts (7.3 / 7.4) || parties ouvertes (7.3 / 7.4)
+open loefgevel (S5) || open windward wall (S5) || façade au vent ouverte (S5)
+open luifel || open canopy || auvent ouvert
+open overkapping, tabel 7.7 (+ tabel 7.8 bij || open canopy, table 7.7 (+ table 7.8 for || toiture isolée ouverte, tableau 7.7 (+ tableau 7.8 pour
+open overkappingen || open canopies || toitures isolées ouvertes
+opening fase 2 || opening phase 2 || ouverture phase 2
+opent een venster waarin je kiest welke onderdelen, windrichtingen en dakgevallen in het rapport komen || opens a dialog in which you choose which sections, wind directions and roof cases go into the report || ouvre une fenêtre où vous choisissez les parties, directions du vent et cas de toiture du rapport
+opgave: || brief: || énoncé :
+opwaarts (min) || upward (min) || vers le haut (min)
+opwaarts [kN] || upward [kN] || vers le haut [kN]
+oriëntatie gekend || orientation known || orientation connue
+overdekt deel als apart gebouw, c_pi = 0,9·c_pe || covered part as a separate building, c_pi = 0,9·c_pe || partie couverte comme bâtiment distinct, c_pi = 0,9·c_pe
+per m dakvlak loodrecht op het dak = q || per m of roof surface perpendicular to the roof = q || par m de toiture perpendiculaire à la toiture = q
+per richting || per direction || par direction
+per windrichting || per wind direction || par direction du vent
+per zone (tabel 7.7, onafhankelijk van A). M = qL²/8, R = qL/2 (doorgaande gordingen: steunpuntsmoment en -reactie hoger, ca. ×1,25). c || per zone (table 7.7, independent of A). M = qL²/8, R = qL/2 (continuous purlins: support moment and reaction higher, approx. ×1,25). c || par zone (tableau 7.7, indépendant de A). M = qL²/8, R = qL/2 (pannes continues : moment et réaction sur appui plus élevés, env. ×1,25). c
+per zone) en c || per zone) and c || par zone) et c
+per zone, loodrecht op het vlak; F || per zone, perpendicular to the surface; F || par zone, perpendiculaire à la face ; F
+periode onbekend || period unknown || période inconnue
+plan: 15 % ≈ 8,53° || drawing: 15 % ≈ 8,53° || plan : 15 % ≈ 8,53°
+plan: 7,50 (randvakken 7,26) || drawing: 7,50 (end bays 7,26) || plan : 7,50 (travées de rive 7,26)
+plan: geen wand || drawing: no wall || plan : pas de paroi
+plan: nok +17,48, goot +14,23 / +14,28 || drawing: ridge +17,48, gutter +14,23 / +14,28 || plan : faîtage +17,48, gouttière +14,23 / +14,28
