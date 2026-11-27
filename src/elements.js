@@ -88,17 +88,17 @@ var WEL = (function () {
         xs = xs.filter(function (v, i, a) { return i === 0 || v - a[i - 1] > 1e-9; });
         var ca = Math.cos(s.alpha * Math.PI / 180);
         for (var i = 0; i < xs.length - 1; i++) {
-          var a = xs[i], b = xs[i + 1], xm = (a + b) / 2, q = 0, qh = 0, names = [], wsum = 0, wdy = 0, pitch = null;
+          var a = xs[i], b = xs[i + 1], xm = (a + b) / 2, q = 0, qh = 0, names = [], wsum = 0, wdy = 0, pitch = null, csum = 0, cpi = null;
           zs.forEach(function (z) {
             if (xm < z.x0 || xm > z.x1) return;
             var dy = ov(z.y0, z.y1, fr.ya, fr.yb), w = z.res[cb.cid].per[cb.scen].wGlob, n = O.normal(z), qq = cscd * w * dy;
-            q += qq; qh += -qq / ca * n[0]; wsum += w * dy; wdy += dy; pitch = z.pitch;
+            q += qq; qh += -qq / ca * n[0]; wsum += w * dy; wdy += dy; pitch = z.pitch; csum += z.res[cb.cid].cGlob * dy; cpi = z.res[cb.cid].per[cb.scen].cpi;
             if (names.indexOf(z.name) < 0) names.push(z.name);
           });
           if (wdy < 1e-9) continue;
           var last = C.segs[C.segs.length - 1];
           if (last && last.span === s.i && Math.abs(last.x1 - a) < 1e-9 && Math.abs(last.q - q) < 1e-9 && last.pitch === pitch && last.zones === names.join('+')) { last.x1 = b; }
-          else C.segs.push({ span: s.i, pitch: pitch, zones: names.join('+'), x0: a, x1: b, w: wsum / wdy, q: q, qh: qh, ca: ca });
+          else C.segs.push({ span: s.i, pitch: pitch, zones: names.join('+'), x0: a, x1: b, w: wsum / wdy, q: q, qh: qh, ca: ca, cpe: csum / wdy, cpi: cpi });
         }
       });
       C.segs.forEach(function (g) { addPoint(C, g.span, (g.x0 + g.x1) / 2, g.q * (g.x1 - g.x0), g.qh * (g.x1 - g.x0)); });
