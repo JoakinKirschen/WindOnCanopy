@@ -104,3 +104,7 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 ## Versie 1.8.1 – duidelijkheid coëfficiënten
 - rapport per zone: per geval vermeld of lokale c_pe (A_lok) of globale c_pe,10 getoond worden, eenheid w [kN/m²]
 - §3c: diagram toont q in kN/m én w in kN/m²; uitleg dat §3c globale c_pe,10 gebruikt (vergelijk met het rapport per zone in de stand "globaal")
+
+## Versie 1.9.0 – diagram en c_pe-basis voor elementen
+- §3c-diagram: elke sectie krijgt haar waarde (smalle secties verticaal), kleiner lettertype, eenheden achter alle waarden (q kN/m, w kN/m², F/V/H kN); overkapping toont ook de gelijkwaardige lijnlast per helling
+- keuze c_pe voor spanten, kolommen en elementen: volgens belaste oppervlakte (fig. 7.2, standaard), c_pe,10 of c_pe,1; ook in het rapport §3c; de controle Σ spanten = totalen blijft op de standaardbasis
