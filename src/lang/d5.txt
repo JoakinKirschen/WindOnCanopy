@@ -159,3 +159,4 @@ EN §7.4.2, fig. 7.20 (EN 1991-1-4:2026 tabel C.10) || EN §7.4.2, fig. 7.20 (EN
 beschuttingsfactor || shelter factor || coefficient d'abri
 Teken: q en F + = naar het vlak toe || Sign: q and F + = towards the surface || Signe : q et F + = vers la surface
 V + = druk op de fundering, − = trek/ || V + = compression on the foundation, − = tension/ || V + = compression sur la fondation, − = traction/
+maten in m || dimensions in m || cotes en m
