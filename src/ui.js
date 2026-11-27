@@ -17,6 +17,26 @@
   function cnS(A) { return A <= 1 + 1e-9 ? 'pe,1' : A >= 10 - 1e-9 ? 'pe,10' : 'pe(A=' + fmt(A, 1) + ' m²)'; }
   // symbool met index in SVG-tekst: c + subscript
   function sv(b, sub, sup) { return b + '<tspan font-size="8" dy="2">' + sub + '</tspan><tspan dy="-2">' + (sup || '') + '</tspan>'; }
+  // maatketting (SVG): vals = posities in m, P = m → px, at = vaste coördinaat van de maatlijn (px);
+  // vert = verticale keten (P stijgt naar beneden of boven), labels die niet passen schuiven naar een volgende rij
+  function dimChain(vals, P, at, vert) {
+    var v = vals.slice().sort(function (a, b) { return a - b; }).filter(function (x, i, a) { return !i || x - a[i - 1] > 0.02; });
+    if (v.length < 2) return '';
+    var C = '#64748b', T = '#475569', fs = 9, s = '', p0 = P(v[0]), p1 = P(v[v.length - 1]), rows = [];
+    var tw = function (t) { return t.length * fs * 0.56; }, ln = function (a, b, c, d, w) { return '<line x1="' + a.toFixed(1) + '" y1="' + b.toFixed(1) + '" x2="' + c.toFixed(1) + '" y2="' + d.toFixed(1) + '" stroke="' + C + '" stroke-width="' + (w || 0.8) + '"/>'; };
+    s += vert ? ln(at, p0, at, p1) : ln(p0, at, p1, at);
+    v.forEach(function (x) { var p = P(x); s += vert ? ln(at - 4, p, at + 4, p, 0.6) + ln(at - 3, p + 3, at + 3, p - 3, 1.3) : ln(p, at - 4, p, at + 4, 0.6) + ln(p - 3, at + 3, p + 3, at - 3, 1.3); });
+    for (var i = 1; i < v.length; i++) {
+      var t = fmt(v[i] - v[i - 1], 2), a = P(v[i - 1]), b = P(v[i]), m = (a + b) / 2, L = Math.abs(b - a), w = tw(t);
+      if (L >= w + 8) { s += vert ? '<text x="' + (at - 4) + '" y="' + m.toFixed(1) + '" transform="rotate(-90 ' + (at - 4) + ' ' + m.toFixed(1) + ')" text-anchor="middle" font-size="' + fs + '" fill="' + T + '">' + t + '</text>' : '<text x="' + m.toFixed(1) + '" y="' + (at - 4) + '" text-anchor="middle" font-size="' + fs + '" fill="' + T + '">' + t + '</text>'; continue; }
+      // past niet: naast de maatlijn, in rijen zodat labels elkaar niet overlappen
+      var e0 = vert ? m - 6 : m - w / 2 - 2, e1 = vert ? m + 6 : m + w / 2 + 2, k = 0;
+      while (rows[k] && rows[k].some(function (iv) { return e0 < iv[1] && e1 > iv[0]; })) k++;
+      (rows[k] = rows[k] || []).push([e0, e1]);
+      s += vert ? '<text x="' + (at + 6 + k * 30) + '" y="' + (m + 3).toFixed(1) + '" font-size="' + fs + '" fill="' + T + '">' + t + '</text>' : '<text x="' + m.toFixed(1) + '" y="' + (at + 12 + k * 10) + '" text-anchor="middle" font-size="' + fs + '" fill="' + T + '">' + t + '</text>';
+    }
+    return s;
+  }
   function cnT(A) { return A <= 1 + 1e-9 ? 'c_pe,1' : A >= 10 - 1e-9 ? 'c_pe,10' : 'c_pe(' + fmt(A, 1) + ' m²)'; }
   function cls(v) { return v > 1e-9 ? 'pos' : (v < -1e-9 ? 'neg' : ''); }
   function getPath(o, p) { return p.split('.').reduce(function (a, k) { return a ? a[k] : undefined; }, o); }
@@ -350,16 +370,18 @@
       return '';
     }
     function planSVG(dir, cid, sgn, canopyOnly) {
-      var W = 680, mg = 46, sc = (W - 2 * mg) / X[3], H = B * sc + 2 * mg, ox = mg, oy = mg;
+      // maatketting onder (x) en rechts (y), buiten de windpijlen
+      var W = 680, mg = 46, dR = dir === 'R' ? 50 : 20, dB = dir === 'A' ? 50 : 18, sc = (W - mg - dR - 40) / X[3], H = B * sc + 2 * mg + dB, ox = mg, oy = mg;
       var PX = function (x) { return ox + x * sc; }, PY = function (y) { return oy + (B - y) * sc; };
       var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,Arial">';
       s += '<rect x="' + PX(0) + '" y="' + PY(B) + '" width="' + X[3] * sc + '" height="' + B * sc + '" fill="#f7f8fa" stroke="#bbb"/>';
       sp.forEach(function (q) { if (q.rem > 0) s += '<rect x="' + PX(q.x0) + '" y="' + PY(q.yr[1]) + '" width="' + q.w * sc + '" height="' + (q.yr[1] - q.yr[0]) * sc + '" fill="none" stroke="#9db4d6" stroke-dasharray="5 4"/><text x="' + PX(q.xm) + '" y="' + PY((q.yr[0] + q.yr[1]) / 2) + '" text-anchor="middle" font-size="12" fill="#2b5fb3">dak ' + q.name + ' afwezig</text>'; });
-      var rows = [];
+      var rows = [], DIMS = [];
       o.zones.filter(function (z) { return !canopyOnly && z.kind === 'roof' && z.dir === dir; }).forEach(function (z) {
         var rr = z.res[cid], p = rr && rr.per[rs]; if (!p) return;
         var w = (loc ? p.wLoc : p.wGlob) * mf, cpe = loc ? rr.cLoc : rr.cGlob;
         var x = PX(z.x0), y = PY(z.y1), ww = (z.x1 - z.x0) * sc, hh = (z.y1 - z.y0) * sc;
+        DIMS.push([z.x0, z.x1, z.y0, z.y1]);
         s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
         var sg = pm(z.name, cid);
         s += lab(x, y, ww, hh, ['<tspan font-weight="700">' + z.name + '</tspan>', sv('c', cnS(loc ? o.P.Aloc : z.A), sg) + ' = ' + fmt(cpe, 2, true), sv('c', 'pi') + ' = ' + fmt(p.cpi, 2, true), 'w = ' + fmt(w, 2, true) + ' kN/m²'], w);
@@ -371,6 +393,7 @@
         if (loc) c.zones.forEach(function (z) {
           var w = (up ? z.wMin : z.wMax) * mf, cp = up ? z.cpMin : z.cpMax;
           var x = PX(e.x0 + z.x0), y = PY(e.y0 + z.y1), ww = (z.x1 - z.x0) * sc, hh = (z.y1 - z.y0) * sc;
+          DIMS.push([e.x0 + z.x0, e.x0 + z.x1, e.y0 + z.y0, e.y0 + z.y1]);
           s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
           s += lab(x, y, ww, hh, ['<tspan font-weight="700">' + z.name + '</tspan>', 'ψ·' + sv('c', 'p,net') + ' = ' + fmt(cp, 2, true), 'w = ' + fmt(w, 2, true) + ' kN/m²'], w);
           rows.push(['Overkapping ' + (o.canopies.length > 1 ? o.spans[e.span].name + ' ' : '') + sTxt + (c.geo.n > 1 ? ', veld ' + z.bay : '') + ' (' + z.pitch + ')', z.name, z.A, cp, null, w]);
@@ -379,12 +402,17 @@
           var Bb = c.bays[pt.bay - 1], x0 = pt.pitch === 'L' ? Bb.x0 : Bb.xm, x1 = pt.pitch === 'L' ? Bb.xm : Bb.x1;
           var w = (up ? pt.wMin : pt.wMax) * mf, cf = up ? pt.cfMin : pt.cfMax, F = (up ? pt.FMin : pt.FMax) * mf;
           var x = PX(e.x0 + x0), y = PY(e.y0 + c.geo.b), ww = (x1 - x0) * sc, hh = c.geo.b * sc;
+          DIMS.push([e.x0 + x0, e.x0 + x1, e.y0, e.y0 + c.geo.b]);
           s += '<rect x="' + x + '" y="' + y + '" width="' + ww + '" height="' + hh + '" fill="' + colW(w, wm) + '" stroke="#34495e" stroke-width="0.8"/>';
           s += lab(x, y, ww, hh, ['ψ·' + sv('c', 'f') + ' = ' + fmt(cf, 2, true), 'w = ' + fmt(w, 2, true) + ' kN/m²', 'F = ' + fmt(F, 0, true) + ' kN'], w);
           rows.push(['Overkapping ' + (o.canopies.length > 1 ? o.spans[e.span].name + ' ' : '') + sTxt + (c.geo.n > 1 ? ', veld ' + pt.bay : '') + ' (' + pt.pitch + ')', 'c_f', pt.A, cf, null, w]);
         });
       });
       sp.forEach(function (q) { s += '<text x="' + PX(q.xm) + '" y="' + (oy - 6) + '" text-anchor="middle" font-size="11" fill="#555">' + q.name + '</text>'; });
+      var dx = [0, X[3]], dyv = [0, B];
+      sp.forEach(function (q) { dx.push(q.x0, q.x1); if (q.rem > 0) dyv.push(q.yr[0], q.yr[1]); });
+      DIMS.forEach(function (r) { dx.push(r[0], r[1]); dyv.push(r[2], r[3]); });
+      s += dimChain(dx, PX, PY(0) + dB, false) + dimChain(dyv, PY, ox + X[3] * sc + dR, true);
       s += '<text x="' + (ox + X[3] * sc + 4) + '" y="' + (PY(0) + 4) + '" font-size="11" fill="#555">A</text><text x="' + (ox + X[3] * sc + 4) + '" y="' + (PY(B) + 4) + '" font-size="11" fill="#555">P</text>';
       // windpijl
       var dv = WE.DIRS.filter(function (q) { return q.id === dir; })[0].vec, arr = '';
@@ -397,7 +425,7 @@
         var ang = Math.atan2(ty - fy, tx - fx), hx = tx - 9 * Math.cos(ang), hy = ty - 9 * Math.sin(ang);
         arr += '<line x1="' + fx + '" y1="' + fy + '" x2="' + hx + '" y2="' + hy + '" stroke="#138a8a" stroke-width="3"/><polygon points="' + tx + ',' + ty + ' ' + (hx - 5 * Math.sin(ang)) + ',' + (hy + 5 * Math.cos(ang)) + ' ' + (hx + 5 * Math.sin(ang)) + ',' + (hy - 5 * Math.cos(ang)) + '" fill="#138a8a"/>';
       });
-      s += arr + '<text x="' + (dir === 'L' ? 6 : dir === 'R' ? W - 6 : W / 2) + '" y="' + (dir === 'A' ? H - 4 : dir === 'P' ? 12 : oy - 26) + '" text-anchor="' + (dir === 'L' ? 'start' : dir === 'R' ? 'end' : 'middle') + '" font-size="12" font-weight="700" fill="#0d6e6e">WIND</text>';
+      s += arr + '<text x="' + (dir === 'L' ? 6 : dir === 'R' ? W - 6 : dir === 'A' ? ox + 0.375 * X[3] * sc : W / 2) + '" y="' + (dir === 'A' ? oy + B * sc + 30 : dir === 'P' ? 12 : oy - 26) + '" text-anchor="' + (dir === 'L' ? 'start' : dir === 'R' ? 'end' : 'middle') + '" font-size="12" font-weight="700" fill="#0d6e6e">WIND</text>';
       return { svg: s + '</svg>', rows: rows };
     }
     function wallSVG(dir, pid, zs, isFree) {
@@ -518,7 +546,7 @@
   }
   function elemSVG(T, fr, fac, cid) {
     var o = OUT, sp = o.spans, E = EV || EL, xmax = Math.max.apply(null, E.lines.map(function (l) { return l.x; }));
-    var zmax = Math.max.apply(null, sp.map(function (s) { return s.top; })), sc = 860 / xmax, ml = 150, mr = 110, mt = 60, mb = 80, Wd = ml + xmax * sc + mr, Hd = mt + zmax * sc + mb;
+    var zmax = Math.max.apply(null, sp.map(function (s) { return s.top; })), sc = 860 / xmax, ml = 150, mr = 110, mt = 60, mb = 102, Wd = ml + xmax * sc + mr, Hd = mt + zmax * sc + mb;
     var X = function (x) { return ml + x * sc; }, Y = function (z) { return mt + (zmax - z) * sc; }, f1 = function (v) { return fmt(v, 1); };
     function zAt(s, x) {
       if (s.nb > 1 || s.luifel) { var d = s.w / s.nb, u = (x - s.x0) - Math.floor(Math.min(x - s.x0, s.w - 1e-9) / d) * d, t = (s.zt - s.zl) / (d / 2); return s.zl + Math.min(u, d - u) * t; }
@@ -573,6 +601,7 @@
       h += lblTxt(L, x, yb);
     });
     // kolommen kopgevels
+    var xR = X(xmax) + 6, zR = [];
     var cm = 1e-9; T.cols.forEach(function (c) { c.segs.forEach(function (g) { cm = Math.max(cm, Math.abs(g.q)); }); });
     T.cols.forEach(function (c) {
       var side = c.side < 0 ? -1 : 1, x0 = X(c.x) + side * 6;
@@ -584,6 +613,7 @@
           for (var i = 0; i < n; i++) { var yy = Y(g.z0 + (g.z1 - g.z0) * (i + 0.5) / n); h += g.q >= 0 ? arrow(Math.min(xa, xb), yy, Math.max(xa, xb), yy, col) : arrow(Math.max(xa, xb), yy, Math.min(xa, xb), yy, col); }
         }
         var ym = Y((g.z0 + g.z1) / 2), an = side < 0 ? 'end' : 'start';
+        if (side > 0) { xR = Math.max(xR, xb + 4 + (Math.abs(g.q) > 1e-9 ? 130 : 110)); if (ww > 0.5 || Math.abs(g.q) > 1e-9 || g.z1 - g.z0 > 1.5) zR.push(g.z0, g.z1); }
         if (Math.abs(g.q) > 1e-9) { h += txt(xb + side * 4, ym - 8, 'q = ' + fmt(g.q * fac, 2, true) + ' kN/m', an, col, 9.5, true); h += txt(xb + side * 4, ym + 4, 'w = ' + fmt(g.w * fac, 3, true) + ' kN/m²', an, '#5f6b7a', 8.5); h += txt(xb + side * 4, ym + 15, sv('c', String(g.cl).replace(/^c_/, '')) + ' = ' + fmt(g.cpe, 2, true) + ' · ' + sv('c', 'pi') + ' = ' + fmt(g.cpi, 2, true), an, '#5f6b7a', 8.5); }
         else if (g.z1 - g.z0 > 1.5) h += txt(x0 + side * 4, ym + 3, 'opening · q = 0 kN/m', an, '#5f6b7a', 9);
       });
@@ -594,10 +624,17 @@
       if (Math.abs(V) > 0.05) { var col = V >= 0 ? POS : NEG; h += V >= 0 ? arrow(x, y, x, y + 30, col, 2) : arrow(x, y + 30, x, y, col, 2); h += txt(x + 5, y + 44, 'V = ' + f1(V) + ' kN', 'middle', col, 9.5, true); }
       if (Math.abs(Hb) > 0.05) { var c2 = '#475569'; h += Hb >= 0 ? arrow(x - 26, y + 10, x - 4, y + 10, c2) : arrow(x - 4, y + 10, x - 26, y + 10, c2); h += txt(x - 30, y + 13, 'H = ' + f1(Hb) + ' kN', 'end', c2, 9); }
     });
+    // maatkettingen: onder = zonegrenzen van de belastingen en kolomlijnen, rechts = hoogten
+    var dxs = [0, xmax]; sp.forEach(function (s) { dxs.push(s.x0, s.x1); }); E.lines.forEach(function (l) { dxs.push(l.x); });
+    T.segs.concat(T.pts).forEach(function (g) { dxs.push(g.x0, g.x1); });
+    h += dimChain(dxs.filter(function (x) { return x >= -1e-9 && x <= xmax + 1e-9; }), X, Y(0) + 64, false);
+    var sR = sp[sp.length - 1], xc = Math.max(X(xmax) + 30, xR + 14);
+    h += dimChain([0, sR.zr, sR.top].concat(zR), Y, xc, true);
+    Wd = Math.max(Wd, xc + 40);
     var dy = Math.max(0, 48 - yMinLbl); Hd += dy;
     h = '<g transform="translate(0,' + dy.toFixed(1) + ')">' + h + '</g>';
     h += txt(8, 16, 'Spant ' + fr.name + ' · y = ' + fmt(fr.y, 3) + ' m · invloedsbreedte ' + fmt(fr.dy, 3) + ' m', 'start', '#1f2933', 12, true);
-    h += txt(8, 32, 'Σ H op spantniveau = ' + fmt(T.Htop * fac, 1, true) + ' kN (+ = naar rechts) · Σ V = ' + fmt(T.Vsum * fac, 1, true) + ' kN · lijnlasten q in kN/m (⊥ dak, per m), reacties in kN', 'start', '#5f6b7a', 10);
+    h += txt(8, 32, 'Σ H op spantniveau = ' + fmt(T.Htop * fac, 1, true) + ' kN (+ = naar rechts) · Σ V = ' + fmt(T.Vsum * fac, 1, true) + ' kN · lijnlasten q in kN/m (⊥ dak, per m), reacties in kN · maten in m', 'start', '#5f6b7a', 10);
     return '<svg viewBox="0 0 ' + Wd.toFixed(0) + ' ' + Hd.toFixed(0) + '" role="img" aria-label="Belastingen en reacties spant ' + fr.name + '" font-family="system-ui,Segoe UI,Arial,sans-serif">' + h + '</svg>';
   }
   function elemReport(r) {
