@@ -136,7 +136,7 @@
       var id = iid(f.k);
       if (f.t === 'pair') { var w = getPath(P, f.k); $(id + '_on').checked = !!w.on; $(id + '_op').value = String(w.open); return; }
       var v = f.k === 'cprobMan' ? (P.cprobMan !== undefined ? P.cprobMan : P.cprob) : getPath(P, f.k);
-      if (f.t === 'chk') $(id).checked = !!v; else $(id).value = String(v);
+      if (f.t === 'chk') $(id).checked = !!v; else $(id).value = f.t === 'txt' && I18N.get() === 'en' ? String(v).replace(/(\d),(\d)/g, '$1.$2') : String(v);
     });
   }
   function readInputs() {
@@ -167,9 +167,9 @@
     for (var i = 0; i < dur.months; i++) cs = Math.max(cs, WE.NORM.cseason[(P.month0 - 1 + i) % 12]);
     P.cseason = cs; P.T = dur.T; P.monthsDur = dur.months;
     P.cprob = P.cprobMode === 'manual' ? P.cprobMan : (P.cprobMode === 'formula' ? WE.cprobFormula(1 / dur.T) : WE.cprobFromT(dur.T));
-    $('in_cseasonShow').value = fmt(cs, 2) + (P.useSeason ? '' : ' (uit)');
-    $('in_cprobShow').value = fmt(P.cprob, 3) + ' (T = ' + dur.T + ' j)' + (P.useProb ? '' : ' (uit)');
-    $('in_cdirShow').value = fmt(P.cdirMode === 'all' ? 1 : P.cdirMode === 'dir' ? CE.cdirFromDeg(P.dirDeg) : P.cdirMan, 3);
+    $('in_cseasonShow').value = I18N.Lt(fmt(cs, 2) + (P.useSeason ? '' : ' (uit)'));
+    $('in_cprobShow').value = I18N.Lt(fmt(P.cprob, 3) + ' (T = ' + dur.T + ' ' + (I18N.get() === 'nl' ? 'j' : I18N.get() === 'fr' ? 'ans' : 'y') + ')' + (P.useProb ? '' : ' (uit)'));
+    $('in_cdirShow').value = I18N.Lt(fmt(P.cdirMode === 'all' ? 1 : P.cdirMode === 'dir' ? CE.cdirFromDeg(P.dirDeg) : P.cdirMan, 3));
     function x(c, m, k) { if (!c) { errs.push(m); var w = $('w_' + iid(k)); if (w) { w.classList.add('invalid'); $('e_' + iid(k)).textContent = m; } } }
     x(P.geo.hR > Math.max(P.geo.hV7, P.geo.hV13), 'Nok moet hoger liggen dan de kilgoten.', 'geo.hR');
     x(P.fase2.y0 + P.fase2.L <= P.geo.B + 1e-6, 'Gevelopening valt buiten de gevel.', 'fase2.L');
@@ -803,7 +803,7 @@
   function renderAss() {
     var A = assList();
     var own = notesLines();
-    $('assInfo').innerHTML = '<ul class="asslist">' + A.map(function (a) { return '<li><b>' + a[0] + '.</b> ' + a[1] + '</li>'; }).join('') + own.map(function (t) { return '<li><b>Eigen aanname.</b> ' + esc(t) + '</li>'; }).join('') + '</ul>' + (own.length ? '' : '<p class="small">Eigen aannames voeg je toe in het venster “Rapport…”; ze worden mee bewaard in het projectbestand.</p>');
+    $('assInfo').innerHTML = '<ul class="asslist">' + A.map(function (a) { return '<li><b>' + a[0] + '.</b> ' + a[1] + '</li>'; }).join('') + own.map(function (t) { return '<li><b>Eigen aanname.</b> <span translate="no">' + esc(t) + '</span></li>'; }).join('') + '</ul>' + (own.length ? '' : '<p class="small">Eigen aannames voeg je toe in het venster “Rapport…”; ze worden mee bewaard in het projectbestand.</p>');
   }
   function renderRef() {
     var R = [['EN 1991-1-4 §4.2–4.5 + ANB tabellen 4.2–4.5, 4.9', 'v<sub>b</sub>, c<sub>dir</sub>, c<sub>season</sub>, c<sub>prob</sub>, c<sub>r</sub>, I<sub>v</sub>, q<sub>p</sub>'], ['EN §6.2(1); ANB 6.3.1', 'c<sub>s</sub>c<sub>d</sub>'], ['EN §7.2.1, fig. 7.2; ANB 7.2.1', 'c<sub>pe,1</sub>/c<sub>pe,10</sub>'], ['EN §7.2.2, fig. 7.4–7.5, tabel 7.1; ANB 7.2.2, 5.3(5)', 'gevels'], ['EN §7.2.5, fig. 7.8, tabel 7.4a/b', 'zadeldaken'], ['EN §7.2.7, fig. 7.10', 'geschakelde daken'], ['EN §7.2.9(2)–(7), (7.1)–(7.3), fig. 7.13; ANB 7.2.9', 'inwendige druk, dominante zijde, theoriekeuze'], ['EN §7.3, tabel 7.7–7.8, fig. 7.15–7.18; ANB 7.3', 'open overkappingen'], ['EN §7.4.1, tabel 7.9, fig. 7.19', 'vrijstaande wanden'], ['EN §7.5, tabel 7.10', 'wrijving'], ['EN 1990 (niet aangeleverd)', 'γ<sub>Q</sub>, ψ, K<sub>FI</sub>']];
@@ -838,7 +838,7 @@
   function lsSet(k, v) { try { localStorage.setItem('windtool.' + k, v); } catch (e) { } }
   function rememberHandle(kind, h) { MEM[kind] = h; idb('put', 'handle.' + kind, h); if (h && h.name) { lsSet('name.' + kind, h.name); showProjName(kind); } }
   function lastHandle(kind) { return MEM[kind] ? Promise.resolve(MEM[kind]) : idb('get', 'handle.' + kind).then(function (h) { if (h) MEM[kind] = h; return h; }); }
-  function showProjName(kind) { if (kind !== 'project') return; var n = lsGet('name.project'), el = $('projName'); if (el) { el.textContent = n ? 'project: ' + n : ''; el.hidden = !n; } }
+  function showProjName(kind) { if (kind !== 'project') return; var n = lsGet('name.project'), el = $('projName'); if (el) { el.innerHTML = n ? 'project: <span translate="no">' + esc(n) + '</span>' : ''; el.hidden = !n; } }
   function mimeFor(name) { var e = name.split('.').pop(); return { json: ['application/json', 'Projectbestand / JSON'], csv: ['text/csv', 'CSV-bestand'], html: ['text/html', 'HTML-rapport'] }[e] || ['text/plain', 'Bestand']; }
   function deliver(name, text, type, kind) {
     kind = kind || 'export';
@@ -989,7 +989,7 @@
     $('rAll').onclick = function () { $('reportDlg').querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = true; }); };
     $('rNone').onclick = function () { $('reportDlg').querySelectorAll('input[name=part]').forEach(function (c) { c.checked = false; }); };
     if ($('rPrint')) $('rPrint').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); printDoc(d); };
-    $('rExport').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); deliver('windrapport_loods_gent.html', '<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Windrapport loods Gent</title><style>' + document.querySelector('style').textContent + '\nbody{background:#fff}main.rep{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}@media print{.card{break-inside:auto}}</style></head><body><main class="rep">' + pageWrap(d) + '</main></body></html>', 'text/html'); };
+    $('rExport').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); deliver('windrapport_loods_gent.html', '<!doctype html><html lang="' + I18N.get() + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + I18N.Lt('Windrapport loods Gent') + '</title><style>' + document.querySelector('style').textContent + '\nbody{background:#fff}main.rep{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}@media print{.card{break-inside:auto}}</style></head><body><main class="rep">' + pageWrap(d) + '</main></body></html>', 'text/html'); };
   }
   function closeDlg() { var d = $('reportDlg'); if (d.close) d.close(); else d.removeAttribute('open'); }
   function docBody() {
@@ -1021,9 +1021,9 @@
     });
     if (assSel.length || own.length) {
       var A = assList();
-      html += '<section class="card"><h2>Aannames en te bevestigen gegevens</h2><ul class="asslist">' + assSel.map(function (k) { return '<li><b>' + A[k][0] + '.</b> ' + A[k][1] + '</li>'; }).join('') + own.map(function (t) { return '<li><b>Eigen aanname.</b> ' + esc(t) + '</li>'; }).join('') + '</ul></section>';
+      html += '<section class="card"><h2>Aannames en te bevestigen gegevens</h2><ul class="asslist">' + assSel.map(function (k) { return '<li><b>' + A[k][0] + '.</b> ' + A[k][1] + '</li>'; }).join('') + own.map(function (t) { return '<li><b>Eigen aanname.</b> <span translate="no">' + esc(t) + '</span></li>'; }).join('') + '</ul></section>';
     }
-    return html;
+    return I18N.L(html);
   }
   function inputsTable() {
     var h = '<div class="tablewrap"><table><tr><th class="l">Parameter</th><th class="l">Waarde</th></tr>';
@@ -1091,14 +1091,32 @@
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && m.open) { m.open = false; m.querySelector('summary').focus(); } });
     }
   }
+  function fillSelects() {
+    function fill(id, list) { var el = $(id), v = el.value; el.innerHTML = list.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join(''); if (v && list.some(function (o) { return o[0] === v; })) el.value = v; }
+    var dn = WE.DIRS.map(function (d) { return [d.id, d.name]; });
+    fill('v_dir', dn); fill('e_dir', dn);
+    fill('f_dir', [['all', 'alle']].concat(WE.DIRS.map(function (d) { return [d.id, d.short]; })));
+    fill('v_scen', Object.keys(SCN).map(function (k) { return [k, SCN[k]]; }));
+  }
+  /* ---------- taal ---------- */
+  function setLang(l) {
+    var vals = {};
+    document.querySelectorAll('#inputs input, #inputs select').forEach(function (el) { vals[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
+    var rs = $('rForm') ? reportSettings() : null;
+    l = I18N.set(l); lsSet('lang', l); $('langSel').value = l;
+    buildInputs();
+    Object.keys(vals).forEach(function (id) { var el = $(id); if (!el) return; if (el.type === 'checkbox') el.checked = vals[id]; else el.value = vals[id]; });
+    fillSelects(); buildDialog(); if (rs) applyReportSettings(rs);
+    showProjName('project'); renderRef(); renderHelp(); recalc();
+  }
   function init() {
+    I18N.collect(); I18N.set(lsGet('lang') || 'en'); $('langSel').value = I18N.get();
+    $('langSel').onchange = function () { setLang(this.value); };
     $('panel').insertAdjacentHTML('beforeend', '<div id="inputs"></div>');
     buildInputs(); setInputs(DEFAULTS);
     PAGE = !$('btnPrint');
     if (PAGE) dlCap();
-    WE.DIRS.forEach(function (d) { $('v_dir').insertAdjacentHTML('beforeend', '<option value="' + d.id + '">' + d.name + '</option>'); $('f_dir').insertAdjacentHTML('beforeend', '<option value="' + d.id + '">' + d.short + '</option>'); });
-    [['S1', 'S1 gesloten (+0,2)'], ['S2', 'S2 gesloten (−0,3)'], ['S3', 'S3 openingen (7.2.9)'], ['S4', 'S4 handmatig'], ['S5', 'S5 open grensvlak (WInt)']].forEach(function (s) { $('v_scen').insertAdjacentHTML('beforeend', '<option value="' + s[0] + '">' + s[1] + '</option>'); });
-    $('v_scen').value = 'S3';
+    fillSelects(); $('v_scen').value = 'S3';
     var t = null;
     $('panel').addEventListener('input', function () { clearTimeout(t); t = setTimeout(recalc, 250); });
     $('panel').addEventListener('change', function () { clearTimeout(t); recalc(); });
@@ -1107,7 +1125,6 @@
     $('btnCsv').onclick = csv; $('btnJson').onclick = json;
     $('exportClose').onclick = function () { $('exportBox').hidden = true; };
     ['f_surf', 'f_dir', 'f_view'].forEach(function (id) { $(id).onchange = renderRes; });
-    WE.DIRS.forEach(function (d) { $('e_dir').insertAdjacentHTML('beforeend', '<option value="' + d.id + '">' + d.name + '</option>'); });
     ['e_frame', 'e_dir', 'e_case', 'e_scen', 'e_sign', 'e_lay', 'e_mode'].forEach(function (id) { $(id).onchange = function () { if (OUT) renderElem(); }; });
     initTabs();
     ['r_scen', 'r_meas', 'r_sign', 'r_mode', 'r_dir'].forEach(function (id) { $(id).onchange = renderReport; });

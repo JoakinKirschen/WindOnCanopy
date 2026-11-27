@@ -15,9 +15,24 @@ logo = rd(os.path.join(src, 'logo.svg')).strip()
 icon = '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,' + base64.b64encode(logo.encode('utf-8')).decode('ascii') + '">'
 VERSION = rd(os.path.join(root, 'VERSION')).strip()
 T = rd(os.path.join(src, 'template.html')).replace('<!--INPUTS-->', '').replace('<!--VERSION-->', VERSION).replace('<!--LOGO-->', logo.replace('<svg ', '<svg width="40" height="40" aria-hidden="true" style="flex:0 0 auto" ', 1))
-files = ['canopy.js', 'engine.js', 'elements.js', 'defaults.js', 'ui.js', 'view.js']
+files = ['i18n.js', 'canopy.js', 'engine.js', 'elements.js', 'defaults.js', 'ui.js', 'view.js']
+# woordenboek NL || EN || FR (src/lang/*.txt) → I18N_DICT
+import json, glob, re
+dic, seen = [], {}
+for fn in sorted(glob.glob(os.path.join(src, 'lang', '*.txt'))):
+    for n, line in enumerate(open(fn, encoding='utf-8').read().split('\n'), 1):
+        if not line.strip() or line.startswith('#'): continue
+        parts = line.split(' || ')
+        assert len(parts) == 3, (fn, n, line)
+        k = re.sub(r'\s+', ' ', parts[0]).strip()
+        if k in seen:
+            assert seen[k] == parts[1:], ('dubbel met andere vertaling', fn, n, k)
+            continue
+        seen[k] = parts[1:]; dic.append([k] + parts[1:])
+dict_js = 'var I18N_DICT = ' + json.dumps(dic, ensure_ascii=False) + ';'
+assert '</script' not in dict_js.lower()
 for f in files: assert '</script' not in rd(os.path.join(src, f)).lower(), f
-own = '<script>var APP_VERSION = "' + VERSION + '";</script>\n' + ''.join('<script>\n' + rd(os.path.join(src, f)) + '\n</script>\n' for f in files)
+own = '<script>var APP_VERSION = "' + VERSION + '";\n' + dict_js + '</script>\n' + ''.join('<script>\n' + rd(os.path.join(src, f)) + '\n</script>\n' for f in files)
 def make(head, btns, libs):
     t = T
     for k, v in [('<!--HEAD-->', head), ('<!--EXPORTBTNS-->', btns), ('<!--SCRIPTS-->', libs + own)]:
@@ -37,4 +52,4 @@ os.makedirs(dist, exist_ok=True)
 open(os.path.join(dist, 'windberekening_loods_gent.html'), 'w', encoding='utf-8').write(off)
 open(os.path.join(dist, 'artifact.html'), 'w', encoding='utf-8').write(pg)
 open(os.path.join(root, 'index.html'), 'w', encoding='utf-8').write(off)  # GitHub Pages
-print('dist/windberekening_loods_gent.html', len(off), '· dist/artifact.html', len(pg))
+print('dist/windberekening_loods_gent.html', len(off), '· dist/artifact.html', len(pg), '· woordenboek', len(dic), 'fragmenten')

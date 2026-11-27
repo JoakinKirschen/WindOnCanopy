@@ -1,0 +1,145 @@
+# Woordenboek NL || EN || FR – één regel per fragment; witruimte in de sleutel is flexibel
+(2×) tot 0,90·c || (2×) up to 0.90·c || (2×) jusqu'à 0,90·c
+(A) max / min || (A) max / min || (A) max / min
+(ANB tabel 4.3)  ;  v_b = c_dir · v_b,0 = || (ANB table 4.3)  ;  v_b = c_dir · v_b,0 = || (ANB tableau 4.3)  ;  v_b = c_dir · v_b,0 =
+(EN 7.2.9(4)): openingen van één vlak ≥ 2 × de som van de andere ⇒ c || (EN 7.2.9(4)): openings in one face ≥ 2 × the sum of the others ⇒ c || (EN 7.2.9(4)) : ouvertures d'une face ≥ 2 × la somme des autres ⇒ c
+(aanzicht; || (view; || (vue ;
+(bekleding, bevestigingen). Globaal = cpe,10 (zones ≥ 10 m², hoofddraagconstructie). Ontwerpwaarde = γ || (cladding, fixings). Global = cpe,10 (zones ≥ 10 m², main structure). Design value = γ || (bardage, fixations). Global = cpe,10 (zones ≥ 10 m², structure porteuse). Valeur de calcul = γ
+(dak afwezig: enkel voor c || (roof absent: only for c || (toiture absente : uniquement pour c
+(dakcomponenten + R || (roof components + R || (composantes de toiture + R
+(globaal), + = netto neerwaarts (EN tabel 7.7); geen c || (global), + = net downward (EN table 7.7); no c || (global), + = net vers le bas (EN tableau 7.7) ; pas de c
+(incl. r = || (incl. r = || (incl. r =
+(lokaal) en c || (local) and c || (local) et c
+(met rapportinstellingen) || (with report settings) || (avec paramètres du rapport)
+(met tijdelijke reductie r) || (with temporary reduction r) || (avec réduction temporaire r)
+(negatieve reeks) alsof het dak aanwezig is, met de positie in het geschakelde dak. Poorten en extra openingen gelijkmatig over het vlak verdeeld. S1/S2 blijven als gesloten-gebouwscenario. || (negative set) as if the roof were present, with its position in the multispan roof. Doors and extra openings spread evenly over the face. S1/S2 remain as closed-building scenarios. || (série négative) comme si la toiture était présente, avec sa position dans la toiture multiple. Portes et ouvertures supplémentaires réparties uniformément sur la face. S1/S2 restent comme scénarios de bâtiment fermé.
+(of het bestand op het invoerpaneel slepen) laadt het terug. || (or dragging the file onto the input panel) loads it again. || (ou glisser le fichier sur le panneau de saisie) le recharge.
+(onafhankelijk van het dakgeval) || (independent of the roof case) || (indépendant du cas de toiture)
+(overkapping): lokaal opwaarts || (canopy): local upward || (toiture isolée) : local vers le haut
+(overkapping): totaal opwaarts || (canopy): total upward || (toiture isolée) : total vers le haut
+(positie || (position || (position
+(uit) || (off) || (désactivé)
+(veilige variant, zoals WInt): het overdekte deel wordt als afzonderlijk gebouw beschouwd waarvan het grensvlak met het verwijderde dak een volledig open buitengevel is; c || (safe variant, as in WInt): the covered part is treated as a separate building whose boundary with the removed roof is a fully open external wall; c || (variante sécuritaire, comme WInt) : la partie couverte est considérée comme un bâtiment distinct dont l'interface avec la toiture enlevée est une façade extérieure entièrement ouverte ; c
+(vrijstaand) || (free-standing) || (isolé)
+(vrijstaand): max. ± netto || (free-standing): max. ± net || (isolé) : max. ± net
+(vrijstaand): z_e = h = || (free-standing): z_e = h = || (isolé) : z_e = h =
+(wind ⟂ / ∥ nok) || (wind ⟂ / ∥ ridge) || (vent ⟂ / ∥ faîtage)
+(≥ 3×), lineair ertussen (7.2.9(5)). Anders: μ = Σ A(c || (≥ 3×), linear in between (7.2.9(5)). Otherwise: μ = Σ A(c || (≥ 3×), linéaire entre les deux (7.2.9(5)). Sinon : μ = Σ A(c
++ omhoog. Eindgevels: kracht uniform over de hoogte → voetmoment ΣF·H/2. || + upward. End walls: force uniform over the height → base moment ΣF·H/2. || + vers le haut. Pignons : force uniforme sur la hauteur → moment en pied ΣF·H/2.
++ richting as 14, F || + towards axis 14, F || + vers l'axe 14, F
++ richting as P, F || + towards axis P, F || + vers l'axe P, F
+, + = in windrichting). Wrijving EN 5.3(3), 7.5: c || , + = in wind direction). Friction EN 5.3(3), 7.5: c || , + = dans la direction du vent). Frottement EN 5.3(3), 7.5 : c
+, c_prob = || , c_prob = || , c_prob =
+, daaronder w in kN/m². Vrijstaande wanden: ± (beide richtingen). || , below it w in kN/m². Free-standing walls: ± (both directions). || , en dessous w en kN/m². Murs isolés : ± (deux sens).
+, om af te drukken (of als PDF te bewaren) of als HTML te exporteren. || , to print (or save as PDF) or export as HTML. || , pour imprimer (ou enregistrer en PDF) ou exporter en HTML.
+, overkapping op/neer en opstellingen || , canopy up/down and arrangements || , toiture isolée haut/bas et dispositions
+, top + || , top + || , sommet +
+, veld || , bay || , travée
+, verhouding || , ratio || , rapport
+, zijgevels e = || , side walls e = || , façades latérales e =
+-helling) ||  pitch) || -versant)
+-scenario's. ||  scenarios. || -scénarios.
+-scenario, dakgeval, lokaal/globaal, opwaarts/neerwaarts en de opstelling van fig. 7.17. Draaien = linkermuis, verschuiven = rechtermuis/Shift/pijltjes, zoomen = scroll, dubbelklik = centreren. Maatvoering van de overspanningen staat in het model. ||  scenario, roof case, local/global, upward/downward and the arrangement of fig. 7.17. Rotate = left mouse, pan = right mouse/Shift/arrow keys, zoom = scroll, double-click = centre. Span dimensions are shown in the model. || , le cas de toiture, local/global, vers le haut/vers le bas et la disposition de la fig. 7.17. Rotation = bouton gauche, déplacement = bouton droit/Maj/flèches, zoom = molette, double-clic = centrer. Les cotes des portées figurent dans le modèle.
+-scenario, gecombineerd met elke overkappingsopstelling van dezelfde richting (veilig). Niet inbegrepen: eigen gewicht en andere belastingen; tweede-orde- en portaalwerking. ||  scenario, combined with every canopy arrangement of the same direction (safe). Not included: self-weight and other loads; second-order and frame action. || , combiné avec chaque disposition de la toiture isolée de la même direction (sécuritaire). Non inclus : poids propre et autres charges ; effets du second ordre et effet portique.
+-scenario’s ||  scenarios || -scénarios
+. De reactie aan de dakrand gaat naar het dakverband / de windverbanden in langsrichting. || . The reaction at the eaves goes to the roof bracing / longitudinal wind bracing. || . La réaction en rive est reprise par le contreventement de toiture / longitudinal.
+. Gesloten delen: omhullende over richtingen, dakgevallen en aangevinkte c || . Closed parts: envelope over directions, roof cases and selected c || . Parties fermées : enveloppe sur les directions, cas de toiture et c
+. Labels: zone, c || . Labels: zone, c || . Étiquettes : zone, c
+. Omhullende: elke combinatie van windrichting × dakgeval × actief c || . Envelope: every combination of wind direction × roof case × active c || . Enveloppe : chaque combinaison direction du vent × cas de toiture × c
+. Overkapping: wrijving EN 7.3(7) altijd meegeteld. Verdeling over de verbanden per overspanning volgens het stabiliteitsconcept. || . Canopy: friction EN 7.3(7) always included. Distribution over the bracings per span according to the stability concept. || . Toiture isolée : frottement EN 7.3(7) toujours inclus. Répartition sur les contreventements par portée selon le concept de stabilité.
+. Te bevestigen (cat. II ≈ +35 % q_p). || . To be confirmed (cat. II ≈ +35 % q_p). || . À confirmer (cat. II ≈ +35 % q_p).
+. Teken: q en F + = naar het vlak toe (dak: neerwaarts), V + = druk op de fundering, − = trek/opwaarts; H + = richting as 14. || . Sign: q and F + = towards the surface (roof: downward), V + = compression on the foundation, − = tension/uplift; H + = towards axis 14. || . Signe : q et F + = vers la surface (toiture : vers le bas), V + = compression sur la fondation, − = traction/soulèvement ; H + = vers l'axe 14.
+0,01 glad || 0.01 smooth || 0,01 lisse
+0,02 ruw || 0.02 rough || 0,02 rugueux
+0,04 zeer ruw || 0.04 very rough || 0,04 très rugueux
+0° t.o.v. rechtergevel || 0° relative to right wall || 0° par rapport à la façade droite
+180° t.o.v. rechtergevel || 180° relative to right wall || 180° par rapport à la façade droite
+1 jaar (permanent) || 1 year (permanent) || 1 an (permanent)
+1 jaar || 1 year || 1 an
+3 maanden || 3 months || 3 mois
+6 maanden || 6 months || 6 mois
+1 m² = bevestigingen || 1 m² = fixings || 1 m² = fixations
+1 · Invoer en model || 1 · Input and model || 1 · Données et modèle
+2 · Resultaten || 2 · Results || 2 · Résultats
+1,0 – alle richtingen || 1.0 – all directions || 1,0 – toutes directions
+1. Model en automatisch gekozen theorie || 1. Model and automatically selected theory || 1. Modèle et théorie choisie automatiquement
+2. Samenvatting maatgevende waarden || 2. Summary of governing values || 2. Résumé des valeurs déterminantes
+3. Interactief 3D-model met drukzones || 3. Interactive 3D model with pressure zones || 3. Modèle 3D interactif avec zones de pression
+3b. Rapport – drukken en coëfficiënten per zone en vlak || 3b. Report – pressures and coefficients per zone and surface || 3b. Rapport – pressions et coefficients par zone et par face
+3c. Belastingen per constructie-element || 3c. Loads per structural member || 3c. Charges par élément de structure
+4. Geometrie uit de plannen || 4. Geometry from the drawings || 4. Géométrie d'après les plans
+5. Basiswindsnelheid en piekstuwdruk || 5. Basic wind velocity and peak velocity pressure || 5. Vitesse de référence du vent et pression dynamique de pointe
+6. Gesloten volumes – drukcoëfficiënten en zones || 6. Closed volumes – pressure coefficients and zones || 6. Volumes fermés – coefficients de pression et zones
+7. Gesloten volumes – inwendige druk (EN 7.2.9) || 7. Closed volumes – internal pressure (EN 7.2.9) || 7. Volumes fermés – pression intérieure (EN 7.2.9)
+8. Gesloten volumes – resultaten per zone || 8. Closed volumes – results per zone || 8. Volumes fermés – résultats par zone
+9. Gesloten volumes – totale krachten || 9. Closed volumes – total forces || 9. Volumes fermés – forces totales
+10. Open delen – overkappingen (EN 7.3) en vrijstaande wanden (EN 7.4) || 10. Open parts – canopies (EN 7.3) and free-standing walls (EN 7.4) || 10. Parties ouvertes – toitures isolées (EN 7.3) et murs isolés (EN 7.4)
+11. Tijdelijke situatie en veiligheidsfactoren || 11. Temporary situation and safety factors || 11. Situation temporaire et coefficients de sécurité
+12. Verificatie || 12. Verification || 12. Vérification
+13. Aannames en te bevestigen gegevens || 13. Assumptions and data to be confirmed || 13. Hypothèses et données à confirmer
+14. Gebruikte Eurocode-artikelen || 14. Eurocode clauses used || 14. Articles de l'Eurocode utilisés
+15. Gebruiksaanwijzing || 15. User guide || 15. Mode d'emploi
+15 m: c_s c_d = 1 te verantwoorden (EN 6.2(1), ANB 6.3.1). || 15 m: c_s c_d = 1 to be justified (EN 6.2(1), ANB 6.3.1). || 15 m : c_s c_d = 1 à justifier (EN 6.2(1), ANB 6.3.1).
+15 m: te verantwoorden. || 15 m: to be justified. || 15 m : à justifier.
+2 MB). || 2 MB). || 2 Mo).
+30 % open ⇒ open constructie || 30 % open ⇒ open structure || 30 % ouvertes ⇒ construction ouverte
+30 % openingen ⇒ dak als overkapping (7.3), wanden als vrijstaande wand (7.4). De 30 %-toets gebruikt de bruto-oppervlakken per vlak (dak, beide eindwanden, gevel A, gevel P). || 30 % openings ⇒ roof as canopy (7.3), walls as free-standing walls (7.4). The 30 % check uses the gross areas per face (roof, both end walls, wall A, wall P). || 30 % d'ouvertures ⇒ toiture comme toiture isolée (7.3), parois comme murs isolés (7.4). Le critère de 30 % utilise les surfaces brutes par face (toiture, deux pignons, façade A, façade P).
+3D-afbeelding (huidig beeld) || 3D image (current view) || Image 3D (vue actuelle)
+3D-afbeelding niet beschikbaar. || 3D image not available. || Image 3D non disponible.
+3D-model van de loods || 3D model of the shed || Modèle 3D du hangar
+3D: kies richting, c || 3D: choose direction, c || 3D : choisir la direction, le scénario c
+4 × loodrecht || 4 × perpendicular || 4 × perpendiculaire
+: c_pi = k·c_pe, k ∈ [0,75; 0,90] || : c_pi = k·c_pe, k ∈ [0,75; 0,90] || : c_pi = k·c_pe, k ∈ [0,75 ; 0,90]
+: dichtheid φ = || : solidity φ = || : opacité φ =
+: geen openingen → S3 niet van toepassing; S1/S2 (gesloten gebouw) gelden. || : no openings → S3 not applicable; S1/S2 (closed building) apply. || : pas d'ouvertures → S3 sans objet ; S1/S2 (bâtiment fermé) s'appliquent.
+: grens || : limit || : limite
+: helling || : pitch || : pente
+: max. druk || : max. pressure || : pression max.
+: max. zuiging || : max. suction || : dépression max.
+: tekst geselecteerd – kopieer met Ctrl/Cmd+C. || : text selected – copy with Ctrl/Cmd+C. || : texte sélectionné – copiez avec Ctrl/Cmd+C.
+: zelfde v_b en r als gebouw || : same v_b and r as building || : même v_b et r que le bâtiment
+: zie dakgeval || : see roof case || : voir cas de toiture
+: φ enkel van invloed op min-waarden || : φ only affects min values || : φ n'influence que les valeurs min
+; exporteer het als HTML en druk het af vanuit je browser. || ; export it as HTML and print it from your browser. || ; exportez-le en HTML et imprimez-le depuis votre navigateur.
+; genegeerd: || ; ignored: || ; ignoré :
+; vrijstaande wanden ±c || ; free-standing walls ±c || ; murs isolés ±c
+= 26 m/s, cat. III. Dit programma met dezelfde invoer (los van de huidige invoer). || = 26 m/s, cat. III. This program with the same input (independent of the current input). || = 26 m/s, cat. III. Ce programme avec les mêmes données (indépendamment des données actuelles).
+= aanwezig dakvlak (alle richtingen) || = roof area present (all directions) || = surface de toiture présente (toutes directions)
+= goothoogte 14,159 m (optie “z || = eaves height 14.159 m (option “z || = hauteur de gouttière 14,159 m (option « z
+= h (7.4.1(2)). φ = 1 − openingen/oppervlak. || = h (7.4.1(2)). φ = 1 − openings/area. || = h (7.4.1(2)). φ = 1 − ouvertures/surface.
+= h per volume || = h per volume || = h par volume
+= h voor lij- en zijgevels. || = h for leeward and side walls. || = h pour les façades sous le vent et latérales.
+= horizontale component per m horizontaal. Overkapping (EN 7.3): globale kracht per helling als puntlast in het drukpunt (d/4 vanaf de rand, fig. 7.16/7.17); q = gelijkwaardige lijnlast. || = horizontal component per m horizontal. Canopy (EN 7.3): overall force per pitch as a point load at the centre of pressure (d/4 from the edge, fig. 7.16/7.17); q = equivalent line load. || = composante horizontale par m horizontal. Toiture isolée (EN 7.3) : force globale par versant comme charge ponctuelle au centre de poussée (d/4 depuis le bord, fig. 7.16/7.17) ; q = charge linéique équivalente.
+A = 109,439 · 14,23 = 1557,32 m² → F = 1328,5 kN ; M_voet = 1328,5 · 14,23/2 = 9452 kNm || A = 109,439 · 14,23 = 1557,32 m² → F = 1328,5 kN ; M_base = 1328,5 · 14,23/2 = 9452 kNm || A = 109,439 · 14,23 = 1557,32 m² → F = 1328,5 kN ; M_pied = 1328,5 · 14,23/2 = 9452 kNm
+ANB 5.3(5): geen correlatiereductie 0,85. ANB 7.2.2(1): z || ANB 5.3(5): no correlation reduction 0,85. ANB 7.2.2(1): z || ANB 5.3(5) : pas de réduction de corrélation 0,85. ANB 7.2.2(1) : z
+ANB 7.3: geschakelde overkappingen gelden vanaf h ≥ 2 m. || ANB 7.3: multibay canopies apply from h ≥ 2 m. || ANB 7.3 : les toitures isolées multiples s'appliquent à partir de h ≥ 2 m.
+ANB tabel 4.5 – apart scenario || ANB table 4.5 – separate scenario || ANB tableau 4.5 – scénario séparé
+ANB tabel 4.2: Gent = 26 || ANB table 4.2: Ghent = 26 || ANB tableau 4.2 : Gand = 26
+A_lok = || A_loc = || A_loc =
+Aannames en te bevestigen gegevens || Assumptions and data to be confirmed || Hypothèses et données à confirmer
+Afdrukken / PDF || Print / PDF || Imprimer / PDF
+Afdrukken opent het afdrukvenster van de browser: kies “Opslaan als PDF” en papierformaat A4; de witranden zitten in het rapport zelf (Marges “Standaard” of “Geen”). Exporteren bewaart een losstaand HTML-rapport. || Print opens the browser's print dialog: choose “Save as PDF” and paper size A4; the margins are built into the report (Margins “Default” or “None”). Export saves a stand-alone HTML report. || Imprimer ouvre la boîte d'impression du navigateur : choisissez « Enregistrer au format PDF » et le format A4 ; les marges sont intégrées au rapport (Marges « Par défaut » ou « Aucune »). Exporter enregistre un rapport HTML autonome.
+Afstand gevelkolommen gevel A/P [m] || Wall column spacing walls A/P [m] || Entraxe des poteaux de façade A/P [m]
+Afstand gevelregels [m] || Side rail spacing [m] || Entraxe des lisses [m]
+Alle lokale c_pe tussen c_pe,1 en c_pe,10 || All local c_pe between c_pe,1 and c_pe,10 || Tous les c_pe locaux entre c_pe,1 et c_pe,10
+Alle spanten – gekozen combinatie || All frames – selected combination || Tous les portiques – combinaison choisie
+As 13–14: aantal velden || Axis 13–14: number of bays || Axe 13–14 : nombre de travées
+As 13–14: goothoogte [m] || Axis 13–14: eaves height [m] || Axe 13–14 : hauteur de gouttière [m]
+As 13–14: helling α [°] || Axis 13–14: pitch α [°] || Axe 13–14 : pente α [°]
+As 1–13: helling α [°] || Axis 1–13: pitch α [°] || Axe 1–13 : pente α [°]
+Automatische controles || Automatic checks || Contrôles automatiques
+Basisdoorlatendheid [%] || Background permeability [%] || Perméabilité de base [%]
+Basisdoorlatendheid dak || Background permeability roof || Perméabilité de base toiture
+Basisdoorlatendheid gevel || Background permeability wall || Perméabilité de base façade
+Basisdoorlatendheid || Background permeability || Perméabilité de base
+Belastingen per constructie-element || Loads per structural member || Charges par élément de structure
+Belastingen per element niet beschikbaar || Loads per member not available || Charges par élément non disponibles
+Bepaling c || Determination of c || Détermination de c
+Berekende delen || Calculated parts || Parties calculées
+Bestand kon niet gelezen worden. || File could not be read. || Le fichier n'a pas pu être lu.
+Bestand opslaan || Save file || Enregistrer le fichier
+Beweeg over een zone voor alle waarden; klik om te selecteren. || Hover over a zone for all values; click to select. || Survolez une zone pour voir toutes les valeurs ; cliquez pour sélectionner.
+Blokkering φ || Blockage φ || Obstruction φ
+Bruto A [m²] || Gross A [m²] || A brute [m²]
+Combinatie: || Combination: || Combinaison :
+Coëfficiënten en zones || Coefficients and zones || Coefficients et zones

@@ -16,4 +16,6 @@
 - Normteksten (NBN EN 1991-1-4, ANB), bouwplannen en projectspreadsheets (`.gitignore` sluit pdf/xls/xlsx/zip uit). De repository is publiek.
 
 ## Taal
-- Gebruikersinterface, rapporten en commitberichten in het Nederlands.
+- De tool is drietalig: Engels (standaard), Nederlands en Frans, te kiezen in de kop. De brontekst in de code blijft Nederlands; `src/i18n.js` vertaalt alle tekst die via innerHTML/textContent in de pagina komt met het woordenboek in `src/lang/*.txt` (`NL || EN || FR`, één fragment per regel).
+- Voeg bij elke nieuwe of gewijzigde tekst de Engelse en Franse vertaling toe in `src/lang/` en controleer in de browser in alle drie de talen dat er geen Nederlandse resten zijn. Gebruikersnaam/eigen tekst in `<span translate="no">`.
+- Commitberichten en documentatie in het Nederlands.

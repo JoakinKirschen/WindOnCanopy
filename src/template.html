@@ -19,7 +19,8 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:#1
 header .hrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 header .sub{font-size:12px;opacity:.85}
 header .ver{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:10px;padding:0 7px;margin-right:6px;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
-header .btns{display:flex;flex-wrap:wrap;gap:6px}
+header .btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.langsel{font:inherit;font-size:13px;background:#24486e;color:#fff;border:1px solid #3a6290;border-radius:6px;padding:5px 6px}
 button,.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:6px 10px;border-radius:6px;cursor:pointer}
 button:hover{background:var(--soft)}
 header button{background:#24486e;color:#fff;border-color:#3a6290}
@@ -239,6 +240,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
     <div class="sub"><span class="ver">versie <!--VERSION--></span><span class="ver" id="projName" hidden></span> NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
   </div></div>
   <div class="btns">
+    <select id="langSel" class="langsel" aria-label="Taal · Language · Langue" title="Taal · Language · Langue"><option value="en">English</option><option value="nl">Nederlands</option><option value="fr">Français</option></select>
     <!--EXPORTBTNS-->
   </div>
   </div>
