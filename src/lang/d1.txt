@@ -62,13 +62,13 @@
 1 · Invoer en model || 1 · Input and model || 1 · Données et modèle
 2 · Resultaten || 2 · Results || 2 · Résultats
 1,0 – alle richtingen || 1.0 – all directions || 1,0 – toutes directions
-2. Model en automatisch gekozen theorie || 2. Model and automatically selected theory || 2. Modèle et théorie choisie automatiquement
-3. Samenvatting maatgevende waarden || 3. Summary of governing values || 3. Résumé des valeurs déterminantes
+3. Model en automatisch gekozen theorie || 3. Model and automatically selected theory || 3. Modèle et théorie choisie automatiquement
+4. Samenvatting maatgevende waarden || 4. Summary of governing values || 4. Résumé des valeurs déterminantes
 3. Interactief 3D-model met drukzones || 3. Interactive 3D model with pressure zones || 3. Modèle 3D interactif avec zones de pression
-4. Rapport – drukken en coëfficiënten per zone en vlak || 4. Report – pressures and coefficients per zone and surface || 4. Rapport – pressions et coefficients par zone et par face
-1. Belastingen per constructie-element || 1. Loads per structural member || 1. Charges par élément de structure
-5. Geometrie uit de plannen || 5. Geometry from the drawings || 5. Géométrie d'après les plans
-6. Basiswindsnelheid en piekstuwdruk || 6. Basic wind velocity and peak velocity pressure || 6. Vitesse de référence du vent et pression dynamique de pointe
+5. Rapport – drukken en coëfficiënten per zone en vlak || 5. Report – pressures and coefficients per zone and surface || 5. Rapport – pressions et coefficients par zone et par face
+2. Belastingen per constructie-element || 2. Loads per structural member || 2. Charges par élément de structure
+6. Geometrie uit de plannen || 6. Geometry from the drawings || 6. Géométrie d'après les plans
+1. Basiswindsnelheid en piekstuwdruk || 1. Basic wind velocity and peak velocity pressure || 1. Vitesse de référence du vent et pression dynamique de pointe
 7. Gesloten volumes – drukcoëfficiënten en zones || 7. Closed volumes – pressure coefficients and zones || 7. Volumes fermés – coefficients de pression et zones
 8. Gesloten volumes – inwendige druk (EN 7.2.9) || 8. Closed volumes – internal pressure (EN 7.2.9) || 8. Volumes fermés – pression intérieure (EN 7.2.9)
 9. Gesloten volumes – resultaten per zone || 9. Closed volumes – results per zone || 9. Volumes fermés – résultats par zone

@@ -754,14 +754,26 @@
   function renderQp() {
     var o = OUT, v = o.vb, P = o.P;
     var pr = o.vols.filter(function (q) { return q.closed; }).map(function (q) { return q.prof; })[0] || WE.windProfile(Math.max.apply(null, o.spans.map(function (s) { return s.top; })), { cat: P.cat, c0: P.c0, vbBase: v.vbBase, vbRed: v.vbRed, kIformula: P.kIformula });
+    var gF = P.gammaQ * P.KFI, ss = P.useSeason ? '' : '  (niet toegepast)', sp0 = P.useProb ? '' : '  (niet toegepast)';
     var h = '<div class="formula">'
-      + 'c_dir = ' + fmt(v.cdir, 3) + '  (ANB tabel 4.3)  ;  v_b = c_dir · v_b,0 = ' + fmt(v.vbBase, 3) + ' m/s   [EN (4.1)]\n'
-      + 'q_b   = ½ ρ v_b² = 0,625 · ' + fmt(v.vbBase, 3) + '² = ' + fmt(pr.qb, 1) + ' N/m²   [EN (4.10), ANB ρ = 1,25]\n'
+      + '<b>Basiswindsnelheid en basisstuwdruk</b>\n'
+      + 'v_b,0    = ' + fmt(v.vb0, 1) + ' m/s   [ANB tabel 4.2]\n'
+      + 'c_dir    = ' + fmt(v.cdir, 3) + '   [ANB tabel 4.3]\n'
+      + 'v_b      = c_dir · v_b,0 = ' + fmt(v.cdir, 3) + ' · ' + fmt(v.vb0, 1) + ' = ' + fmt(v.vbBase, 3) + ' m/s   [EN (4.1)]\n'
+      + 'q_b      = ½ ρ v_b² = 0,625 · ' + fmt(v.vbBase, 3) + '² = ' + fmt(pr.qb, 1) + ' N/m²   [EN (4.10), ANB ρ = 1,25]\n\n'
+      + '<b>Piekstuwdruk</b>\n'
       + 'cat. ' + P.cat + ': z_0 = ' + fmt(pr.z0, 3) + ' m, z_min = ' + fmt(pr.zmin, 0) + ' m, k_r = 0,19·(z_0/0,05)^0,07 = ' + fmt(pr.kr, 5) + '   [EN tabel 4.1, (4.5)]\n'
-      + 'z_e   = ' + fmt(pr.z, 2) + ' m → c_r = k_r·ln(z/z_0) = ' + fmt(pr.cr, 5) + ' ; v_m = c_r·c_0·v_b = ' + fmt(pr.vm, 3) + ' m/s   [EN (4.3), (4.4)]\n'
-      + 'I_v   = k_I / (c_0·ln(z/z_0)) = ' + fmt(pr.kI, 3) + ' / ' + fmt(Math.log(pr.zc / pr.z0), 5) + ' = ' + fmt(pr.Iv, 5) + '   [EN (4.7), ANB 4.4]\n'
-      + 'q_p   = (1 + 7 I_v)·½ρ v_m² = ' + fmt(pr.qp, 1) + ' N/m² = ' + fmt(pr.qp / 1000, 4) + ' kN/m²   [EN (4.8)]\n'
-      + 'tijdelijk: c_season = ' + fmt(v.cseason, 2) + ', c_prob = ' + fmt(v.cprob, 3) + ' → r = ' + fmt(v.red, 4) + '\n';
+      + 'z_e      = ' + fmt(pr.z, 2) + ' m → c_r = k_r·ln(z/z_0) = ' + fmt(pr.cr, 5) + ' ; v_m = c_r·c_0·v_b = ' + fmt(pr.vm, 3) + ' m/s   [EN (4.3), (4.4)]\n'
+      + 'I_v      = k_I / (c_0·ln(z/z_0)) = ' + fmt(pr.kI, 3) + ' / ' + fmt(Math.log(pr.zc / pr.z0), 5) + ' = ' + fmt(pr.Iv, 5) + '   [EN (4.7), ANB 4.4]\n'
+      + 'q_p      = (1 + 7 I_v)·½ρ v_m² = ' + fmt(pr.qp, 1) + ' N/m² = ' + fmt(pr.qp / 1000, 4) + ' kN/m²   [EN (4.8)]\n\n'
+      + '<b>Met alle factoren (tijdelijke situatie en ontwerp)</b>\n'
+      + 'c_season = ' + fmt(v.cseason, 2) + '   [ANB tabel 4.4]' + ss + '\n'
+      + 'c_prob   = ' + fmt(v.cprob, 3) + '   [EN (4.2), ANB tabel 4.5]' + sp0 + '\n'
+      + 'v_b,red  = c_dir · c_season · c_prob · v_b,0 = ' + fmt(v.cdir, 3) + ' · ' + fmt(v.cseason, 2) + ' · ' + fmt(v.cprob, 3) + ' · ' + fmt(v.vb0, 1) + ' = ' + fmt(v.vbRed, 3) + ' m/s\n'
+      + 'r        = (c_season · c_prob)² = ' + fmt(v.red, 4) + '\n'
+      + 'q_p,k    = r · q_p = ' + fmt(v.red, 4) + ' · ' + fmt(pr.qp / 1000, 4) + ' = ' + fmt(v.red * pr.qp / 1000, 4) + ' kN/m²   (karakteristiek)\n'
+      + 'q_p,d    = γ_Q · K_FI · q_p,k = ' + fmt(P.gammaQ, 2) + ' · ' + fmt(P.KFI, 2) + ' · ' + fmt(v.red * pr.qp / 1000, 4) + ' = ' + fmt(gF * v.red * pr.qp / 1000, 4) + ' kN/m²   (ontwerp)\n\n'
+      + '<b>Per volume en open deel</b> (q_p zonder r)\n';
     o.vols.forEach(function (q) { if (q.closed) h += q.name + ': h = ' + fmt(q.h, 2) + ' m, z_e = ' + fmt(q.ze, 2) + ' m → q_p = ' + fmt(q.prof.qp / 1000, 4) + ' kN/m² ; z_i = ' + fmt(q.zi, 2) + ' m\n'; });
     o.canopies.forEach(function (e) { var c = e.gov; h += 'Overkapping ' + o.spans[e.span].name + ': z_e = ' + fmt(c.geo.ze, 2) + ' m (' + (o.P.can.zeMode === 'eave' ? 'h tot dakrand, fig. 7.17' : o.P.can.zeMode === 'top' ? 'bovenkant' : 'handmatig') + ') → q_p = ' + fmt(c.prof.qp / 1000, 4) + ' kN/m²\n'; });
     var fr = {}; o.free.forEach(function (z) { fr[z.part] = z; }); Object.keys(fr).forEach(function (p) { h += PN[p] + ' (vrijstaand): z_e = h = ' + fmt(fr[p].ze, 2) + ' m → q_p = ' + fmt(fr[p].qp / 1000, 4) + ' kN/m²\n'; });
@@ -1110,7 +1122,7 @@
   }
 
   /* ---------- rapportdialoog ---------- */
-  var RSECT = [['sec-model', 'Model en gekozen theorie'], ['sec-summary', 'Samenvatting maatgevende waarden'], ['snap3d', '3D-afbeelding (huidig beeld)'], ['zones', 'Rapport per zone (dak- en gevelaanzichten)'], ['sec-elem', 'Belastingen per constructie-element'], ['sec-geo', 'Geometrie'], ['sec-qp', 'Stuwdruk'], ['sec-cpe', 'Coëfficiënten en zones'], ['sec-cpi', 'Inwendige druk'], ['sec-res', 'Resultaten per zone (tabel, huidige filter)'], ['sec-tot', 'Totale krachten'], ['sec-open', 'Open delen (7.3 / 7.4)'], ['sec-temp', 'Tijdelijke situatie'], ['sec-ver', 'Verificatie'], ['inputs', 'Invoergegevens (uitgangspunten)'], ['sec-ref', 'Normartikelen']];
+  var RSECT = [['sec-qp', 'Stuwdruk'], ['sec-model', 'Model en gekozen theorie'], ['sec-summary', 'Samenvatting maatgevende waarden'], ['snap3d', '3D-afbeelding (huidig beeld)'], ['zones', 'Rapport per zone (dak- en gevelaanzichten)'], ['sec-elem', 'Belastingen per constructie-element'], ['sec-geo', 'Geometrie'], ['sec-cpe', 'Coëfficiënten en zones'], ['sec-cpi', 'Inwendige druk'], ['sec-res', 'Resultaten per zone (tabel, huidige filter)'], ['sec-tot', 'Totale krachten'], ['sec-open', 'Open delen (7.3 / 7.4)'], ['sec-temp', 'Tijdelijke situatie'], ['sec-ver', 'Verificatie'], ['inputs', 'Invoergegevens (uitgangspunten)'], ['sec-ref', 'Normartikelen']];
   var RDEF = { 'sec-model': true, 'sec-summary': true, snap3d: true, zones: true, 'sec-elem': true, inputs: true };
   function buildDialog() {
     var h = '<form method="dialog" id="rForm"><h2 style="margin-top:0">Rapport samenstellen</h2><div class="dlgcols"><fieldset><legend>Onderdelen</legend>' + RSECT.map(function (q) { return '<label><input type="checkbox" name="part" value="' + q[0] + '"' + (RDEF[q[0]] ? ' checked' : '') + '> ' + q[1] + '</label>'; }).join('') + '</fieldset>';
