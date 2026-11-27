@@ -128,3 +128,14 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - spantdiagram: alle labels horizontaal; past een label niet boven zijn band, dan staat het in een rij erboven met een stippellijn naar de band (geen overlap)
 - overkapping in het spantdiagram: geen resultante F per helling meer, enkel de verdeelde last q (de tabel geeft de resultante nog)
 - geen wijziging aan de rekenkern
+
+## Versie 1.12.0 – S3: dakloze eindoverspanning niet meer bij het gebouw, kopgevel als vrijstaande wand met ψ_s
+- aanleiding: in S3 vormden overspanning 1 (dak volledig verwijderd) en 2 één gesloten gebouw van 89,5 m diep; de linkergevel, 44,76 m (≈ 3 h) van het overdekte deel, kreeg c_pe van dat gebouw en de c_pi van het verwijderde dak als dominante opening (w ≈ +0,06 kN/m²)
+- nu (enkel S3): een dakloze overspanning aan het uiteinde van een gesloten volume hoort niet bij het gebouw
+  - c_pi van het overdekte deel (EN 7.2.9): openingen van het overdekte deel + het open grensvlak (B × h grensvlak) met c_pe uit tabel 7.1 voor het overdekte deel (D/E, zoals S5); dominante zijde of fig. 7.13 met h/d van het overdekte deel
+  - kopgevel van de dakloze overspanning = vrijstaande wand (EN 7.4.1, tabel 7.9, ANB: normatief): φ = 1 (de faseopening draagt niets, de rest is dicht), l/h = B/h, omgezette einden als beide langsgevels van die overspanning staan (lengte/h, max. 1), zones A–D vanaf beide uiteinden, z_e = h, c_pi = 0
+  - beschuttingsfactor ψ_s (EN 7.4.2, fig. 7.20; ANB wijzigt niets; lijnstukken uit tabel C.10 van EN 1991-1-4:2026): wanneer het overdekte deel bovenwinds staat (wind van rechts voor de linkergevel) en minstens even hoog is; x = afstand wand–grensvlak, h = wandhoogte, φ van het gebouw = 1; niet binnen h van de uiteinden (7.4.2(2)); wind ∥ nok en van de open zijde: ψ_s = 1
+  - teken: wind naar het gebouw toe = druk op de buitenzijde (+); wind van de andere kant en wind ∥ nok = naar buiten (−)
+- standaardinvoer, wind van rechts: x/h = 44,76/14,46 = 3,10 → ψ_s = 0,30; c_pi overdekt deel −0,304 (= S5); spant I linkergevel c_p,net,s = −0,42, w = −0,336 kN/m², q = −2,46 kN/m
+- open punt: langsgevels A/P van de dakloze overspanning blijven deel van de gevel van het volume; c_pe van daken en wanden van het overdekte deel blijft die van het volledige volume
+- verificatiesectie (controles, handberekening, vergelijking WInt/Wind.xlsx) ongewijzigd; vertalingen EN/FR toegevoegd, ook de tekenafspraak in §1
