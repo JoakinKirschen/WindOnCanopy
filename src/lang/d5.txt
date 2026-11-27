@@ -66,3 +66,80 @@ Van as P/A ∥ gevel || From axis P/A ∥ wall || Depuis l'axe P/A ∥ façade
 Gevel A/P · as 1–7 || Wall A/P · axis 1–7 || Façade A/P · axe 1–7
 Gevel A/P · as 7–13 || Wall A/P · axis 7–13 || Façade A/P · axe 7–13
 Gevel A/P · as 13–14 || Wall A/P · axis 13–14 || Façade A/P · axe 13–14
+Dak overspanning 1 || Roof span 1 || Toiture portée 1
+Gevel A · overspanning 1 || Wall A · span 1 || Façade A · portée 1
+Gevel P · overspanning 1 || Wall P · span 1 || Façade P · portée 1
+Gevel A/P · overspanning 1 || Wall A/P · span 1 || Façade A/P · portée 1
+Dak overspanning 1 aanwezig || Roof span 1 present || Toiture portée 1 présente
+Dak overspanning 2 || Roof span 2 || Toiture portée 2
+Gevel A · overspanning 2 || Wall A · span 2 || Façade A · portée 2
+Gevel P · overspanning 2 || Wall P · span 2 || Façade P · portée 2
+Gevel A/P · overspanning 2 || Wall A/P · span 2 || Façade A/P · portée 2
+Dak overspanning 2 aanwezig || Roof span 2 present || Toiture portée 2 présente
+Dak overspanning 3 || Roof span 3 || Toiture portée 3
+Gevel A · overspanning 3 || Wall A · span 3 || Façade A · portée 3
+Gevel P · overspanning 3 || Wall P · span 3 || Façade P · portée 3
+Gevel A/P · overspanning 3 || Wall A/P · span 3 || Façade A/P · portée 3
+Dak overspanning 3 aanwezig || Roof span 3 present || Toiture portée 3 présente
+overspanning || span || portée
+Overspanningen || Spans || Portées
+Linkergevel (overspanning 1) || Left wall (span 1) || Façade gauche (portée 1)
+Rechtergevel (overspanning 3) || Right wall (span 3) || Façade droite (portée 3)
+Wand overspanning 1|2 || Wall span 1|2 || Paroi portée 1|2
+Wand overspanning 2|3 || Wall span 2|3 || Paroi portée 2|3
+Wind van rechts (luifelzijde) – loodrecht op de nok || Wind from the right (canopy side) – perpendicular to the ridge || Vent de droite (côté auvent) – perpendiculaire au faîtage
+Wind van links – loodrecht op de nok || Wind from the left – perpendicular to the ridge || Vent de gauche – perpendiculaire au faîtage
+Wind van A – evenwijdig aan de nok || Wind from A – parallel to the ridge || Vent depuis A – parallèle au faîtage
+Wind van P – evenwijdig aan de nok || Wind from P – parallel to the ridge || Vent depuis P – parallèle au faîtage
+Van rechts ⟂ nok || From the right ⟂ ridge || De droite ⟂ faîtage
+Van links ⟂ nok || From the left ⟂ ridge || De gauche ⟂ faîtage
+Van A ∥ nok || From A ∥ ridge || Depuis A ∥ faîtage
+Van P ∥ nok || From P ∥ ridge || Depuis P ∥ faîtage
+Van A/P ∥ nok || From A/P ∥ ridge || Depuis A/P ∥ faîtage
+Van P/A ∥ nok || From P/A ∥ ridge || Depuis P/A ∥ faîtage
+Lengte A–P [m] || Length A–P [m] || Longueur A–P [m]
+Lengte A–P || Length A–P || Longueur A–P
+Dakrand links [m] || Eaves left [m] || Rive gauche [m]
+Kilgoot 1|2 [m] || Valley gutter 1|2 [m] || Noue 1|2 [m]
+Kilgoot 2|3 [m] || Valley gutter 2|3 [m] || Noue 2|3 [m]
+Nok overspanning 1–2 [m] || Ridge spans 1–2 [m] || Faîtage portées 1–2 [m]
+Helling overspanning 1–2 voor c || Pitch spans 1–2 for c || Pente portées 1–2 pour c
+Verwijderen vanaf A || Remove from A || Enlever depuis A
+uit = vanaf P || off = from P || désactivé = depuis P
+· fase 2: gevelopening linkergevel || · phase 2: wall opening left wall || · phase 2 : ouverture façade gauche
+wand 2|3 aan lijzijde → 100 || wall 2|3 on leeward side → 100 || paroi 2|3 sous le vent → 100
+· φ wind van A [%] || · φ wind from A [%] || · φ vent depuis A [%]
+· φ wind van P [%] || · φ wind from P [%] || · φ vent depuis P [%]
+Spantposities vanaf A [m] || Frame positions from A [m] || Positions des portiques depuis A [m]
+Gevelopening hoger dan dakrand links. || Wall opening higher than left eaves. || Ouverture plus haute que la rive gauche.
+Gesloten overspanning 3: helling ≥ 5° nodig voor tabel 7.4. || Closed span 3: pitch ≥ 5° needed for table 7.4. || Portée 3 fermée : pente ≥ 5° requise pour le tableau 7.4.
+Gevelopening linkergevel (fase 2) || Wall opening left wall (phase 2) || Ouverture façade gauche (phase 2)
+Voor (A) || Front (A) || Avant (A)
+van A || from A || depuis A
+van P || from P || depuis P
+Windverbanden in langsrichting (wind van A / P) || Longitudinal wind bracing (wind from A / P) || Contreventements longitudinaux (vent depuis A / P)
+A links, P rechts || A left, P right || A à gauche, P à droite
+linkerzijde links || left side on the left || côté gauche à gauche
+kN (+ = naar rechts) · Σ V = || kN (+ = to the right) · Σ V = || kN (+ = vers la droite) · Σ V =
+H + = naar rechts. || H + = to the right. || H + = vers la droite.
+Kolom scharnierend in voet en op spanthoogte; + = naar rechts. || Column pinned at base and at frame level; + = to the right. || Poteau articulé en pied et au niveau du portique ; + = vers la droite.
++ naar rechts, F || + to the right, F || + vers la droite, F
++ richting P, F || + towards P, F || + vers P, F
+V + = druk, H + = naar rechts || V + = compression, H + = to the right || V + = compression, H + = vers la droite
+Overspanningen 1 / 2 / 3 || Spans 1 / 2 / 3 || Portées 1 / 2 / 3
+Niveaus links / kilgoot 1|2 / nok / kilgoot 2|3 || Levels left / valley 1|2 / ridge / valley 2|3 || Niveaux gauche / noue 1|2 / faîtage / noue 2|3
+Dakhelling overspanning 1–2 || Roof pitch spans 1–2 || Pente de toiture portées 1–2
+linkergevel (keerwand + bekleding), wand 2|3 gesloten, wand 1|2 geen, rechtergevel open || left wall (retaining wall + cladding), wall 2|3 closed, wall 1|2 none, right wall open || façade gauche (mur de soutènement + bardage), paroi 2|3 fermée, paroi 1|2 aucune, façade droite ouverte
+Dak overspanning 2, zone F (hoek wand 2|3 / A), wind van rechts, FGH−/IJ−, S1 (c_pi = +0,2), A = 1 m²: || Roof span 2, zone F (corner wall 2|3 / A), wind from the right, FGH−/IJ−, S1 (c_pi = +0,2), A = 1 m²: || Toiture portée 2, zone F (angle paroi 2|3 / A), vent de droite, FGH−/IJ−, S1 (c_pi = +0,2), A = 1 m² :
+dak overspanning 2 = eerste aanwezige overspanning → factor 1,0 || roof span 2 = first present span → factor 1,0 || toiture portée 2 = première portée présente → facteur 1,0
+Wand overspanning 2|3, zone D, wind van rechts, S2 (c_pi = −0,3), globaal: || Wall span 2|3, zone D, wind from the right, S2 (c_pi = −0,3), global: || Paroi portée 2|3, zone D, vent de droite, S2 (c_pi = −0,3), global :
+F wand 2|3 [kN] || F wall 2|3 [kN] || F paroi 2|3 [kN]
+Een aanwezige tussenwand (1|2, 2|3) scheidt volumes; openingen in tussenwanden worden niet als verbinding gerekend. Zonder tussenwand vormen de overspanningen één volume. || An internal wall (1|2, 2|3) separates volumes; openings in internal walls are not counted as connections. Without an internal wall the spans form one volume. || Une paroi intérieure (1|2, 2|3) sépare les volumes ; les ouvertures dans les parois intérieures ne sont pas comptées comme liaison. Sans paroi intérieure, les portées forment un seul volume.
+= positieve / negatieve reeks van tabel 7.4a. || = positive / negative set of table 7.4a. || = série positive / négative du tableau 7.4a.
+opening · q = 0 kN/m || opening · q = 0 kN/m || ouverture · q = 0 kN/m
+Overkapping overspanning 3 || Canopy span 3 || Toiture isolée portée 3
+Overspanning 1–2: helling α [°] || Spans 1–2: pitch α [°] || Portées 1–2 : pente α [°]
+Overspanning 3: aantal velden || Span 3: number of bays || Portée 3 : nombre de travées
+Overspanning 3: helling α [°] || Span 3: pitch α [°] || Portée 3 : pente α [°]
+Overspanning 3: goothoogte [m] || Span 3: eaves height [m] || Portée 3 : hauteur de gouttière [m]
+· begin y vanaf A [m] || · start y from A [m] || · début y depuis A [m]

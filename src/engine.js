@@ -1,6 +1,6 @@
 /* ==========================================================================
    Rekenkern windbelasting – NBN EN 1991-1-4 + ANB (België), universeel model
-   Overspanningen as 1–7, as 7–13, as 13–14; wanden en daken in/uitschakelbaar.
+   Overspanningen 1, 2, 3 (van links naar rechts); wanden en daken in/uitschakelbaar.
    Theorie per volume automatisch: EN 7.2 + 7.2.9 (gesloten) of 7.3/7.4 (open).
    ========================================================================== */
 var WE = (function () {
@@ -47,10 +47,10 @@ var WE = (function () {
   };
 
   var DIRS = [
-    { id: 'R', name: 'Wind van rechts (luifelzijde) – loodrecht op rechtergevel', short: 'Van rechts ⟂ gevel', theta: '0° t.o.v. rechtergevel', vec: [-1, 0] },
-    { id: 'L', name: 'Wind van links (as 1) – tegenoverliggende zijde', short: 'Van links', theta: '180° t.o.v. rechtergevel', vec: [1, 0] },
-    { id: 'A', name: 'Wind van as A – evenwijdig aan rechtergevel', short: 'Van as A ∥ gevel', theta: '90°', vec: [0, 1] },
-    { id: 'P', name: 'Wind van as P – evenwijdig aan rechtergevel', short: 'Van as P ∥ gevel', theta: '270°', vec: [0, -1] }
+    { id: 'R', name: 'Wind van rechts (luifelzijde) – loodrecht op de nok', short: 'Van rechts ⟂ nok', theta: '0°', vec: [-1, 0] },
+    { id: 'L', name: 'Wind van links – loodrecht op de nok', short: 'Van links ⟂ nok', theta: '180°', vec: [1, 0] },
+    { id: 'A', name: 'Wind van A – evenwijdig aan de nok', short: 'Van A ∥ nok', theta: '90°', vec: [0, 1] },
+    { id: 'P', name: 'Wind van P – evenwijdig aan de nok', short: 'Van P ∥ nok', theta: '270°', vec: [0, -1] }
   ];
 
   /* ---------- Hulpfuncties ---------- */
@@ -179,7 +179,7 @@ var WE = (function () {
   NORM.t79 = [{ lh: 3, v: [2.3, 1.4, 1.2, 1.2] }, { lh: 5, v: [2.9, 1.8, 1.4, 1.2] }, { lh: 10, v: [3.4, 2.1, 1.7, 1.2] }];
   NORM.t79p8 = [1.2, 1.2, 1.2, 1.2];
 
-  var PART_NAMES = { R0: 'Dak as 1–7', R1: 'Dak as 7–13', R2: 'Dak as 13–14', W0: 'Gevel as 1', W1: 'Wand as 7', W2: 'Wand as 13 (rechtergevel)', W3: 'Gevel as 14', A0: 'Gevel A · as 1–7', A1: 'Gevel A · as 7–13', A2: 'Gevel A · as 13–14', P0: 'Gevel P · as 1–7', P1: 'Gevel P · as 7–13', P2: 'Gevel P · as 13–14' };
+  var PART_NAMES = { R0: 'Dak overspanning 1', R1: 'Dak overspanning 2', R2: 'Dak overspanning 3', W0: 'Linkergevel (overspanning 1)', W1: 'Wand overspanning 1|2', W2: 'Wand overspanning 2|3', W3: 'Rechtergevel (overspanning 3)', A0: 'Gevel A · overspanning 1', A1: 'Gevel A · overspanning 2', A2: 'Gevel A · overspanning 3', P0: 'Gevel P · overspanning 1', P1: 'Gevel P · overspanning 2', P2: 'Gevel P · overspanning 3' };
 
   /* ---------- Hoofdberekening ---------- */
   function compute(P) {
@@ -188,9 +188,9 @@ var WE = (function () {
     var X = [0, G.s1, G.s1 + G.s2, G.s1 + G.s2 + G.sL];
     var dL = G.sL / Cn.n, taL = Math.tan(Cn.alpha * Math.PI / 180);
     var spans = [
-      { i: 0, name: 'as 1–7', x0: X[0], x1: X[1], zl: G.hE1, zr: G.hV7, zt: G.hR, nb: 1 },
-      { i: 1, name: 'as 7–13', x0: X[1], x1: X[2], zl: G.hV7, zr: G.hV13, zt: G.hR, nb: 1 },
-      { i: 2, name: 'as 13–14', x0: X[2], x1: X[3], zl: Cn.he, zr: Cn.he, zt: Cn.he + (dL / 2) * taL, nb: Cn.n, luifel: true }
+      { i: 0, name: 'overspanning 1', x0: X[0], x1: X[1], zl: G.hE1, zr: G.hV7, zt: G.hR, nb: 1 },
+      { i: 1, name: 'overspanning 2', x0: X[1], x1: X[2], zl: G.hV7, zr: G.hV13, zt: G.hR, nb: 1 },
+      { i: 2, name: 'overspanning 3', x0: X[2], x1: X[3], zl: Cn.he, zr: Cn.he, zt: Cn.he + (dL / 2) * taL, nb: Cn.n, luifel: true }
     ];
     spans.forEach(function (s) { s.w = s.x1 - s.x0; s.xm = (s.x0 + s.x1) / 2; s.top = Math.max(s.zl, s.zr, s.zt); });
     // dakprofiel z(x) van een overspanning (luifel: n velden)
@@ -232,7 +232,7 @@ var WE = (function () {
     var F2 = P.fase2, f2A = (F2.on && WL.W0.on) ? Math.min(F2.L, B) * Math.min(F2.H, WL.W0.H) : 0;
     out.walls = WL;
 
-    /* --- volumes (gescheiden door aanwezige tussenwanden as 7 / as 13) --- */
+    /* --- volumes (gescheiden door aanwezige tussenwanden 1|2 / 2|3) --- */
     var vols = [], cur = [0];
     for (var k = 1; k <= 2; k++) { if (WL['W' + k].on) { vols.push(cur); cur = [k]; } else cur.push(k); }
     vols.push(cur);
@@ -369,7 +369,7 @@ var WE = (function () {
           var w = WL[wid], full = wallAvg(wid, 0, B);
           if (!w.on) add(wid, PART_NAMES[wid] + ' afwezig', w.A, full);
           else {
-            if (wid === 'W0' && f2A > 0) add(wid, 'Gevelopening as 1 (fase 2)', f2A, wallAvg(wid, F2.y0, F2.y0 + F2.L));
+            if (wid === 'W0' && f2A > 0) add(wid, 'Gevelopening linkergevel (fase 2)', f2A, wallAvg(wid, F2.y0, F2.y0 + F2.L));
             add(wid, 'Openingen ' + PART_NAMES[wid], Math.min(w.extra, w.A), full);
           }
         });

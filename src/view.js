@@ -134,7 +134,7 @@ window.View3D = (function () {
         if (p) arrowsOn(grid(z.a0, z.a1, 0, s2.zl, spacing).filter(function (q) { return q[1] < zAt(s2, q[0]) - 0.5; }).map(function (q) { return V(q[0], y, q[1]); }), n, w, 'wall');
       }
       var m = poly(pts, color, 0.97); m.userData = { kind: 'closed', z: z, p: p, rr: rr, w: w, key: key }; G[grpName].add(m); picks.push(m); G[grpName].add(outline(pts, 0x34495e));
-      if (p) addLabel(lab, '<b>' + z.name + '</b> ' + window.WindUI.cn(loc ? P.Aloc : z.A) + ' ' + fmt(loc ? rr.cLoc : rr.cGlob, 2, true) + ' · c<sub>pi</sub> ' + fmt(p.cpi, 2, true) + '<br>w ' + fmt(w, 2, true) + ' kN/m²', 100 + Math.abs(w) * 30 + Math.log(z.A + 1), grpName);
+      if (p) addLabel(lab, '<b>' + z.name + '</b> ' + window.WindUI.cn(loc ? P.Aloc : z.A) + window.WindUI.pm(z.name, key) + ' = ' + fmt(loc ? rr.cLoc : rr.cGlob, 2, true) + ' · c<sub>pi</sub> = ' + fmt(p.cpi, 2, true) + '<br>w = ' + fmt(w, 2, true) + ' kN/m²', 100 + Math.abs(w) * 30 + Math.log(z.A + 1), grpName);
     });
     // gevelopening fase 2
     var f2 = P.fase2;
@@ -149,7 +149,7 @@ window.View3D = (function () {
         var w = (up ? z.wMin : z.wMax) * mf, cp = up ? z.cpMin : z.cpMax, n = z.pitch === 'L' ? Nv(-sa, 0, ca) : Nv(sa, 0, ca);
         var pts = [V(c.x0 + z.x0, c.y0 + z.y0, zc(z.x0) + off), V(c.x0 + z.x1, c.y0 + z.y0, zc(z.x1) + off), V(c.x0 + z.x1, c.y0 + z.y1, zc(z.x1) + off), V(c.x0 + z.x0, c.y0 + z.y1, zc(z.x0) + off)];
         var m = poly(pts, col(w, wm), 0.97); m.userData = { kind: 'can', c: c, z: z, w: w, cp: cp }; G.open.add(m); picks.push(m); G.open.add(outline(pts, 0x34495e));
-        var xc = (z.x0 + z.x1) / 2; addLabel(V(c.x0 + xc, c.y0 + (z.y0 + z.y1) / 2, zc(xc) + 0.5), '<b>' + z.name + '</b> ψ·c<sub>p,net</sub> ' + fmt(cp, 2, true) + '<br>w ' + fmt(w, 2, true) + ' kN/m²', 100 + Math.abs(w) * 30, 'open');
+        var xc = (z.x0 + z.x1) / 2; addLabel(V(c.x0 + xc, c.y0 + (z.y0 + z.y1) / 2, zc(xc) + 0.5), '<b>' + z.name + '</b> ψ·c<sub>p,net</sub> = ' + fmt(cp, 2, true) + '<br>w = ' + fmt(w, 2, true) + ' kN/m²', 100 + Math.abs(w) * 30, 'open');
         arrowsOn(grid(z.x0, z.x1, z.y0, z.y1, spacing).map(function (q) { return V(c.x0 + q[0], c.y0 + q[1], zc(q[0]) + off); }), n, w, 'open');
       });
       else {
@@ -169,7 +169,7 @@ window.View3D = (function () {
       if (w.kind === 'end') pts = [V(w.x, z.a0, 0), V(w.x, z.a1, 0), V(w.x, z.a1, z.H), V(w.x, z.a0, z.H)];
       else { var s = sp[w.span], y = w.kind === 'A' ? 0 : B, a0 = s.x0 + z.a0, a1 = s.x0 + z.a1, xs = topPts(s, a0, a1); pts = [V(a0, y, 0), V(a1, y, 0)].concat(xs.slice().reverse().map(function (xx) { return V(xx, y, zAt(s, xx)); })); }
       var m = poly(pts, col(wv, wm), 0.95); m.userData = { kind: 'free', z: z, w: wv }; G.open.add(m); picks.push(m); G.open.add(outline(pts, 0x34495e));
-      var c = pts[0].clone().add(pts[2]).multiplyScalar(0.5); addLabel(c, '<b>' + z.name + '</b> vrijstaand c<sub>p,net</sub> ±' + fmt(z.cp, 2) + '<br>w ±' + fmt(wv, 2) + ' kN/m²', 90 + Math.abs(wv) * 30, 'open');
+      var c = pts[0].clone().add(pts[2]).multiplyScalar(0.5); addLabel(c, '<b>' + z.name + '</b> vrijstaand c<sub>p,net</sub> = ±' + fmt(z.cp, 2) + '<br>w = ±' + fmt(wv, 2) + ' kN/m²', 90 + Math.abs(wv) * 30, 'open');
     });
 
     /* --- context: afwezige daken, binnenwanden, kolommen, grond --- */
@@ -211,7 +211,7 @@ window.View3D = (function () {
     }
     var ground = new THREE.Mesh(new THREE.PlaneGeometry(R * 8, R * 8), new THREE.MeshLambertMaterial({ color: 0xdfe5eb })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.03; G.ctx.add(ground); ground.userData.ground = true;
     var gr = new THREE.GridHelper(R * 8, Math.round(R * 8 / 10), 0xbfc9d3, 0xd1d8df); gr.position.y = -0.01; G.ctx.add(gr);
-    [[0, 'as 1'], [X[1], 'as 7'], [X[2], 'as 13'], [X[3], 'as 14']].forEach(function (q) { addLabel(V(q[0], -3, 0.2), q[1], 60, 'ctx'); });
+    sp.forEach(function (s) { addLabel(V(s.xm, -3, 0.2), s.name, 60, 'ctx'); });
     addLabel(V(-4, 0, 0.2), 'A', 60, 'ctx'); addLabel(V(-4, B, 0.2), 'P', 60, 'ctx');
 
     /* --- maatvoering van de hoofdoverspanningen --- */
@@ -273,7 +273,7 @@ window.View3D = (function () {
     if (u.kind === 'closed') {
       var z = u.z, p = u.p;
       rows = [['Deel', PN[z.part] + (z.pitch !== '-' ? ' (' + z.pitch + '-helling)' : '')], ['Zone', '<b>' + z.name + '</b> · ' + DN[z.dir].short + (z.pos > 1 ? ' · positie ' + z.pos + ' (×' + fmt(z.f, 1) + ')' : '')], ['A / z<sub>e</sub>', fmt(z.A, 1) + ' m² / ' + fmt(z.ze, 2) + ' m'], ['q<sub>p</sub>', fmt(z.qp / 1000, 3) + ' kN/m²']];
-      if (p) rows = rows.concat([['c<sub>pe,1</sub> / c<sub>pe,10</sub>', fmt(u.rr.c1, 3, true) + ' / ' + fmt(u.rr.c10, 3, true)], ['c<sub>pi</sub> (' + p.scen + ')', fmt(p.cpi, 3, true)], ['w lok. / glob.', fmt(p.wLoc * p.red, 3, true) + ' / ' + fmt(p.wGlob * p.red, 3, true) + ' kN/m²'], ['w<sub>d</sub> lok. / glob.', fmt(p.wLocD, 3, true) + ' / ' + fmt(p.wGlobD, 3, true)], ['F<sub>k</sub> / F<sub>d</sub>', fmt(p.Fk * p.red, 1, true) + ' / ' + fmt(p.Fd, 1, true) + ' kN']]);
+      if (p) rows = rows.concat([['c<sub>pe,1</sub>' + window.WindUI.pm(z.name, u.key) + ' / c<sub>pe,10</sub>' + window.WindUI.pm(z.name, u.key), fmt(u.rr.c1, 3, true) + ' / ' + fmt(u.rr.c10, 3, true)], ['c<sub>pi</sub> (' + p.scen + ')', fmt(p.cpi, 3, true)], ['w lok. / glob.', fmt(p.wLoc * p.red, 3, true) + ' / ' + fmt(p.wGlob * p.red, 3, true) + ' kN/m²'], ['w<sub>d</sub> lok. / glob.', fmt(p.wLocD, 3, true) + ' / ' + fmt(p.wGlobD, 3, true)], ['F<sub>k</sub> / F<sub>d</sub>', fmt(p.Fk * p.red, 1, true) + ' / ' + fmt(p.Fd, 1, true) + ' kN']]);
       else rows.push(['c<sub>pi</sub>', 'scenario niet van toepassing']);
     } else if (u.kind === 'can') { var z2 = u.z; rows = [['Overkapping', PN[u.c.part] + ' · veld ' + z2.bay + (z2.cls !== '–' ? ' (positie ' + z2.cls + ')' : '')], ['Zone', '<b>' + z2.name + '</b> · ' + fmt(z2.A, 1) + ' m²'], ['ψ·c<sub>p,net</sub> max / min', fmt(z2.cpMax, 3, true) + ' / ' + fmt(z2.cpMin, 3, true)], ['w max / min', fmt(z2.wMax, 3, true) + ' / ' + fmt(z2.wMin, 3, true) + ' kN/m²'], ['Getoond', '<b>' + fmt(u.w, 3, true) + ' kN/m²</b>']]; }
     else if (u.kind === 'canP') { var p2 = u.p; rows = [['Overkapping', PN[u.c.part] + ' · veld ' + p2.bay + ', ' + (p2.pitch === 'L' ? 'linker' : 'rechter') + ' helling'], ['ψ·c<sub>f</sub> max / min', fmt(p2.cfMax, 3, true) + ' / ' + fmt(p2.cfMin, 3, true)], ['F max / min', fmt(p2.FMax, 1, true) + ' / ' + fmt(p2.FMin, 1, true) + ' kN'], ['Getoond', u.on ? '<b>F = ' + fmt(u.F, 0, true) + ' kN</b>' : 'onbelast']]; }
