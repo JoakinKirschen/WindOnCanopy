@@ -38,3 +38,10 @@ voor alle elementen || for all members || pour tous les éléments
 volgens belaste oppervlakte (fig. 7.2) || according to loaded area (fig. 7.2) || selon la surface chargée (fig. 7.2)
 c_pe,10 voor alle elementen || c_pe,10 for all members || c_pe,10 pour tous les éléments
 c_pe,1 (lokaal) voor alle elementen || c_pe,1 (local) for all members || c_pe,1 (local) pour tous les éléments
+# versie 1.9.1
+lokaal: || local: || local :
+globaal: || global: || global :
+(zones kleiner dan 10 m²: c || (zones smaller than 10 m²: c || (zones de moins de 10 m² : c
+(A) volgens fig. 7.2) || (A) according to fig. 7.2) || (A) selon la fig. 7.2)
+coëfficiënt max / min || coefficient max / min || coefficient max / min
+, daartussen logaritmisch; spanten en kolommen met de zoneoppervlakte, gordingen, regels en gevelkolommen met A = L·h.o.h. || , logarithmic in between; frames and columns with the zone area, purlins, rails and wall columns with A = L·spacing || , logarithmique entre les deux ; portiques et poteaux avec la surface de zone, pannes, lisses et poteaux de façade avec A = L·entraxe

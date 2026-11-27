@@ -134,7 +134,7 @@ window.View3D = (function () {
         if (p) arrowsOn(grid(z.a0, z.a1, 0, s2.zl, spacing).filter(function (q) { return q[1] < zAt(s2, q[0]) - 0.5; }).map(function (q) { return V(q[0], y, q[1]); }), n, w, 'wall');
       }
       var m = poly(pts, color, 0.97); m.userData = { kind: 'closed', z: z, p: p, rr: rr, w: w, key: key }; G[grpName].add(m); picks.push(m); G[grpName].add(outline(pts, 0x34495e));
-      if (p) addLabel(lab, '<b>' + z.name + '</b> c<sub>pe</sub> ' + fmt(loc ? rr.cLoc : rr.cGlob, 2, true) + ' · c<sub>pi</sub> ' + fmt(p.cpi, 2, true) + '<br>w ' + fmt(w, 2, true) + ' kN/m²', 100 + Math.abs(w) * 30 + Math.log(z.A + 1), grpName);
+      if (p) addLabel(lab, '<b>' + z.name + '</b> ' + window.WindUI.cn(loc ? P.Aloc : z.A) + ' ' + fmt(loc ? rr.cLoc : rr.cGlob, 2, true) + ' · c<sub>pi</sub> ' + fmt(p.cpi, 2, true) + '<br>w ' + fmt(w, 2, true) + ' kN/m²', 100 + Math.abs(w) * 30 + Math.log(z.A + 1), grpName);
     });
     // gevelopening fase 2
     var f2 = P.fase2;
