@@ -1,0 +1,19 @@
+# versie 1.7.0
+Wijzigingen worden meteen doorgerekend; het model en de 3D-weergave hieronder volgen meteen. Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen. || Changes are recalculated immediately; the model and the 3D view below follow at once. Grey fields are derived or not applicable. You can drag a project file (.json) here. || Les modifications sont recalculées immédiatement ; le modèle et la vue 3D ci-dessous suivent aussitôt. Les champs gris sont dérivés ou sans objet. Vous pouvez glisser un fichier de projet (.json) ici.
+Invoer || Input || Données
+Alles openklappen || Expand all || Tout déplier
+Alles dichtklappen || Collapse all || Tout replier
+Model || Model || Modèle
+Model en theorie || Model and theory || Modèle et théorie
+3D (invoer) || 3D (input) || 3D (données)
+Rapport per zone en per element || Report per zone and per member || Rapport par zone et par élément
+Spant (§3c) || Frame (§3c) || Portique (§3c)
+Opslaan en sluiten || Save and close || Enregistrer et fermer
+Rapportinstellingen bewaard (ook in het projectbestand bij Project opslaan). || Report settings saved (also stored in the project file on Save project). || Paramètres du rapport enregistrés (aussi dans le fichier de projet lors de Enregistrer le projet).
+Zelfde windrichtingen en dakgevallen als het rapport per zone; omhullenden, gordingen, gevelregels, gevelkolommen en windverbanden aan het einde. || Same wind directions and roof cases as the report per zone; envelopes, purlins, side rails, wall columns and wind bracing at the end. || Mêmes directions du vent et cas de toiture que le rapport par zone ; enveloppes, pannes, lisses, poteaux de façade et contreventements à la fin.
+c_pi-scenario niet van toepassing. || c_pi scenario not applicable. || scénario c_pi sans objet.
+Netto neerwaarts ondanks negatieve c || Net downward despite negative c || Net vers le bas malgré un c
+): de inwendige zuiging (c || ): the internal suction (c || ) négatif : la dépression intérieure (c
+) is groter dan de uitwendige zuiging (c || ) is larger than the external suction (c || ) est plus grande que la dépression extérieure (c
+), dus w = q || ), so w = q || ), donc w = q
+0: de onderdruk binnen trekt het dak naar beneden. || 0: the underpressure inside pulls the roof down. || 0 : la dépression intérieure tire la toiture vers le bas.

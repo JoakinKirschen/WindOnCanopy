@@ -89,3 +89,10 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - `src/i18n.js`: woordenboekvertaling in één doorgang (langste fragment eerst, woordgrenzen), haken op innerHTML / insertAdjacentHTML / textContent, vaste paginatekst opnieuw ingevuld vanuit het Nederlands; "as n" → axis/axe; Engels met decimaalpunt
 - `src/lang/d1–d4.txt`: ca. 870 fragmenten; build.py zet ze om naar I18N_DICT en weigert dubbele sleutels met verschillende vertaling
 - rapport (afdrukken en HTML-export) in de gekozen taal; eigen opmerkingen en bestandsnamen worden niet vertaald
+
+## Versie 1.7.0 – indeling invoer en rapport per element
+- tabblad Invoer: status, invoer als inklapbaar menu (groepen in raster, standaard dicht, toestand onthouden, Alles open/dicht; groep met fout gaat open), daaronder model (plan + doorsnede) en het 3D-model
+- tabblad Resultaten: "1. Model en automatisch gekozen theorie" (uitleg, figuren, volumes, berekende delen)
+- rapportdialoog: Annuleren draait wijzigingen terug, "Opslaan en sluiten" bewaart de instellingen (ook na herladen); keuze van het spant voor §3c
+- rapport §3c: per windrichting × dakgeval × overkapping op/neer (zelfde keuze als het rapport per zone), daarna omhullenden en secundaire elementen
+- §3c: c_pe en c_pi per segment in diagram en tabel + uitleg wanneer het dak netto neerwaarts belast wordt door inwendige zuiging

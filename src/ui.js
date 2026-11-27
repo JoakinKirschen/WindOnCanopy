@@ -114,7 +114,7 @@
   function buildInputs() {
     var h = '', open = false;
     FIELDS.forEach(function (f) {
-      if (f.g) { if (open) h += '</div></details>'; h += '<details class="grp" open><summary>' + f.g + '</summary><div class="fields">'; open = true; return; }
+      if (f.g) { if (open) h += '</div></details>'; h += '<details class="grp" data-g="' + f.g.replace(/[^A-Za-z]/g, '').slice(0, 24) + '"><summary>' + f.g + '</summary><div class="fields">'; open = true; return; }
       var id = iid(f.k), st = f.st === 'ass' ? 'assume' : f.st === 'der' ? 'derived' : 'conf';
       if (f.t === 'pair') {
         h += '<div class="f pair ' + st + '" id="w_' + id + '"><label for="' + id + '_on">' + f.l + (f.s ? '<small>' + f.s + '</small>' : '') + '</label><input type="checkbox" id="' + id + '_on" aria-label="' + f.l + ' aanwezig"><input type="number" id="' + id + '_op" min="0" max="100000" step="1" aria-label="openingen ' + f.l + ' in m²"><div class="err" id="e_' + id + '"></div></div>';
@@ -129,7 +129,11 @@
       h += '<div class="err" id="e_' + id + '"></div></div>';
     });
     $('inputs').innerHTML = h + '</div></details>';
+    var st = {}; try { st = JSON.parse(lsGet('groups') || '{}') || {}; } catch (e) { st = {}; }
+    document.querySelectorAll('#inputs details.grp').forEach(function (d) { d.open = !!st[d.getAttribute('data-g')]; d.addEventListener('toggle', saveGroups); });
   }
+  function saveGroups() { var st = {}; document.querySelectorAll('#inputs details.grp').forEach(function (d) { if (d.open) st[d.getAttribute('data-g')] = 1; }); lsSet('groups', JSON.stringify(st)); }
+  function setGroups(open) { document.querySelectorAll('#inputs details.grp').forEach(function (d) { d.open = open; }); saveGroups(); }
   function setInputs(P) {
     FIELDS.forEach(function (f) {
       if (!f.k || f.t === 'out') return;
@@ -141,7 +145,7 @@
   }
   function readInputs() {
     var P = clone(DEFAULTS), errs = [];
-    function bad(id, f, msg) { $('w_' + id).classList.add('invalid'); $('e_' + id).textContent = msg; errs.push(f.l.replace(/<[^>]+>/g, '').replace(/^· /, '') + ': ' + msg); }
+    function bad(id, f, msg) { var gd = $('w_' + id).closest('details'); if (gd) gd.open = true; $('w_' + id).classList.add('invalid'); $('e_' + id).textContent = msg; errs.push(f.l.replace(/<[^>]+>/g, '').replace(/^· /, '') + ': ' + msg); }
     FIELDS.forEach(function (f) {
       if (!f.k || f.t === 'out') return;
       var id = iid(f.k), w = $('w_' + id); w.classList.remove('invalid');
@@ -170,7 +174,7 @@
     $('in_cseasonShow').value = I18N.Lt(fmt(cs, 2) + (P.useSeason ? '' : ' (uit)'));
     $('in_cprobShow').value = I18N.Lt(fmt(P.cprob, 3) + ' (T = ' + dur.T + ' ' + (I18N.get() === 'nl' ? 'j' : I18N.get() === 'fr' ? 'ans' : 'y') + ')' + (P.useProb ? '' : ' (uit)'));
     $('in_cdirShow').value = I18N.Lt(fmt(P.cdirMode === 'all' ? 1 : P.cdirMode === 'dir' ? CE.cdirFromDeg(P.dirDeg) : P.cdirMan, 3));
-    function x(c, m, k) { if (!c) { errs.push(m); var w = $('w_' + iid(k)); if (w) { w.classList.add('invalid'); $('e_' + iid(k)).textContent = m; } } }
+    function x(c, m, k) { if (!c) { errs.push(m); var w = $('w_' + iid(k)); if (w) { if (w.closest('details')) w.closest('details').open = true; w.classList.add('invalid'); $('e_' + iid(k)).textContent = m; } } }
     x(P.geo.hR > Math.max(P.geo.hV7, P.geo.hV13), 'Nok moet hoger liggen dan de kilgoten.', 'geo.hR');
     x(P.fase2.y0 + P.fase2.L <= P.geo.B + 1e-6, 'Gevelopening valt buiten de gevel.', 'fase2.L');
     x(P.fase2.H <= P.geo.hE1, 'Gevelopening hoger dan dakrand as 1.', 'fase2.H');
@@ -235,7 +239,7 @@
     [[0, '1'], [X[1], '7'], [X[2], '13'], [X[3], '14']].forEach(function (q) { s += '<circle cx="' + PX(q[0]) + '" cy="' + (oy - 14) + '" r="9" fill="#fff" stroke="#333"/><text x="' + PX(q[0]) + '" y="' + (oy - 10) + '" text-anchor="middle">' + q[1] + '</text>'; });
     [[0, 'A'], [B, 'P']].forEach(function (q) { s += '<circle cx="' + (ox - 22) + '" cy="' + PY(q[0]) + '" r="9" fill="#fff" stroke="#333"/><text x="' + (ox - 22) + '" y="' + (PY(q[0]) + 4) + '" text-anchor="middle">' + q[1] + '</text>'; });
     s += '<text x="' + PX(X[3] / 2) + '" y="' + (H - 12) + '" text-anchor="middle" fill="#555">volle lijn = wand aanwezig · stippel = geen wand · rood = gevelopening fase 2 · arcering = dak verwijderd</text></svg>';
-    $('svgPlan').innerHTML = s;
+    $('svgPlan').innerHTML = s; $('svgPlanR').innerHTML = s;
     // doorsnede
     var Hs = 240, zs = 8, sx = (W - 70) / X[3], gx = 40, gz = Hs - 34;
     var XX = function (x) { return gx + x * sx; }, ZZ = function (z) { return gz - z * zs; };
@@ -253,7 +257,7 @@
       t += '<text x="' + XX(X[k2]) + '" y="' + (ZZ(0) + 14) + '" text-anchor="middle">as ' + ['1', '7', '13', '14'][k2] + '</text>';
     });
     t += '</svg>';
-    $('svgSec').innerHTML = t;
+    $('svgSec').innerHTML = t; $('svgSecR').innerHTML = t;
     // volumes
     var h = '<tr><th class="l">Volume</th><th class="l">Vlak</th><th>Bruto A [m²]</th><th>Openingen [m²]</th><th>Openingen [%]</th><th class="l">Gekozen theorie</th></tr>';
     o.vols.forEach(function (v) {
@@ -464,7 +468,7 @@
     var el = $(id), cur = el.value, vals = list.map(function (o) { return o[0]; });
     el.innerHTML = list.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('');
     el.value = vals.indexOf(cur) >= 0 ? cur : (pref !== undefined && vals.indexOf(pref) >= 0 ? pref : (vals[0] || ''));
-    el.disabled = list.length < 2;
+    el.disabled = list.length < 2 && id === 'e_case';
   }
   function uniq(a) { return a.filter(function (v, i) { return a.indexOf(v) === i; }); }
   function elemSel() {
@@ -501,16 +505,17 @@
     sp.forEach(function (s) { var pts = prof(s, s.x0, s.x1, 8 * Math.max(1, s.nb)); h += '<polyline points="' + pts.map(function (p) { return X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1); }).join(' ') + '" fill="none" stroke="' + (s.roofOn ? '#334155' : '#94a3b8') + '" stroke-width="' + (s.roofOn ? 2.2 : 1.2) + '"' + (s.roofOn ? '' : ' stroke-dasharray="5 4"') + '/>'; if (!s.roofOn) h += txt(X(s.xm), Y(s.top) - 6, 'dak verwijderd', 'middle', '#94a3b8', 10.5); });
     // daklasten (band boven het dak)
     var qm = 1e-9; T.segs.forEach(function (g) { qm = Math.max(qm, Math.abs(g.q)); }); T.pts.forEach(function (p) { qm = Math.max(qm, Math.abs(p.q)); });
-    function band(span, a, b, q, light, label) {
+    function band(span, a, b, q, light, label, sub) {
       var s = sp[span], pts = prof(s, a, b, 6), hh = Math.abs(q) / qm * 40, col = q >= 0 ? POS : NEG;
       var top = pts.map(function (p) { return X(p[0]).toFixed(1) + ',' + (Y(p[1]) - 4 - hh).toFixed(1); }), bot = pts.slice().reverse().map(function (p) { return X(p[0]).toFixed(1) + ',' + (Y(p[1]) - 4).toFixed(1); });
       var r = '<polygon points="' + top.concat(bot).join(' ') + '" fill="' + col + '" fill-opacity="' + (light ? 0.10 : 0.18) + '" stroke="' + col + '" stroke-opacity="0.6" stroke-width="0.8"/>';
       var n = Math.max(1, Math.round((b - a) * sc / 26));
       if (!light) for (var i = 0; i < n; i++) { var x = a + (b - a) * (i + 0.5) / n, y0 = Y(zAt(s, x)) - 4; r += q >= 0 ? arrow(X(x), y0 - hh, X(x), y0, col) : arrow(X(x), y0, X(x), y0 - hh, col); }
-      var xm = (a + b) / 2; if (label) r += txt(X(xm), Y(zAt(s, xm)) - 10 - hh, label, 'middle', col, 10.5, true);
+      var xm = (a + b) / 2; if (label) r += txt(X(xm), Y(zAt(s, xm)) - (sub ? 22 : 10) - hh, label, 'middle', col, 10.5, true);
+      if (sub) r += txt(X(xm), Y(zAt(s, xm)) - 9 - hh, sub, 'middle', '#5f6b7a', 9.5);
       return r;
     }
-    T.segs.forEach(function (g) { h += band(g.span, g.x0, g.x1, g.q * fac, false, ((g.x1 - g.x0) * sc > 34 ? fmt(g.q * fac, 2, true) : '')); });
+    T.segs.forEach(function (g) { var wd = (g.x1 - g.x0) * sc; h += band(g.span, g.x0, g.x1, g.q * fac, false, (wd > 34 ? fmt(g.q * fac, 2, true) : ''), (wd > 105 ? 'c_pe ' + fmt(g.cpe, 2, true) + ' · c_pi ' + fmt(g.cpi, 2, true) : '')); });
     T.pts.forEach(function (p) {
       h += band(p.span, p.x0, p.x1, p.q * fac, true, '');
       var s = sp[p.span], y0 = Y(zAt(s, p.x)) - 4, col = p.F >= 0 ? POS : NEG, L = 46;
@@ -542,23 +547,48 @@
     h += txt(8, 32, 'Σ H op spantniveau = ' + fmt(T.Htop * fac, 1, true) + ' kN (+ = richting as 14) · Σ V = ' + fmt(T.Vsum * fac, 1, true) + ' kN', 'start', '#5f6b7a', 11);
     return '<svg viewBox="0 0 ' + Wd.toFixed(0) + ' ' + Hd.toFixed(0) + '" role="img" aria-label="Belastingen en reacties spant ' + fr.name + '" font-family="system-ui,Segoe UI,Arial,sans-serif">' + h + '</svg>';
   }
+  function elemReport(r) {
+    if (!EL || EL.err) return '<p class="small">Belastingen per element niet beschikbaar</p>';
+    var E = EL, O = OUT, P = O.P, fac = O.vb.red * (r.mode === 'd' ? P.gammaQ * P.KFI : 1), un = r.mode === 'd' ? 'ontwerp' : 'karakteristiek';
+    var k = Math.min(E.frames.length - 1, Math.max(0, parseInt(r.frame, 10) || 0)), CIDS = ['FGH−/IJ−', 'FGH−/IJ+', 'FGH+/IJ−', 'FGH+/IJ+'];
+    var signs = O.canopies.length ? (r.signs.length ? r.signs : ['min']) : [null];
+    var h = '<p class="small">Spant ' + E.frames[k].name + ' (y = ' + fmt(E.frames[k].y, 3) + ' m) · ' + SCN[r.scen] + ' · waarden ' + un + '. Zelfde windrichtingen en dakgevallen als het rapport per zone; omhullenden, gordingen, gevelregels, gevelkolommen en windverbanden aan het einde.</p>';
+    r.dirs.forEach(function (d) {
+      var cc = E.closedCombos(d).filter(Boolean), lr = d === 'L' || d === 'R';
+      var cids = !cc.length ? [null] : lr ? r.cases.map(function (i) { return CIDS[i]; }) : ['θ=90°'];
+      cids.forEach(function (cid, ci) {
+        var closed = cid === null ? null : cc.filter(function (c) { return c.cid === cid && c.scen === r.scen; })[0];
+        var t0 = DIRN[d].name + (cid ? ' – dakgeval ' + (lr ? (r.cases[ci] + 1) + '/4: ' : '') + cid : '');
+        if (cid !== null && !closed) { h += '<div class="rcase"><h3>' + t0 + '</h3><p class="small">' + SCN[r.scen] + ': c_pi-scenario niet van toepassing.</p></div>'; return; }
+        signs.forEach(function (sg) {
+          var sel = { dir: d, closed: closed, can: sg ? { sign: sg, lay: 'beide' } : null };
+          h += '<div class="rcase"><h3>' + t0 + (sg ? ' – overkapping ' + (sg === 'min' ? 'opwaarts' : 'neerwaarts') : '') + '</h3>' + elemCase(k, sel, fac, un) + '</div>';
+        });
+      });
+    });
+    return h + '<div class="rcase">' + elemCommon(fac) + '</div>';
+  }
   function renderElem() {
     var box = $('elemInfo');
     if (!EL || EL.err) { box.innerHTML = '<div class="banner err">Belastingen per element niet beschikbaar' + (EL && EL.err ? ': ' + EL.err : '') + '</div>'; return; }
     var E = EL, o = OUT, P = o.P, fsel = $('e_frame'), cur = fsel.value;
     eopt('e_frame', E.frames.map(function (f, k) { return [String(k), f.name + ' · y = ' + fmt(f.y, 3) + ' m']; }), String(Math.floor(E.frames.length / 2)));
     if (cur && +cur >= E.frames.length) fsel.value = String(Math.floor(E.frames.length / 2));
-    var sel = elemSel(), k = +fsel.value, fr = E.frames[k], T = E.frameLoads(k, sel);
+    var sel = elemSel(), k = +fsel.value;
     var dmode = $('e_mode').value === 'd', fac = o.vb.red * (dmode ? P.gammaQ * P.KFI : 1), un = dmode ? 'ontwerp' : 'karakteristiek';
+    box.innerHTML = elemCase(k, sel, fac, un) + elemCommon(fac);
+  }
+  function elemCase(k, sel, fac, un) {
+    var E = EL, o = OUT, P = o.P, fr = E.frames[k], T = E.frameLoads(k, sel);
     var LO = E.lineOrder.map(function (i) { return E.lines[i]; }), PNs = function (id) { return PN[id] || id; };
     var c = function (v, d) { return '<td class="' + cls(v) + '">' + fmt(v, d === undefined ? 1 : d, true) + '</td>'; };
     var h = '<p class="small">Combinatie: <b>' + DIRN[sel.dir].name + '</b>' + (sel.closed ? ' · dakgeval ' + sel.closed.cid + ' · ' + SCN[sel.closed.scen] : '') + (sel.can ? ' · overkapping ' + (sel.can.sign === 'min' ? 'opwaarts' : 'neerwaarts') + ' (' + sel.can.lay + ')' : '') + ' · waarden ' + un + (o.vb.red < 1 ? ' (incl. r = ' + fmt(o.vb.red, 3) + ')' : '') + '. Teken: q en F + = naar het vlak toe (dak: neerwaarts), V + = druk op de fundering, − = trek/opwaarts; H + = richting as 14.</p>';
     h += '<div class="svgbox elemfig">' + elemSVG(T, fr, fac) + '</div>';
     // lijnlasten
-    h += '<h3>Lijnlasten op spant ' + fr.name + '</h3><div class="tablewrap"><table><tr><th class="l">Deel</th><th class="l">Helling</th><th class="l">Zone(s)</th><th>x van</th><th>x tot</th><th>w<br>[kN/m²]</th><th>q<sub>⊥</sub> = q<sub>v</sub><br>[kN/m]</th><th>q<sub>h</sub><br>[kN/m]</th><th>Resultante<br>[kN]</th></tr>';
-    T.segs.forEach(function (g) { h += '<tr><td class="l">' + PNs('R' + g.span) + '</td><td class="l">' + (g.pitch === 'W' ? 'links' : 'rechts') + '</td><td class="l">' + g.zones + '</td><td>' + fmt(g.x0, 2) + '</td><td>' + fmt(g.x1, 2) + '</td>' + c(g.w * fac, 3) + c(g.q * fac, 2) + c(g.qh * fac, 2) + c(g.q * fac * (g.x1 - g.x0), 1) + '</tr>'; });
-    T.pts.forEach(function (p) { h += '<tr><td class="l">' + PNs('R' + p.span) + ' · veld ' + p.bay + '</td><td class="l">' + (p.pitch === 'L' ? 'links' : 'rechts') + '</td><td class="l">ψ·c<sub>f</sub> = ' + fmt(p.cf, 3, true) + ' · F op x = ' + fmt(p.x, 2) + '</td><td>' + fmt(p.x0, 2) + '</td><td>' + fmt(p.x1, 2) + '</td>' + c(p.w * fac, 3) + c(p.q * fac, 2) + c(p.Fh / (p.x1 - p.x0) * fac, 2) + c(p.F * fac * p.ca, 1) + '</tr>'; });
-    if (!T.segs.length && !T.pts.length) h += '<tr><td class="l" colspan="9">Geen dakbelasting op dit spant.</td></tr>';
+    h += '<h3>Lijnlasten op spant ' + fr.name + '</h3><div class="tablewrap"><table><tr><th class="l">Deel</th><th class="l">Helling</th><th class="l">Zone(s)</th><th>x van</th><th>x tot</th><th>c<sub>pe</sub></th><th>c<sub>pi</sub></th><th>w<br>[kN/m²]</th><th>q<sub>⊥</sub> = q<sub>v</sub><br>[kN/m]</th><th>q<sub>h</sub><br>[kN/m]</th><th>Resultante<br>[kN]</th></tr>';
+    T.segs.forEach(function (g) { h += '<tr><td class="l">' + PNs('R' + g.span) + '</td><td class="l">' + (g.pitch === 'W' ? 'links' : 'rechts') + '</td><td class="l">' + g.zones + '</td><td>' + fmt(g.x0, 2) + '</td><td>' + fmt(g.x1, 2) + '</td><td>' + fmt(g.cpe, 3, true) + '</td><td>' + fmt(g.cpi, 3, true) + '</td>' + c(g.w * fac, 3) + c(g.q * fac, 2) + c(g.qh * fac, 2) + c(g.q * fac * (g.x1 - g.x0), 1) + '</tr>'; });
+    T.pts.forEach(function (p) { h += '<tr><td class="l">' + PNs('R' + p.span) + ' · veld ' + p.bay + '</td><td class="l">' + (p.pitch === 'L' ? 'links' : 'rechts') + '</td><td class="l">ψ·c<sub>f</sub> = ' + fmt(p.cf, 3, true) + ' · F op x = ' + fmt(p.x, 2) + '</td><td>' + fmt(p.x0, 2) + '</td><td>' + fmt(p.x1, 2) + '</td><td>' + fmt(p.cf, 3, true) + '</td><td>–</td>' + c(p.w * fac, 3) + c(p.q * fac, 2) + c(p.Fh / (p.x1 - p.x0) * fac, 2) + c(p.F * fac * p.ca, 1) + '</tr>'; });
+    if (!T.segs.length && !T.pts.length) h += '<tr><td class="l" colspan="11">Geen dakbelasting op dit spant.</td></tr>';
     h += '</table></div><p class="small">q<sub>⊥</sub> per m dakvlak loodrecht op het dak = q<sub>v</sub> verticaal per m horizontaal; q<sub>h</sub> = horizontale component per m horizontaal. Overkapping (EN 7.3): globale kracht per helling als puntlast in het drukpunt (d/4 vanaf de rand, fig. 7.16/7.17); q = gelijkwaardige lijnlast.</p>';
     if (T.cols.length) {
       h += '<h3>Kolommen in de kopgevels (spant ' + fr.name + ')</h3><div class="tablewrap"><table><tr><th class="l">Kolom</th><th class="l">Zone(s)</th><th>z van–tot [m]</th><th>q [kN/m]</th><th>R<sub>top</sub> [kN]</th><th>R<sub>voet</sub> [kN]</th><th>M<sub>max</sub> [kNm]</th></tr>';
@@ -572,6 +602,14 @@
     h += '<h3>Alle spanten – gekozen combinatie</h3><div class="tablewrap"><table><tr><th class="l">Spant</th><th>y [m]</th><th>b<sub>inv</sub> [m]</th>' + LO.map(function (l) { return '<th>V ' + l.name + '</th>'; }).join('') + '<th>Σ H<sub>top</sub></th></tr>';
     E.frames.forEach(function (f, j) { var t = E.frameLoads(j, sel); h += '<tr' + (j === k ? ' class="gov"' : '') + '><td class="l">' + f.name + '</td><td>' + fmt(f.y, 3) + '</td><td>' + fmt(f.dy, 3) + '</td>' + LO.map(function (l) { return c(t.V[l.i] * fac); }).join('') + c(t.Htop * fac) + '</tr>'; });
     h += '</table></div>';
+    var nd = T.segs.filter(function (g) { return g.w > 1e-6 && g.cpe < 0; });
+    if (nd.length) h = h.replace('<h3>Lijnlasten op spant', '<p class="banner info small">Netto neerwaarts ondanks negatieve c<sub>pe</sub> (zone ' + uniq(nd.map(function (g) { return g.zones; })).join(', ') + '): de inwendige zuiging (c<sub>pi</sub> = ' + fmt(nd[0].cpi, 2, true) + ') is groter dan de uitwendige zuiging (c<sub>pe</sub> = ' + fmt(nd[0].cpe, 2, true) + '), dus w = q<sub>p</sub>(z<sub>e</sub>)·c<sub>pe</sub> − q<sub>p</sub>(z<sub>i</sub>)·c<sub>pi</sub> > 0: de onderdruk binnen trekt het dak naar beneden.</p><h3>Lijnlasten op spant');
+    return h;
+  }
+  function elemCommon(fac) {
+    var E = EL, o = OUT, P = o.P, h = '';
+    var LO = E.lineOrder.map(function (i) { return E.lines[i]; }), PNs = function (id) { return PN[id] || id; };
+    var c = function (v, d) { return '<td class="' + cls(v) + '">' + fmt(v, d === undefined ? 1 : d, true) + '</td>'; };
     // omhullende
     h += '<h3>Omhullende reacties per spant (alle richtingen, dakgevallen, actieve c<sub>pi</sub>-scenario’s' + (o.canopies.length ? ', overkapping op/neer en opstellingen' : '') + ')</h3><div class="tablewrap"><table><tr><th class="l" rowspan="2">Spant</th>' + LO.map(function (l) { return '<th colspan="2">' + l.name + ' V [kN]</th>'; }).join('') + '<th colspan="2">Σ H<sub>top</sub> [kN]</th></tr><tr>' + LO.map(function () { return '<th>max</th><th>min</th>'; }).join('') + '<th>max</th><th>min</th></tr>';
     E.env.forEach(function (en, j) { h += '<tr><td class="l">' + E.frames[j].name + '</td>' + LO.map(function (l) { return '<td class="' + cls(en.Vmax[l.i].v) + '" title="' + en.Vmax[l.i].d + '">' + fmt(en.Vmax[l.i].v * fac, 1, true) + '</td><td class="' + cls(en.Vmin[l.i].v) + '" title="' + en.Vmin[l.i].d + '">' + fmt(en.Vmin[l.i].v * fac, 1, true) + '</td>'; }).join('') + '<td title="' + en.Htmax.d + '">' + fmt(en.Htmax.v * fac, 1, true) + '</td><td title="' + en.Htmin.d + '">' + fmt(en.Htmin.v * fac, 1, true) + '</td></tr>'; });
@@ -601,7 +639,7 @@
       h += '<p class="small">Gevelkrachten = Σ zonekrachten gevel A en P (incl. c<sub>s</sub>c<sub>d</sub>, + = in windrichting). Wrijving EN 5.3(3), 7.5: c<sub>fr</sub> = ' + fmt(P.str.cfrB, 2) + ' op dak en kopgevels voorbij min(2b; 4h) vanaf de loefrand' + fA.map(function (f) { return ' (' + f.name + ': grens ' + fmt(f.lim, 2) + ' m, A<sub>fr</sub> = ' + fmt(f.Afr, 0) + ' m²; evenwijdig ' + fmt(f.Apar, 0) + ' m² ' + (f.neg ? '≤' : '>') + ' 4 × loodrecht ' + fmt(f.Aperp, 0) + ' m² → ' + (f.neg ? 'mag verwaarloosd worden, EN 5.3(4)' : 'in rekening gebracht') + ')'; }).join('') + '. Overkapping: wrijving EN 7.3(7) altijd meegeteld. Verdeling over de verbanden per overspanning volgens het stabiliteitsconcept.</p>';
     }
     h += '<p class="small"><b>Model.</b> Invloedsbreedte per spant = halve afstand tot de naburige spanten (randspant tot de kopgevel). Dakliggers scharnierend opgelegd per overspanning (luifel: per veld) op de kolomlijnen; c<sub>pe</sub> globaal (c<sub>pe,10</sub> per zone) en c<sub>s</sub>c<sub>d</sub>. Omhullende: elke combinatie van windrichting × dakgeval × actief c<sub>pi</sub>-scenario, gecombineerd met elke overkappingsopstelling van dezelfde richting (veilig). Niet inbegrepen: eigen gewicht en andere belastingen; tweede-orde- en portaalwerking.</p>';
-    box.innerHTML = h;
+    return h;
   }
 
   function renderGeo() {
@@ -917,7 +955,7 @@
     return {
       onderdelen: q('input[name=part]:checked'), richtingen: q('input[name=dir]:checked'), dakgevallen: q('input[name=case]:checked').map(Number),
       gevelaanzichten: f.walls.checked, cpi: f.scen.value, coefficienten: f.meas.value, overkapping: q('input[name=csign]:checked'), waarde: f.mode.value,
-      aannames: q('input[name=ass]:checked').map(Number),
+      aannames: q('input[name=ass]:checked').map(Number), spant: f.frame.value,
       sectieRapportPerZone: { cpi: $('r_scen').value, coefficienten: $('r_meas').value, overkapping: $('r_sign').value, waarde: $('r_mode').value, richting: $('r_dir').value }
     };
   }
@@ -928,6 +966,7 @@
     function sel(el, v) { if (typeof v === 'string' && [].some.call(el.options, function (o) { return o.value === v; })) el.value = v; }
     boxes('part', r.onderdelen); boxes('dir', r.richtingen); boxes('case', r.dakgevallen, true); boxes('csign', r.overkapping); boxes('ass', r.aannames, true);
     if (typeof r.gevelaanzichten === 'boolean') f.walls.checked = r.gevelaanzichten;
+    if (r.spant !== undefined && r.spant !== '') { RFRAME = String(r.spant); if (f.frame.options.length) sel(f.frame, RFRAME); }
     sel(f.scen, r.cpi); sel(f.meas, r.coefficienten); sel(f.mode, r.waarde);
     var z = r.sectieRapportPerZone;
     if (z && typeof z === 'object') { sel($('r_scen'), z.cpi); sel($('r_meas'), z.coefficienten); sel($('r_sign'), z.overkapping); sel($('r_mode'), z.waarde); sel($('r_dir'), z.richting); }
@@ -976,21 +1015,33 @@
   var RDEF = { 'sec-model': true, 'sec-summary': true, snap3d: true, zones: true, 'sec-elem': true, inputs: true };
   function buildDialog() {
     var h = '<form method="dialog" id="rForm"><h2 style="margin-top:0">Rapport samenstellen</h2><div class="dlgcols"><fieldset><legend>Onderdelen</legend>' + RSECT.map(function (q) { return '<label><input type="checkbox" name="part" value="' + q[0] + '"' + (RDEF[q[0]] ? ' checked' : '') + '> ' + q[1] + '</label>'; }).join('') + '</fieldset>';
-    h += '<fieldset><legend>Rapport per zone</legend><div class="small">Windrichtingen</div>' + WE.DIRS.map(function (d) { return '<label><input type="checkbox" name="dir" value="' + d.id + '" checked> ' + d.short + '</label>'; }).join('');
+    h += '<fieldset><legend>Rapport per zone en per element</legend><div class="small">Windrichtingen</div>' + WE.DIRS.map(function (d) { return '<label><input type="checkbox" name="dir" value="' + d.id + '" checked> ' + d.short + '</label>'; }).join('');
     h += '<div class="small" style="margin-top:6px">Dakgevallen (wind ⟂ nok, tabel 7.4a)</div>' + ['FGH−/IJ−', 'FGH−/IJ+', 'FGH+/IJ−', 'FGH+/IJ+'].map(function (c, i) { return '<label><input type="checkbox" name="case" value="' + i + '" checked> ' + (i + 1) + ': ' + c + '</label>'; }).join('');
     h += '<label style="margin-top:6px"><input type="checkbox" name="walls" checked> gevelaanzichten</label>';
     h += '<div class="small" style="margin-top:6px">Instellingen</div><label>c<sub>pi</sub> <select name="scen">' + [['S1', 'S1 gesloten (+0,2)'], ['S2', 'S2 gesloten (−0,3)'], ['S3', 'S3 openingen'], ['S4', 'S4 handmatig'], ['S5', 'S5 open grensvlak']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === 'S3' ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
-    h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">Overkapping <label><input type="checkbox" name="csign" value="min" checked> opwaarts</label><label><input type="checkbox" name="csign" value="max" checked> neerwaarts</label></div><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label></fieldset></div>';
+    h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">Overkapping <label><input type="checkbox" name="csign" value="min" checked> opwaarts</label><label><input type="checkbox" name="csign" value="max" checked> neerwaarts</label></div><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label><label>Spant (§3c) <select name="frame"></select></label></fieldset></div>';
     h += '<fieldset class="dlgwide"><legend>Aannames</legend>' + assList().map(function (a, i) { return '<label><input type="checkbox" name="ass" value="' + i + '" checked> ' + a[0] + '</label>'; }).join('') + '<label for="rNotes" style="margin-top:6px">Eigen aannames en opmerkingen (één per regel; worden mee bewaard in het projectbestand)</label><textarea id="rNotes" rows="4"></textarea></fieldset>';
-    h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button value="cancel">Annuleren</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
+    h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button type="button" id="rCancel">Annuleren</button><button type="button" id="rSave">Opslaan en sluiten</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
     $('reportDlg').innerHTML = h;
     $('rHint').textContent = PAGE ? 'Deze weergave kan niet rechtstreeks afdrukken: exporteer het rapport als HTML-bestand, open het in een browser en druk af of bewaar als PDF (A4).' : 'Afdrukken opent het afdrukvenster van de browser: kies “Opslaan als PDF” en papierformaat A4; de witranden zitten in het rapport zelf (Marges “Standaard” of “Geen”). Exporteren bewaart een losstaand HTML-rapport.';
     $('rNotes').value = NOTES; $('rNotes').oninput = function () { NOTES = this.value; renderAss(); };
     $('rAll').onclick = function () { $('reportDlg').querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = true; }); };
     $('rNone').onclick = function () { $('reportDlg').querySelectorAll('input[name=part]').forEach(function (c) { c.checked = false; }); };
+    $('rCancel').onclick = function () { revertDlg(); closeDlg(); };
+    $('rSave').onclick = function () { lsSet('report', JSON.stringify(reportSettings())); lsSet('notes', NOTES); DLGSNAP = null; closeDlg(); note('Rapportinstellingen bewaard (ook in het projectbestand bij Project opslaan).'); };
+    $('reportDlg').oncancel = function () { revertDlg(); };
     if ($('rPrint')) $('rPrint').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); printDoc(d); };
     $('rExport').onclick = function () { var d = docBody(); if (!d) return; closeDlg(); deliver('windrapport_loods_gent.html', '<!doctype html><html lang="' + I18N.get() + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + I18N.Lt('Windrapport loods Gent') + '</title><style>' + document.querySelector('style').textContent + '\nbody{background:#fff}main.rep{max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}@media print{.card{break-inside:auto}}</style></head><body><main class="rep">' + pageWrap(d) + '</main></body></html>', 'text/html'); };
   }
+  var DLGSNAP = null, RFRAME = null;
+  function fillFrameSel() {
+    var f = $('rForm'); if (!f || !EL || EL.err) return;
+    var cur = f.frame.value || RFRAME || $('e_frame').value;
+    f.frame.innerHTML = EL.frames.map(function (fr, k) { return '<option value="' + k + '">' + fr.name + ' · y = ' + fmt(fr.y, 3) + ' m</option>'; }).join('');
+    f.frame.value = cur !== null && cur !== '' && +cur < EL.frames.length ? String(cur) : String(Math.floor(EL.frames.length / 2));
+  }
+  function openDlg() { fillFrameSel(); DLGSNAP = { rs: reportSettings(), notes: NOTES }; var d = $('reportDlg'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); }
+  function revertDlg() { if (!DLGSNAP) return; applyReportSettings(DLGSNAP.rs); NOTES = DLGSNAP.notes; $('rNotes').value = NOTES; renderAss(); DLGSNAP = null; }
   function closeDlg() { var d = $('reportDlg'); if (d.close) d.close(); else d.removeAttribute('open'); }
   function docBody() {
     var f = $('rForm'), parts = [].map.call(f.querySelectorAll('input[name=part]:checked'), function (c) { return c.value; });
@@ -998,7 +1049,9 @@
     if (!parts.length && !assSel.length && !own.length) { $('rHint').textContent = 'Kies minstens één onderdeel.'; return null; }
     var o = OUT, head = '<section class="card"><h1 style="font-size:20px">Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1><p class="small">Windtool versie ' + APP_VERSION + ' · NBN EN 1991-1-4:2005 + ANB:2010 · rapport opgemaakt op ' + new Date().toLocaleString('nl-BE') + ' · terreincategorie ' + o.P.cat + ' · ' + o.vols.map(function (v) { return v.name + ': ' + (v.closed ? 'gesloten' : 'open'); }).join(' · ') + '</p><p class="small">Technisch rekenhulpmiddel – vervangt niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur.</p></section>';
     var html = head;
+    var rDirs = [].map.call(f.querySelectorAll('input[name=dir]:checked'), function (c) { return c.value; }), rCases = [].map.call(f.querySelectorAll('input[name=case]:checked'), function (c) { return +c.value; }), rSigns = [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; });
     parts.forEach(function (id) {
+      if (id === 'sec-elem') { html += '<section class="card zonesec"><h2>Belastingen per constructie-element</h2>' + elemReport({ dirs: rDirs, cases: rCases, signs: rSigns, scen: f.scen.value, mode: f.mode.value, frame: f.frame.value }) + '</section>'; return; }
       if (id === 'snap3d') {
         var cv = document.querySelector('#viewer canvas'), img = null;
         try { img = cv ? cv.toDataURL('image/png') : null; } catch (e) { img = null; }
@@ -1079,6 +1132,7 @@
       b.onclick = function () { showTab(k); };
       b.onkeydown = function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); var o = k === 'in' ? 'out' : 'in'; showTab(o); $('tab-' + o).focus(); } };
     });
+    $('grpOpen').onclick = function () { setGroups(true); }; $('grpClose').onclick = function () { setGroups(false); };
     $('btnToOut').onclick = function () { showTab('out'); window.scrollTo(0, 0); };
     document.querySelectorAll('nav.toc a').forEach(function (a) { a.onclick = function (e) { e.preventDefault(); goSection(a.getAttribute('href').slice(1)); }; });
     var h = (location.hash || '').slice(1);
@@ -1129,7 +1183,8 @@
     initTabs();
     ['r_scen', 'r_meas', 'r_sign', 'r_mode', 'r_dir'].forEach(function (id) { $(id).onchange = renderReport; });
     buildDialog();
-    var openDlg = function () { var d = $('reportDlg'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); };
+    try { var lr = JSON.parse(lsGet('report') || 'null'); if (lr) applyReportSettings(lr); } catch (e) { }
+    if (lsGet('notes')) { NOTES = lsGet('notes'); $('rNotes').value = NOTES; }
     $('btnReportDlg').onclick = openDlg; if ($('btnReport2')) $('btnReport2').onclick = openDlg;
     $('btnSave').onclick = saveProject;
     $('btnOpen').onclick = function () {

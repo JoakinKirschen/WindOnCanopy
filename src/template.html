@@ -29,13 +29,16 @@ header button.primary{background:var(--accent2);border-color:var(--accent2)}
 .pane{max-width:1700px;margin:0 auto;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px;min-width:0}
 /* verborgen tabblad blijft opgemaakt (3D-weergave en afbeeldingen behouden hun afmetingen) maar is onzichtbaar */
 .pane.off{position:fixed;inset:0;overflow:hidden;visibility:hidden;pointer-events:none;z-index:-1}
-.inlayout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(380px,1fr);gap:14px;align-items:start}
-.inpanel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0}
+.inpanel{min-width:0}
 .inpanel .inhint{margin:0 0 10px}
-#inputs{columns:2 300px;column-gap:12px}
-#inputs details.grp{break-inside:avoid;display:block}
-.preview{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(var(--hdr,112px) + 12px);max-height:calc(100vh - var(--hdr,112px) - 24px);overflow:auto;min-width:0;border-radius:10px}
-.preview .grid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#inputs{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:8px;align-items:start}
+#inputs details.grp{margin:0}
+.inhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:4px}
+.inhead h2{border:0;margin:0;padding:0}
+.inbtns{display:flex;gap:6px;flex-wrap:wrap}
+.statusrow{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.statusrow #statusBox{flex:1 1 480px;min-width:0}
+.statusrow .gonext{width:auto;margin:0;flex:0 0 auto}
 section.card{scroll-margin-top:calc(var(--hdr,112px) + 10px)}
 nav.tabs{display:flex;gap:4px;align-items:flex-end;margin-top:8px;flex-wrap:wrap}
 nav.tabs button[role=tab]{background:transparent;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;color:#cfe0f1;padding:7px 16px;font-size:14px;font-weight:600}
@@ -43,7 +46,7 @@ nav.tabs button[role=tab]:hover{background:rgba(255,255,255,.08);color:#fff}
 nav.tabs button[role=tab][aria-selected=true]{background:var(--bg);color:var(--ink);border-color:var(--bg)}
 nav.tabs .tabstat{margin-left:auto;font-size:12px;color:#cfe0f1;padding:0 2px 8px}
 nav.tabs .tabstat b{color:#fff}
-.gonext{display:block;width:100%;margin-top:8px;background:var(--accent2);border-color:var(--accent2);color:#fff;font-weight:600}
+.gonext{display:block;background:var(--accent2);border-color:var(--accent2);color:#fff;font-weight:600}
 .gonext:hover{background:#c96a14}
 details.menu{position:relative}
 details.menu>summary{list-style:none;cursor:pointer;font-size:13px;background:#24486e;color:#fff;border:1px solid #3a6290;padding:6px 12px;border-radius:6px;user-select:none}
@@ -54,6 +57,7 @@ details.menu[open]>summary{background:#2f5a87}
 .menupop button{background:#fff !important;color:var(--ink) !important;border:0 !important;text-align:left;padding:7px 10px;border-radius:5px}
 .menupop button:hover{background:var(--soft) !important}
 .menupop hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
+#sec-modelfig .svgbox svg{max-height:440px}
 .elemfig{margin:8px 0}
 .elemfig svg{max-height:520px}
 .f.txt{grid-template-columns:minmax(0,1fr)}
@@ -164,7 +168,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 .ctrl{min-width:0;max-width:100%}
 .ctrl select{font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:5px;max-width:100%;background:#fff;color:var(--ink)}
 .grid2>div{min-width:0}
-@media (max-width:1100px){.inlayout{grid-template-columns:minmax(0,1fr)}.preview{position:static;max-height:none;overflow:visible}.grid2{grid-template-columns:minmax(0,1fr)}.viewer-wrap{height:520px}}
+@media (max-width:1100px){.grid2{grid-template-columns:minmax(0,1fr)}.viewer-wrap{height:520px}}
 @media (max-width:600px){.ctrl{width:100%}.ctrl select{width:100%}.pane{padding-block:8px}nav.tabs .tabstat{display:none}nav.tabs button[role=tab]{padding:6px 10px;font-size:13px}.viewer-wrap{height:440px}#legend{width:170px}#viewInfo{max-width:210px}.navhelp{display:none}.seg label{padding:5px 8px}.ctrlbar{gap:8px}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto !important}}
 #printArea{display:none}
@@ -201,9 +205,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   .zonesec,.newpage{break-before:page}
   .rcase > h3,.rcase > p{break-after:avoid}
   header{position:static}
-  header .btns, nav.tabs, #panel, .gonext, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
+  header .btns, nav.tabs, #panel, .gonext, .inbtns, .viewbtns, .ctrlbar, .toggles, .filterbar, nav.toc, .navhelp, #fileMsg, #exportBox{display:none !important}
   .pane,.pane.off{display:block;position:static;visibility:visible;padding:0;max-width:none}
-  .inlayout{display:block}.preview{position:static;max-height:none;overflow:visible}
+  #inputs{display:block}
   .elemfig svg{max-height:120mm}
   section.card{border:none;border-radius:0;padding:0;margin:0 0 6mm;break-inside:auto}
   h1{font-size:16px} h2{font-size:14px;margin-bottom:2mm;break-after:avoid} h3{font-size:12px;margin:3mm 0 1.5mm;break-after:avoid}
@@ -254,45 +258,19 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 <div id="exportBox" class="banner info" hidden style="max-width:1700px;margin:10px auto 0"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b id="exportMsg"></b><button id="exportClose">Sluiten</button></div><textarea id="exportText" readonly aria-label="Exporttekst"></textarea></div>
 
 <div class="pane" id="pane-in" role="tabpanel" aria-labelledby="tab-in">
-<div class="inlayout">
-  <div id="panel" class="inpanel">
-    <p class="small inhint">Wijzigingen worden meteen doorgerekend; het model rechts toont welke theorie per volume geldt. Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen.</p>
-    <!--INPUTS-->
-  </div>
-  <div class="preview">
   <section class="card" id="sec-status">
-    <div id="statusBox"></div>
-    <button type="button" class="gonext" id="btnToOut">Naar de resultaten →</button>
+    <div class="statusrow"><div id="statusBox"></div><button type="button" class="gonext" id="btnToOut">Naar de resultaten →</button></div>
   </section>
 
-  <section class="card" id="sec-model">
-    <h2>1. Model en automatisch gekozen theorie</h2>
-    <p class="small">Daken en wanden worden in het invoerpaneel in- of uitgeschakeld. Overspanningen die niet door een aanwezige tussenwand (as 7, as 13) gescheiden zijn, vormen één volume. Per volume bepaalt het programma uit de openingspercentages welke theorie geldt: <b>≥ 2 vlakken met meer dan 30 % openingen</b> ⇒ open constructie (dak EN 7.3, wanden EN 7.4, EN 7.2.9(2)); anders gesloten gebouw (EN 7.2, c<sub>pi</sub> volgens 7.2.9: dominante zijde of fig. 7.13, plus +0,2/−0,3).</p>
+  <section class="card inpanel" id="panel">
+    <div class="inhead"><h2>Invoer</h2><span class="inbtns"><button type="button" id="grpOpen">Alles openklappen</button><button type="button" id="grpClose">Alles dichtklappen</button></span></div>
+    <p class="small inhint">Wijzigingen worden meteen doorgerekend; het model en de 3D-weergave hieronder volgen meteen. Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen.</p>
+    <!--INPUTS-->
+  </section>
+
+  <section class="card" id="sec-modelfig">
+    <h2>Model</h2>
     <div class="grid2"><div><div class="svgbox" id="svgPlan"></div></div><div><div class="svgbox" id="svgSec"></div></div></div>
-    <h3>Volumes en openingspercentages</h3>
-    <div class="tablewrap"><table id="tblVol"></table></div>
-    <h3>Berekende delen</h3>
-    <div class="tablewrap"><table id="tblParts"></table></div>
-  </section>
-  </div>
-</div>
-</div>
-
-<div class="pane off" id="pane-out" role="tabpanel" aria-labelledby="tab-out">
-  <section class="card" id="sec-toc">
-    <nav class="toc"><a href="#sec-model">Model (invoer)</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D</a><a href="#sec-report">Rapport per zone</a><a href="#sec-elem">Per element</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
-  </section>
-
-  <section class="card" id="sec-summary">
-    <h2>2. Samenvatting maatgevende waarden</h2>
-    <div class="small" id="sumMode"></div>
-    <h3>Daken en overkappingen</h3>
-    <div class="kpis" id="kpiRoof"></div>
-    <h3>Gevels en wanden</h3>
-    <div class="kpis" id="kpiWall"></div>
-    <h3>Tabel maatgevende windbelastingen</h3>
-    <div class="tablewrap"><table id="tblGov"></table></div>
-    <p class="small">Lokaal = cpe bij belaste oppervlakte A<sub>lok</sub> (bekleding, bevestigingen). Globaal = cpe,10 (zones ≥ 10 m², hoofddraagconstructie). Ontwerpwaarde = γ<sub>Q</sub>·K<sub>FI</sub>·r·w<sub>k</sub> met r = eventuele tijdelijke reductie.</p>
   </section>
 
   <section class="card" id="sec-3d">
@@ -333,6 +311,36 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
     </div>
     <div id="selinfo">Beweeg over een zone voor alle waarden; klik om te selecteren.</div>
   </section>
+
+</div>
+
+<div class="pane off" id="pane-out" role="tabpanel" aria-labelledby="tab-out">
+  <section class="card" id="sec-toc">
+    <nav class="toc"><a href="#sec-model">Model en theorie</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D (invoer)</a><a href="#sec-report">Rapport per zone</a><a href="#sec-elem">Per element</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
+  </section>
+
+  <section class="card" id="sec-model">
+    <h2>1. Model en automatisch gekozen theorie</h2>
+    <p class="small">Daken en wanden worden in het tabblad Invoer in- of uitgeschakeld. Overspanningen die niet door een aanwezige tussenwand (as 7, as 13) gescheiden zijn, vormen één volume. Per volume bepaalt het programma uit de openingspercentages welke theorie geldt: <b>≥ 2 vlakken met meer dan 30 % openingen</b> ⇒ open constructie (dak EN 7.3, wanden EN 7.4, EN 7.2.9(2)); anders gesloten gebouw (EN 7.2, c<sub>pi</sub> volgens 7.2.9: dominante zijde of fig. 7.13, plus +0,2/−0,3).</p>
+    <div class="grid2"><div><div class="svgbox" id="svgPlanR"></div></div><div><div class="svgbox" id="svgSecR"></div></div></div>
+    <h3>Volumes en openingspercentages</h3>
+    <div class="tablewrap"><table id="tblVol"></table></div>
+    <h3>Berekende delen</h3>
+    <div class="tablewrap"><table id="tblParts"></table></div>
+  </section>
+
+  <section class="card" id="sec-summary">
+    <h2>2. Samenvatting maatgevende waarden</h2>
+    <div class="small" id="sumMode"></div>
+    <h3>Daken en overkappingen</h3>
+    <div class="kpis" id="kpiRoof"></div>
+    <h3>Gevels en wanden</h3>
+    <div class="kpis" id="kpiWall"></div>
+    <h3>Tabel maatgevende windbelastingen</h3>
+    <div class="tablewrap"><table id="tblGov"></table></div>
+    <p class="small">Lokaal = cpe bij belaste oppervlakte A<sub>lok</sub> (bekleding, bevestigingen). Globaal = cpe,10 (zones ≥ 10 m², hoofddraagconstructie). Ontwerpwaarde = γ<sub>Q</sub>·K<sub>FI</sub>·r·w<sub>k</sub> met r = eventuele tijdelijke reductie.</p>
+  </section>
+
 
   <section class="card" id="sec-report">
     <h2>3b. Rapport – drukken en coëfficiënten per zone en vlak</h2>
