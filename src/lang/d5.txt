@@ -17,3 +17,7 @@ Netto neerwaarts ondanks negatieve c || Net downward despite negative c || Net v
 ) is groter dan de uitwendige zuiging (c || ) is larger than the external suction (c || ) est plus grande que la dépression extérieure (c
 ), dus w = q || ), so w = q || ), donc w = q
 0: de onderdruk binnen trekt het dak naar beneden. || 0: the underpressure inside pulls the roof down. || 0 : la dépression intérieure tire la toiture vers le bas.
+# versie 1.8.0
+Tekenafspraak EN 5.3(3), fig. 5.1: netto w = w || Sign convention EN 5.3(3), fig. 5.1: net w = w || Convention de signe EN 5.3(3), fig. 5.1 : w net = w
+; positief = naar het buitenvlak toe. Inwendige onderdruk (c || ; positive = towards the outer surface. Internal suction (c || ; positif = vers la face extérieure. La dépression intérieure (c
+0) werkt van het binnenvlak weg, dus naar binnen in het gebouw: op het dak neerwaarts, op een gevel naar binnen. || 0) acts away from the inner surface, i.e. into the building: downward on the roof, inward on a wall. || 0) agit en s'éloignant de la face intérieure, donc vers l'intérieur du bâtiment : vers le bas sur la toiture, vers l'intérieur sur une façade.

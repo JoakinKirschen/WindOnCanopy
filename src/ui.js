@@ -197,7 +197,7 @@
     if (R.errs.length) { $('statusMini').innerHTML = '✘ <b>invoer niet geldig</b> – resultaten niet bijgewerkt'; $('statusBox').innerHTML = '<div class="banner err"><b>Invoer niet geldig – resultaten niet bijgewerkt.</b><ul>' + R.errs.map(function (e) { return '<li>' + e + '</li>'; }).join('') + '</ul></div>'; return; }
     SEL.mode = R.P.mode; var rm = document.querySelector('input[name=mode][value=' + R.P.mode + ']'); if (rm) rm.checked = true;
     try { OUT = WE.compute(R.P); EL = WEL.compute(OUT); } catch (e) { $('statusBox').innerHTML = '<div class="banner err">Rekenfout: ' + e.message + '</div>'; throw e; }
-    if (!EL.err) { OUT.checks = OUT.checks.concat(EL.checks); OUT.warnings = OUT.warnings.concat(EL.warnings); }
+    OUT.EL = EL; if (!EL.err) { OUT.checks = OUT.checks.concat(EL.checks); OUT.warnings = OUT.warnings.concat(EL.warnings); }
     var fs = $('f_surf'), cur = fs.value;
     fs.innerHTML = '<option value="all">alle</option>' + OUT.parts.map(function (p) { return '<option value="' + p + '">' + PN[p] + '</option>'; }).join('');
     fs.value = OUT.parts.indexOf(cur) >= 0 ? cur : 'all';
@@ -577,12 +577,13 @@
     var sel = elemSel(), k = +fsel.value;
     var dmode = $('e_mode').value === 'd', fac = o.vb.red * (dmode ? P.gammaQ * P.KFI : 1), un = dmode ? 'ontwerp' : 'karakteristiek';
     box.innerHTML = elemCase(k, sel, fac, un) + elemCommon(fac);
+    if (SEL.frame !== k) { SEL.frame = k; if (window.View3D && OUT) View3D.update(OUT, SEL); }
   }
   function elemCase(k, sel, fac, un) {
     var E = EL, o = OUT, P = o.P, fr = E.frames[k], T = E.frameLoads(k, sel);
     var LO = E.lineOrder.map(function (i) { return E.lines[i]; }), PNs = function (id) { return PN[id] || id; };
     var c = function (v, d) { return '<td class="' + cls(v) + '">' + fmt(v, d === undefined ? 1 : d, true) + '</td>'; };
-    var h = '<p class="small">Combinatie: <b>' + DIRN[sel.dir].name + '</b>' + (sel.closed ? ' · dakgeval ' + sel.closed.cid + ' · ' + SCN[sel.closed.scen] : '') + (sel.can ? ' · overkapping ' + (sel.can.sign === 'min' ? 'opwaarts' : 'neerwaarts') + ' (' + sel.can.lay + ')' : '') + ' · waarden ' + un + (o.vb.red < 1 ? ' (incl. r = ' + fmt(o.vb.red, 3) + ')' : '') + '. Teken: q en F + = naar het vlak toe (dak: neerwaarts), V + = druk op de fundering, − = trek/opwaarts; H + = richting as 14.</p>';
+    var h = '<p class="small">Combinatie: <b>' + DIRN[sel.dir].name + '</b>' + (sel.closed ? ' · dakgeval ' + sel.closed.cid + ' · ' + SCN[sel.closed.scen] : '') + (sel.can ? ' · overkapping ' + (sel.can.sign === 'min' ? 'opwaarts' : 'neerwaarts') + ' (' + sel.can.lay + ')' : '') + ' · waarden ' + un + (o.vb.red < 1 ? ' (incl. r = ' + fmt(o.vb.red, 3) + ')' : '') + '. Teken: q en F + = naar het vlak toe (dak: neerwaarts), V + = druk op de fundering, − = trek/opwaarts; H + = richting as 14.</p><p class="small">Tekenafspraak EN 5.3(3), fig. 5.1: netto w = w<sub>e</sub> − w<sub>i</sub> = q<sub>p</sub>(z<sub>e</sub>)·c<sub>pe</sub> − q<sub>p</sub>(z<sub>i</sub>)·c<sub>pi</sub>; positief = naar het buitenvlak toe. Inwendige onderdruk (c<sub>pi</sub> &lt; 0) werkt van het binnenvlak weg, dus naar binnen in het gebouw: op het dak neerwaarts, op een gevel naar binnen.</p>';
     h += '<div class="svgbox elemfig">' + elemSVG(T, fr, fac) + '</div>';
     // lijnlasten
     h += '<h3>Lijnlasten op spant ' + fr.name + '</h3><div class="tablewrap"><table><tr><th class="l">Deel</th><th class="l">Helling</th><th class="l">Zone(s)</th><th>x van</th><th>x tot</th><th>c<sub>pe</sub></th><th>c<sub>pi</sub></th><th>w<br>[kN/m²]</th><th>q<sub>⊥</sub> = q<sub>v</sub><br>[kN/m]</th><th>q<sub>h</sub><br>[kN/m]</th><th>Resultante<br>[kN]</th></tr>';
