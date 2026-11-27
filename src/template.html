@@ -317,47 +317,11 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
 <div class="pane off" id="pane-out" role="tabpanel" aria-labelledby="tab-out">
   <section class="card" id="sec-toc">
-    <nav class="toc"><a href="#sec-model">Model en theorie</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D (invoer)</a><a href="#sec-report">Rapport per zone</a><a href="#sec-elem">Per element</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
-  </section>
-
-  <section class="card" id="sec-model">
-    <h2>1. Model en automatisch gekozen theorie</h2>
-    <p class="small">EN 7.2.9(2): ≥ 2 vlakken met > 30 % openingen ⇒ open constructie (EN 7.3 / 7.4); anders gesloten gebouw (EN 7.2).</p>
-    <h3>Volumes en openingspercentages</h3>
-    <div class="tablewrap"><table id="tblVol"></table></div>
-    <h3>Berekende delen</h3>
-    <div class="tablewrap"><table id="tblParts"></table></div>
-  </section>
-
-  <section class="card" id="sec-summary">
-    <h2>2. Samenvatting maatgevende waarden</h2>
-    <div class="small" id="sumMode"></div>
-    <h3>Daken en overkappingen</h3>
-    <div class="kpis" id="kpiRoof"></div>
-    <h3>Gevels en wanden</h3>
-    <div class="kpis" id="kpiWall"></div>
-    <h3>Tabel maatgevende windbelastingen</h3>
-    <div class="tablewrap"><table id="tblGov"></table></div>
-    <p class="small">Lokaal = cpe bij belaste oppervlakte A<sub>lok</sub> (bekleding, bevestigingen). Globaal = cpe,10 (zones ≥ 10 m², hoofddraagconstructie). Ontwerpwaarde = γ<sub>Q</sub>·K<sub>FI</sub>·r·w<sub>k</sub> met r = eventuele tijdelijke reductie.</p>
-  </section>
-
-
-  <section class="card" id="sec-report">
-    <h2>3b. Rapport – drukken en coëfficiënten per zone en vlak</h2>
-    <p class="small">Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting.</p>
-    <div class="filterbar">
-      <label>c<sub>pi</sub>-scenario <select id="r_scen"><option value="S1">S1 gesloten (+0,2)</option><option value="S2">S2 gesloten (−0,3)</option><option value="S3" selected>S3 openingen (7.2.9)</option><option value="S4">S4 handmatig</option><option value="S5">S5 open grensvlak (WInt)</option></select></label>
-      <label>Coëfficiënten <select id="r_meas"><option value="loc">lokaal (A_lok)</option><option value="glob">globaal (c_pe,10 / c_f)</option></select></label>
-      <label>Overkapping <select id="r_sign"><option value="min">opwaarts (min)</option><option value="max">neerwaarts (max)</option><option value="both">beide</option></select></label>
-      <label>Waarde <select id="r_mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label>
-      <label>Richting <select id="r_dir"><option value="all">alle (4)</option><option value="R">van rechts</option><option value="L">van links</option><option value="A">van A</option><option value="P">van P</option></select></label>
-      <button type="button" id="btnReport2">Rapport samenstellen…</button>
-    </div>
-    <div id="reportBox"></div>
+    <nav class="toc"><a href="#sec-elem">Per element</a><a href="#sec-model">Model en theorie</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D (invoer)</a><a href="#sec-report">Rapport per zone</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
   </section>
 
   <section class="card" id="sec-elem">
-    <h2>3c. Belastingen per constructie-element</h2>
+    <h2>1. Belastingen per constructie-element</h2>
     <div class="filterbar">
       <label>Spant <select id="e_frame"></select></label>
       <label>Richting <select id="e_dir"></select></label>
@@ -371,30 +335,66 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
     <div id="elemInfo"></div>
   </section>
 
+  <section class="card" id="sec-model">
+    <h2>2. Model en automatisch gekozen theorie</h2>
+    <p class="small">EN 7.2.9(2): ≥ 2 vlakken met > 30 % openingen ⇒ open constructie (EN 7.3 / 7.4); anders gesloten gebouw (EN 7.2).</p>
+    <h3>Volumes en openingspercentages</h3>
+    <div class="tablewrap"><table id="tblVol"></table></div>
+    <h3>Berekende delen</h3>
+    <div class="tablewrap"><table id="tblParts"></table></div>
+  </section>
+
+  <section class="card" id="sec-summary">
+    <h2>3. Samenvatting maatgevende waarden</h2>
+    <div class="small" id="sumMode"></div>
+    <h3>Daken en overkappingen</h3>
+    <div class="kpis" id="kpiRoof"></div>
+    <h3>Gevels en wanden</h3>
+    <div class="kpis" id="kpiWall"></div>
+    <h3>Tabel maatgevende windbelastingen</h3>
+    <div class="tablewrap"><table id="tblGov"></table></div>
+    <p class="small">Lokaal = cpe bij belaste oppervlakte A<sub>lok</sub> (bekleding, bevestigingen). Globaal = cpe,10 (zones ≥ 10 m², hoofddraagconstructie). Ontwerpwaarde = γ<sub>Q</sub>·K<sub>FI</sub>·r·w<sub>k</sub> met r = eventuele tijdelijke reductie.</p>
+  </section>
+
+
+  <section class="card" id="sec-report">
+    <h2>4. Rapport – drukken en coëfficiënten per zone en vlak</h2>
+    <p class="small">Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting.</p>
+    <div class="filterbar">
+      <label>c<sub>pi</sub>-scenario <select id="r_scen"><option value="S1">S1 gesloten (+0,2)</option><option value="S2">S2 gesloten (−0,3)</option><option value="S3" selected>S3 openingen (7.2.9)</option><option value="S4">S4 handmatig</option><option value="S5">S5 open grensvlak (WInt)</option></select></label>
+      <label>Coëfficiënten <select id="r_meas"><option value="loc">lokaal (A_lok)</option><option value="glob">globaal (c_pe,10 / c_f)</option></select></label>
+      <label>Overkapping <select id="r_sign"><option value="min">opwaarts (min)</option><option value="max">neerwaarts (max)</option><option value="both">beide</option></select></label>
+      <label>Waarde <select id="r_mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label>
+      <label>Richting <select id="r_dir"><option value="all">alle (4)</option><option value="R">van rechts</option><option value="L">van links</option><option value="A">van A</option><option value="P">van P</option></select></label>
+      <button type="button" id="btnReport2">Rapport samenstellen…</button>
+    </div>
+    <div id="reportBox"></div>
+  </section>
+
   <section class="card" id="sec-geo">
-    <h2>4. Geometrie uit de plannen</h2>
+    <h2>5. Geometrie uit de plannen</h2>
     <div class="tablewrap"><table id="tblGeo"></table></div>
   </section>
 
   <section class="card" id="sec-qp">
-    <h2>5. Basiswindsnelheid en piekstuwdruk</h2>
+    <h2>6. Basiswindsnelheid en piekstuwdruk</h2>
     <div id="qpSteps"></div>
     <h3>Stuwdrukprofiel</h3>
     <div class="tablewrap"><table id="tblProf"></table></div>
   </section>
 
   <section class="card" id="sec-cpe">
-    <h2>6. Gesloten volumes – drukcoëfficiënten en zones</h2>
+    <h2>7. Gesloten volumes – drukcoëfficiënten en zones</h2>
     <div id="cpeInfo"></div>
   </section>
 
   <section class="card" id="sec-cpi">
-    <h2>7. Gesloten volumes – inwendige druk (EN 7.2.9)</h2>
+    <h2>8. Gesloten volumes – inwendige druk (EN 7.2.9)</h2>
     <div id="cpiInfo"></div>
   </section>
 
   <section class="card" id="sec-res">
-    <h2>8. Gesloten volumes – resultaten per zone</h2>
+    <h2>9. Gesloten volumes – resultaten per zone</h2>
     <div class="filterbar">
       <label>Vlak <select id="f_surf"><option value="all">alle</option></select></label>
       <label>Richting <select id="f_dir"><option value="all">alle</option></select></label>
@@ -404,22 +404,22 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   </section>
 
   <section class="card" id="sec-tot">
-    <h2>9. Gesloten volumes – totale krachten</h2>
+    <h2>10. Gesloten volumes – totale krachten</h2>
     <div id="totInfo"></div>
   </section>
 
   <section class="card" id="sec-open">
-    <h2>10. Open delen – overkappingen (EN 7.3) en vrijstaande wanden (EN 7.4)</h2>
+    <h2>11. Open delen – overkappingen (EN 7.3) en vrijstaande wanden (EN 7.4)</h2>
     <div id="openInfo"></div>
   </section>
 
   <section class="card" id="sec-temp">
-    <h2>11. Tijdelijke situatie en veiligheidsfactoren</h2>
+    <h2>12. Tijdelijke situatie en veiligheidsfactoren</h2>
     <div id="tempInfo"></div>
   </section>
 
   <section class="card" id="sec-ver">
-    <h2>12. Verificatie</h2>
+    <h2>13. Verificatie</h2>
     <h3>Automatische controles</h3>
     <ul class="checks" id="checks"></ul>
     <h3>Handmatig uitgewerkt controlevoorbeeld</h3>
@@ -427,17 +427,17 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   </section>
 
   <section class="card" id="sec-ass">
-    <h2>13. Aannames en te bevestigen gegevens</h2>
+    <h2>14. Aannames en te bevestigen gegevens</h2>
     <div id="assInfo"></div>
   </section>
 
   <section class="card" id="sec-ref">
-    <h2>14. Gebruikte Eurocode-artikelen</h2>
+    <h2>15. Gebruikte Eurocode-artikelen</h2>
     <div class="tablewrap"><table id="tblRef"></table></div>
   </section>
 
   <section class="card" id="sec-help">
-    <h2>15. Gebruiksaanwijzing</h2>
+    <h2>16. Gebruiksaanwijzing</h2>
     <div id="helpInfo"></div>
     <p class="banner warn"><b>Disclaimer.</b> Dit is een technisch rekenhulpmiddel. De resultaten vervangen niet de controle en goedkeuring door een bevoegd stabiliteitsingenieur.</p>
   </section>

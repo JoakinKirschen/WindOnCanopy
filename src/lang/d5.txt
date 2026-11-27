@@ -7,7 +7,7 @@ Model || Model || Modèle
 Model en theorie || Model and theory || Modèle et théorie
 3D (invoer) || 3D (input) || 3D (données)
 Rapport per zone en per element || Report per zone and per member || Rapport par zone et par élément
-Spant (§3c) || Frame (§3c) || Portique (§3c)
+Spant (§1) || Frame (§1) || Portique (§1)
 Opslaan en sluiten || Save and close || Enregistrer et fermer
 Rapportinstellingen bewaard (ook in het projectbestand bij Project opslaan). || Report settings saved (also stored in the project file on Save project). || Paramètres du rapport enregistrés (aussi dans le fichier de projet lors de Enregistrer le projet).
 Zelfde windrichtingen en dakgevallen als het rapport per zone; omhullenden, gordingen, gevelregels, gevelkolommen en windverbanden aan het einde. || Same wind directions and roof cases as the report per zone; envelopes, purlins, side rails, wall columns and wind bracing at the end. || Mêmes directions du vent et cas de toiture que le rapport par zone ; enveloppes, pannes, lisses, poteaux de façade et contreventements à la fin.
@@ -30,7 +30,7 @@ naargelang de keuze – vergelijk met de stand “globaal”. || depending on th
 lokale c || local c || valeurs locales c
 globale c || global c || valeurs globales c
 # versie 1.9.0
-lijnlasten q in kN/m (⊥ dak, per m), puntlasten F en reacties in kN || line loads q in kN/m (⊥ roof, per m), point loads F and reactions in kN || charges linéiques q en kN/m (⊥ toiture, par m), charges ponctuelles F et réactions en kN
+lijnlasten q in kN/m (⊥ dak, per m), reacties in kN || line loads q in kN/m (⊥ roof, per m), reactions in kN || charges linéiques q en kN/m (⊥ toiture, par m), réactions en kN
 volgens belaste oppervlakte (fig. 7.2): spanten en kolommen met de zoneoppervlakte, gordingen, regels en gevelkolommen met A = L·h.o.h. || according to loaded area (fig. 7.2): frames and columns with the zone area, purlins, rails and wall columns with A = L·spacing || selon la surface chargée (fig. 7.2) : portiques et poteaux avec la surface de zone, pannes, lisses et poteaux de façade avec A = L·entraxe
 voor alle elementen || for all members || pour tous les éléments
 (lokaal) voor alle elementen – zeer veilig || (local) for all members – very conservative || (local) pour tous les éléments – très sécuritaire
