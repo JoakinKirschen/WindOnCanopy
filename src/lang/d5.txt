@@ -29,3 +29,12 @@ per zone (hoofddraagconstructie) en lijnlast q = w · invloedsbreedte [kN/m]. He
 naargelang de keuze – vergelijk met de stand “globaal”. || depending on the choice – compare with the setting “global”. || selon le choix – comparez avec le réglage « global ».
 lokale c || local c || valeurs locales c
 globale c || global c || valeurs globales c
+# versie 1.9.0
+lijnlasten q in kN/m (⊥ dak, per m), puntlasten F en reacties in kN || line loads q in kN/m (⊥ roof, per m), point loads F and reactions in kN || charges linéiques q en kN/m (⊥ toiture, par m), charges ponctuelles F et réactions en kN
+volgens belaste oppervlakte (fig. 7.2): spanten en kolommen met de zoneoppervlakte, gordingen, regels en gevelkolommen met A = L·h.o.h. || according to loaded area (fig. 7.2): frames and columns with the zone area, purlins, rails and wall columns with A = L·spacing || selon la surface chargée (fig. 7.2) : portiques et poteaux avec la surface de zone, pannes, lisses et poteaux de façade avec A = L·entraxe
+voor alle elementen || for all members || pour tous les éléments
+(lokaal) voor alle elementen – zeer veilig || (local) for all members – very conservative || (local) pour tous les éléments – très sécuritaire
+. Lijnlast q = w · invloedsbreedte [kN/m]. Het rapport per zone toont w in kN/m², met lokale c || . Line load q = w · tributary width [kN/m]. The report per zone shows w in kN/m², with local c || . Charge linéique q = w · largeur d'influence [kN/m]. Le rapport par zone montre w en kN/m², avec valeurs locales c
+volgens belaste oppervlakte (fig. 7.2) || according to loaded area (fig. 7.2) || selon la surface chargée (fig. 7.2)
+c_pe,10 voor alle elementen || c_pe,10 for all members || c_pe,10 pour tous les éléments
+c_pe,1 (lokaal) voor alle elementen || c_pe,1 (local) for all members || c_pe,1 (local) pour tous les éléments
