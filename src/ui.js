@@ -518,7 +518,7 @@
   }
   function elemSVG(T, fr, fac, cid) {
     var o = OUT, sp = o.spans, E = EV || EL, xmax = Math.max.apply(null, E.lines.map(function (l) { return l.x; }));
-    var zmax = Math.max.apply(null, sp.map(function (s) { return s.top; })), sc = 860 / xmax, ml = 150, mr = 110, mt = 200, mb = 80, Wd = ml + xmax * sc + mr, Hd = mt + zmax * sc + mb;
+    var zmax = Math.max.apply(null, sp.map(function (s) { return s.top; })), sc = 860 / xmax, ml = 150, mr = 110, mt = 60, mb = 80, Wd = ml + xmax * sc + mr, Hd = mt + zmax * sc + mb;
     var X = function (x) { return ml + x * sc; }, Y = function (z) { return mt + (zmax - z) * sc; }, f1 = function (v) { return fmt(v, 1); };
     function zAt(s, x) {
       if (s.nb > 1 || s.luifel) { var d = s.w / s.nb, u = (x - s.x0) - Math.floor(Math.min(x - s.x0, s.w - 1e-9) / d) * d, t = (s.zt - s.zl) / (d / 2); return s.zl + Math.min(u, d - u) * t; }
@@ -543,24 +543,34 @@
     // daklasten (band boven het dak)
     var qm = 1e-9; T.segs.forEach(function (g) { qm = Math.max(qm, Math.abs(g.q)); }); T.pts.forEach(function (p) { qm = Math.max(qm, Math.abs(p.q)); });
     function cl(g) { var sg = g.zones ? pm(g.zones.split('+')[0], cid) : ''; return sv('c', String(g.cl || 'c_pe').replace(/^c_/, ''), sg) + ' = ' + fmt(g.cpe, 2, true) + ' · ' + sv('c', 'pi') + ' = ' + fmt(g.cpi, 2, true); }
-    function band(span, a, b, q, light, lines, lpos) {
+    var LBL = [];
+    function tw(t, sz) { return String(t).replace(/<[^>]*>/g, '').replace(/&[a-z]+;/g, 'x').length * sz * 0.56; }
+    function band(span, a, b, q, light, lines) {
       var s = sp[span], pts = prof(s, a, b, 6), hh = Math.abs(q) / qm * 40, col = q >= 0 ? POS : NEG;
       var top = pts.map(function (p) { return X(p[0]).toFixed(1) + ',' + (Y(p[1]) - 4 - hh).toFixed(1); }), bot = pts.slice().reverse().map(function (p) { return X(p[0]).toFixed(1) + ',' + (Y(p[1]) - 4).toFixed(1); });
       var r = '<polygon points="' + top.concat(bot).join(' ') + '" fill="' + col + '" fill-opacity="' + (light ? 0.10 : 0.18) + '" stroke="' + col + '" stroke-opacity="0.6" stroke-width="0.8"/>';
       var n = Math.max(1, Math.round((b - a) * sc / 26));
       if (!light) for (var i = 0; i < n; i++) { var x = a + (b - a) * (i + 0.5) / n, y0 = Y(zAt(s, x)) - 4; r += q >= 0 ? arrow(X(x), y0 - hh, X(x), y0, col) : arrow(X(x), y0, X(x), y0 - hh, col); }
-      var wd = (b - a) * sc, xm = a + (b - a) * (lpos === undefined ? 0.5 : lpos), yt = Y(zAt(s, xm)) - 4 - hh;
-      var nL = lines.length;
-      if (wd >= 150) lines.forEach(function (t, i) { r += txt(X(xm), yt - 5 - (nL - 1 - i) * 11, t, 'middle', i ? '#5f6b7a' : col, i ? 8.5 : 9.5, !i); });
-      else lines.forEach(function (t, i) { var xx = X(xm) + 3 + (i - (nL - 1) / 2) * 10; r += '<text transform="translate(' + xx.toFixed(1) + ',' + (yt - 4).toFixed(1) + ') rotate(-90)" font-size="' + (i ? 8.5 : 9) + '"' + (i ? '' : ' font-weight="600"') + ' text-anchor="start" fill="' + (i ? '#5f6b7a' : col) + '">' + t + '</text>'; });
+      var xm = (a + b) / 2, yt = Math.min(Y(zAt(s, a)), Y(zAt(s, Math.min(b, s.x1 - 1e-9))), Y(zAt(s, xm))) - 4 - hh;
+      var lw = Math.max.apply(null, lines.map(function (t, i) { return tw(t, i ? 8.5 : 9.5); }));
+      LBL.push({ x: X(xm), yt: yt, w: lw, fit: lw + 8 <= (b - a) * sc, lines: lines, col: col });
       return r;
     }
     T.segs.forEach(function (g) { h += band(g.span, g.x0, g.x1, g.q * fac, false, ['q = ' + fmt(g.q * fac, 2, true) + ' kN/m', 'w = ' + fmt(g.w * fac, 3, true) + ' kN/m²', cl(g)]); });
-    T.pts.forEach(function (p) {
-      h += band(p.span, p.x0, p.x1, p.q * fac, true, ['q = ' + fmt(p.q * fac, 2, true) + ' kN/m', 'w = ' + fmt(p.w * fac, 3, true) + ' kN/m²', 'ψ·' + sv('c', 'f') + ' = ' + fmt(p.cf, 2, true)], p.pitch === 'L' ? 0.2 : 0.8);
-      var s = sp[p.span], y0 = Y(zAt(s, p.x)) - 4, col = p.F >= 0 ? POS : NEG, L = 46;
-      h += p.F >= 0 ? arrow(X(p.x), y0 - L, X(p.x), y0, col, 2.4) : arrow(X(p.x), y0, X(p.x), y0 - L, col, 2.4);
-      h += txt(X(p.x) + (p.pitch === 'L' ? 6 : -6), y0 - L + 9, 'F = ' + fmt(p.F * fac, 1, true) + ' kN', p.pitch === 'L' ? 'start' : 'end', col, 9.5, true);
+    T.pts.forEach(function (p) { h += band(p.span, p.x0, p.x1, p.q * fac, false, ['q = ' + fmt(p.q * fac, 2, true) + ' kN/m', 'w = ' + fmt(p.w * fac, 3, true) + ' kN/m²', 'ψ·' + sv('c', 'f') + ' = ' + fmt(p.cf, 2, true)]); });
+    // labels horizontaal: boven de band als ze passen, anders in rijen erboven met een hulplijn
+    var LH = 11, yMinLbl = Infinity, rows = [], yRow0 = Infinity;
+    function lblTxt(L, x, yb) { var r = '', nL = L.lines.length; L.lines.forEach(function (t, i) { r += txt(x, yb - (nL - 1 - i) * LH, t, 'middle', i ? '#5f6b7a' : L.col, i ? 8.5 : 9.5, !i); }); yMinLbl = Math.min(yMinLbl, yb - nL * LH); return r; }
+    LBL.forEach(function (L) { yRow0 = Math.min(yRow0, L.fit ? L.yt - 5 - L.lines.length * LH : L.yt); });
+    LBL.filter(function (L) { return L.fit; }).forEach(function (L) { h += lblTxt(L, L.x, L.yt - 5); });
+    LBL.filter(function (L) { return !L.fit; }).sort(function (p, q) { return p.x - q.x; }).forEach(function (L) {
+      var x = Math.max(ml - 60 + L.w / 2, Math.min(Wd - 4 - L.w / 2, L.x)), x0 = x - L.w / 2 - 4, x1 = x + L.w / 2 + 4, k = 0;
+      while (rows[k] && rows[k].some(function (iv) { return x0 < iv[1] && x1 > iv[0]; })) k++;
+      (rows[k] = rows[k] || []).push([x0, x1]);
+      var yb = yRow0 - 8 - k * (L.lines.length * LH + 6);
+      h += '<line x1="' + L.x.toFixed(1) + '" y1="' + (L.yt - 1).toFixed(1) + '" x2="' + L.x.toFixed(1) + '" y2="' + (yb + 3).toFixed(1) + '" stroke="' + L.col + '" stroke-opacity="0.45" stroke-width="0.8" stroke-dasharray="2 2"/>';
+      if (Math.abs(x - L.x) > 0.5) h += '<line x1="' + L.x.toFixed(1) + '" y1="' + (yb + 3).toFixed(1) + '" x2="' + x.toFixed(1) + '" y2="' + (yb + 3).toFixed(1) + '" stroke="' + L.col + '" stroke-opacity="0.45" stroke-width="0.8" stroke-dasharray="2 2"/>';
+      h += lblTxt(L, x, yb);
     });
     // kolommen kopgevels
     var cm = 1e-9; T.cols.forEach(function (c) { c.segs.forEach(function (g) { cm = Math.max(cm, Math.abs(g.q)); }); });
@@ -584,8 +594,10 @@
       if (Math.abs(V) > 0.05) { var col = V >= 0 ? POS : NEG; h += V >= 0 ? arrow(x, y, x, y + 30, col, 2) : arrow(x, y + 30, x, y, col, 2); h += txt(x + 5, y + 44, 'V = ' + f1(V) + ' kN', 'middle', col, 9.5, true); }
       if (Math.abs(Hb) > 0.05) { var c2 = '#475569'; h += Hb >= 0 ? arrow(x - 26, y + 10, x - 4, y + 10, c2) : arrow(x - 4, y + 10, x - 26, y + 10, c2); h += txt(x - 30, y + 13, 'H = ' + f1(Hb) + ' kN', 'end', c2, 9); }
     });
+    var dy = Math.max(0, 48 - yMinLbl); Hd += dy;
+    h = '<g transform="translate(0,' + dy.toFixed(1) + ')">' + h + '</g>';
     h += txt(8, 16, 'Spant ' + fr.name + ' · y = ' + fmt(fr.y, 3) + ' m · invloedsbreedte ' + fmt(fr.dy, 3) + ' m', 'start', '#1f2933', 12, true);
-    h += txt(8, 32, 'Σ H op spantniveau = ' + fmt(T.Htop * fac, 1, true) + ' kN (+ = naar rechts) · Σ V = ' + fmt(T.Vsum * fac, 1, true) + ' kN · lijnlasten q in kN/m (⊥ dak, per m), puntlasten F en reacties in kN', 'start', '#5f6b7a', 10);
+    h += txt(8, 32, 'Σ H op spantniveau = ' + fmt(T.Htop * fac, 1, true) + ' kN (+ = naar rechts) · Σ V = ' + fmt(T.Vsum * fac, 1, true) + ' kN · lijnlasten q in kN/m (⊥ dak, per m), reacties in kN', 'start', '#5f6b7a', 10);
     return '<svg viewBox="0 0 ' + Wd.toFixed(0) + ' ' + Hd.toFixed(0) + '" role="img" aria-label="Belastingen en reacties spant ' + fr.name + '" font-family="system-ui,Segoe UI,Arial,sans-serif">' + h + '</svg>';
   }
   function elemReport(r) {
@@ -890,7 +902,7 @@
   }
   var PAGE = false;
   function renderHelp() {
-    $('helpInfo').innerHTML = '<ol><li>Het tabblad <b>1 · Invoer en model</b> bevat alle invoer; het model ernaast toont meteen de volumes en de gekozen theorie. Schakel <b>daken</b> en <b>wanden</b> in of uit en geef openingen in m². Het programma vormt volumes en kiest per volume automatisch de theorie (zie §1). Het tabblad <b>2 · Resultaten</b> bevat alle uitkomsten; de knoppen bovenaan springen naar een onderdeel.</li><li>Gesloten volumes: c<sub>pe</sub> volgens 7.2, c<sub>pi</sub> volgens 7.2.9 (S3) of als gesloten gebouw (S1/S2). Open volumes: overkapping (7.3, velden, helling, blokkering) en vrijstaande wanden (7.4).</li><li>3D: kies richting, c<sub>pi</sub>-scenario, dakgeval, lokaal/globaal, opwaarts/neerwaarts en de opstelling van fig. 7.17. Draaien = linkermuis, verschuiven = rechtermuis/Shift/pijltjes, zoomen = scroll, dubbelklik = centreren. Maatvoering van de overspanningen staat in het model.</li><li>§3c rekent de wind om naar de draagconstructie: lijnlasten en reacties per spant, maatgevende reacties per kolomlijn, gordingen, gevelregels, gevelkolommen en windverbanden. Geef de spantposities en h.o.h.-afstanden in de groep <b>Draagconstructie</b>.</li><li>' + 'Menu <b>Bestand</b>: <b>Project opslaan</b> bewaart alle invoer als .json-bestand; <b>Project openen</b> (of het bestand op het invoerpaneel slepen) laadt het terug. <b>CSV</b> en <b>JSON</b> bewaren de resultaten. <b>Rapport…</b> opent een venster waarin je kiest welke onderdelen, windrichtingen en dakgevallen in het rapport komen' + (PAGE ? '; exporteer het als HTML en druk het af vanuit je browser.' : ', om af te drukken (of als PDF te bewaren) of als HTML te exporteren.') + '</li></ol>';
+    $('helpInfo').innerHTML = '<ol><li>Het tabblad <b>1 · Invoer en model</b> bevat alle invoer; het model ernaast toont meteen de volumes en de gekozen theorie. Schakel <b>daken</b> en <b>wanden</b> in of uit en geef openingen in m². Het programma vormt volumes en kiest per volume automatisch de theorie (zie §2). Het tabblad <b>2 · Resultaten</b> bevat alle uitkomsten; de knoppen bovenaan springen naar een onderdeel.</li><li>Gesloten volumes: c<sub>pe</sub> volgens 7.2, c<sub>pi</sub> volgens 7.2.9 (S3) of als gesloten gebouw (S1/S2). Open volumes: overkapping (7.3, velden, helling, blokkering) en vrijstaande wanden (7.4).</li><li>3D: kies richting, c<sub>pi</sub>-scenario, dakgeval, lokaal/globaal, opwaarts/neerwaarts en de opstelling van fig. 7.17. Draaien = linkermuis, verschuiven = rechtermuis/Shift/pijltjes, zoomen = scroll, dubbelklik = centreren. Maatvoering van de overspanningen staat in het model.</li><li>§1 rekent de wind om naar de draagconstructie: lijnlasten en reacties per spant, maatgevende reacties per kolomlijn, gordingen, gevelregels, gevelkolommen en windverbanden. Geef de spantposities en h.o.h.-afstanden in de groep <b>Draagconstructie</b>.</li><li>' + 'Menu <b>Bestand</b>: <b>Project opslaan</b> bewaart alle invoer als .json-bestand; <b>Project openen</b> (of het bestand op het invoerpaneel slepen) laadt het terug. <b>CSV</b> en <b>JSON</b> bewaren de resultaten. <b>Rapport…</b> opent een venster waarin je kiest welke onderdelen, windrichtingen en dakgevallen in het rapport komen' + (PAGE ? '; exporteer het als HTML en druk het af vanuit je browser.' : ', om af te drukken (of als PDF te bewaren) of als HTML te exporteren.') + '</li></ol>';
   }
   var dlP = null;
   function dlCap() { if (!dlP) dlP = (window.claude && window.claude.use) ? window.claude.use('downloads').catch(function () { return null; }) : Promise.resolve(null); return dlP; }
@@ -1060,7 +1072,7 @@
     h += '<div class="small" style="margin-top:6px">Dakgevallen (wind ⟂ nok, tabel 7.4a)</div>' + ['FGH−/IJ−', 'FGH−/IJ+', 'FGH+/IJ−', 'FGH+/IJ+'].map(function (c, i) { return '<label><input type="checkbox" name="case" value="' + i + '" checked> ' + (i + 1) + ': ' + c + '</label>'; }).join('');
     h += '<label style="margin-top:6px"><input type="checkbox" name="walls" checked> gevelaanzichten</label>';
     h += '<div class="small" style="margin-top:6px">Instellingen</div><label>c<sub>pi</sub> <select name="scen">' + [['S1', 'S1 gesloten (+0,2)'], ['S2', 'S2 gesloten (−0,3)'], ['S3', 'S3 openingen'], ['S4', 'S4 handmatig'], ['S5', 'S5 open grensvlak']].map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === 'S3' ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>';
-    h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">Overkapping <label><input type="checkbox" name="csign" value="min" checked> opwaarts</label><label><input type="checkbox" name="csign" value="max" checked> neerwaarts</label></div><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label><label>Spant (§3c) <select name="frame"></select></label></fieldset></div>';
+    h += '<label>Coëfficiënten <select name="meas"><option value="loc">lokaal</option><option value="glob">globaal</option></select></label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">Overkapping <label><input type="checkbox" name="csign" value="min" checked> opwaarts</label><label><input type="checkbox" name="csign" value="max" checked> neerwaarts</label></div><label>Waarde <select name="mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label><label>Spant (§1) <select name="frame"></select></label></fieldset></div>';
     h += '<fieldset class="dlgwide"><legend>Aannames</legend>' + assList().map(function (a, i) { return '<label><input type="checkbox" name="ass" value="' + i + '" checked> ' + a[0] + '</label>'; }).join('') + '<label for="rNotes" style="margin-top:6px">Eigen aannames en opmerkingen (één per regel; worden mee bewaard in het projectbestand)</label><textarea id="rNotes" rows="4"></textarea></fieldset>';
     h += '<p class="small" id="rHint"></p><div class="dlgbtns"><button type="button" id="rAll">Alles</button><button type="button" id="rNone">Niets</button><span style="flex:1"></span><button type="button" id="rCancel">Annuleren</button><button type="button" id="rSave">Opslaan en sluiten</button>' + (PAGE ? '' : '<button type="button" id="rPrint" class="primary">Afdrukken / PDF</button>') + '<button type="button" id="rExport"' + (PAGE ? ' class="primary"' : '') + '>Exporteren als HTML</button></div></form>';
     $('reportDlg').innerHTML = h;

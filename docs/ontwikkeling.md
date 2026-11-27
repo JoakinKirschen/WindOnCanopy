@@ -122,3 +122,9 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - asnummering verdwijnt uit de tool: overspanningen heten overspanning 1, 2, 3; wanden: linkergevel (overspanning 1), wand overspanning 1|2, wand overspanning 2|3, rechtergevel (overspanning 3); langsgevels blijven A/P; windrichtingen: van rechts/links ⟂ nok, van A/P ∥ nok; kolomlijnen links, 1|2, 2|3, rechts
 - figuren (rapport per zone, gevelaanzichten, 3D-labels, §3c-diagram): elke waarde met symbool en eenheid (c_pe, c_pi, ψ·c_p,net, ψ·c_f, w [kN/m²], q [kN/m], F/V/H [kN]); c_pe en c_pi altijd zichtbaar, ook bij smalle zones
 - dakzones bij wind ⟂ nok tonen c_pe⁺ of c_pe⁻ (positieve/negatieve reeks van tabel 7.4a), ook in de tabel van het rapport per zone en in de 3D-tooltip
+
+## Versie 1.11.0 – belastingen per element eerst, horizontale labels in het spantdiagram
+- tabblad Resultaten: “Belastingen per constructie-element” staat nu bovenaan als §1; de andere secties schuiven één nummer op (Model §2 … Gebruiksaanwijzing §16), ook in de inhoudsopgave en de verwijzingen
+- spantdiagram: alle labels horizontaal; past een label niet boven zijn band, dan staat het in een rij erboven met een stippellijn naar de band (geen overlap)
+- overkapping in het spantdiagram: geen resultante F per helling meer, enkel de verdeelde last q (de tabel geeft de resultante nog)
+- geen wijziging aan de rekenkern

@@ -142,7 +142,7 @@ h/d ≤ 0,25 en ≥ 1 || h/d ≤ 0,25 and ≥ 1 || h/d ≤ 0,25 et ≥ 1
 handmatig = || manual = || manuel =
 handmatig [m] || manual [m] || manuel [m]
 hier hoofdbelasting || here leading action || ici action principale
-in of uit en geef openingen in m². Het programma vormt volumes en kiest per volume automatisch de theorie (zie §1). Het tabblad || on or off and enter openings in m². The program forms volumes and automatically selects the theory per volume (see §1). The tab || et saisissez les ouvertures en m². Le programme forme des volumes et choisit automatiquement la théorie par volume (voir §1). L'onglet
+in of uit en geef openingen in m². Het programma vormt volumes en kiest per volume automatisch de theorie (zie §2). Het tabblad || on or off and enter openings in m². The program forms volumes and automatically selects the theory per volume (see §2). The tab || et saisissez les ouvertures en m². Le programme forme des volumes et choisit automatiquement la théorie par volume (voir §2). L'onglet
 in rekening gebracht || taken into account || pris en compte
 ingegeven waarde || entered value || valeur saisie
 invoer gebruiker || user input || donnée utilisateur

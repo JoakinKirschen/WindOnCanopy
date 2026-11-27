@@ -62,23 +62,23 @@
 1 · Invoer en model || 1 · Input and model || 1 · Données et modèle
 2 · Resultaten || 2 · Results || 2 · Résultats
 1,0 – alle richtingen || 1.0 – all directions || 1,0 – toutes directions
-1. Model en automatisch gekozen theorie || 1. Model and automatically selected theory || 1. Modèle et théorie choisie automatiquement
-2. Samenvatting maatgevende waarden || 2. Summary of governing values || 2. Résumé des valeurs déterminantes
+2. Model en automatisch gekozen theorie || 2. Model and automatically selected theory || 2. Modèle et théorie choisie automatiquement
+3. Samenvatting maatgevende waarden || 3. Summary of governing values || 3. Résumé des valeurs déterminantes
 3. Interactief 3D-model met drukzones || 3. Interactive 3D model with pressure zones || 3. Modèle 3D interactif avec zones de pression
-3b. Rapport – drukken en coëfficiënten per zone en vlak || 3b. Report – pressures and coefficients per zone and surface || 3b. Rapport – pressions et coefficients par zone et par face
-3c. Belastingen per constructie-element || 3c. Loads per structural member || 3c. Charges par élément de structure
-4. Geometrie uit de plannen || 4. Geometry from the drawings || 4. Géométrie d'après les plans
-5. Basiswindsnelheid en piekstuwdruk || 5. Basic wind velocity and peak velocity pressure || 5. Vitesse de référence du vent et pression dynamique de pointe
-6. Gesloten volumes – drukcoëfficiënten en zones || 6. Closed volumes – pressure coefficients and zones || 6. Volumes fermés – coefficients de pression et zones
-7. Gesloten volumes – inwendige druk (EN 7.2.9) || 7. Closed volumes – internal pressure (EN 7.2.9) || 7. Volumes fermés – pression intérieure (EN 7.2.9)
-8. Gesloten volumes – resultaten per zone || 8. Closed volumes – results per zone || 8. Volumes fermés – résultats par zone
-9. Gesloten volumes – totale krachten || 9. Closed volumes – total forces || 9. Volumes fermés – forces totales
-10. Open delen – overkappingen (EN 7.3) en vrijstaande wanden (EN 7.4) || 10. Open parts – canopies (EN 7.3) and free-standing walls (EN 7.4) || 10. Parties ouvertes – toitures isolées (EN 7.3) et murs isolés (EN 7.4)
-11. Tijdelijke situatie en veiligheidsfactoren || 11. Temporary situation and safety factors || 11. Situation temporaire et coefficients de sécurité
-12. Verificatie || 12. Verification || 12. Vérification
-13. Aannames en te bevestigen gegevens || 13. Assumptions and data to be confirmed || 13. Hypothèses et données à confirmer
-14. Gebruikte Eurocode-artikelen || 14. Eurocode clauses used || 14. Articles de l'Eurocode utilisés
-15. Gebruiksaanwijzing || 15. User guide || 15. Mode d'emploi
+4. Rapport – drukken en coëfficiënten per zone en vlak || 4. Report – pressures and coefficients per zone and surface || 4. Rapport – pressions et coefficients par zone et par face
+1. Belastingen per constructie-element || 1. Loads per structural member || 1. Charges par élément de structure
+5. Geometrie uit de plannen || 5. Geometry from the drawings || 5. Géométrie d'après les plans
+6. Basiswindsnelheid en piekstuwdruk || 6. Basic wind velocity and peak velocity pressure || 6. Vitesse de référence du vent et pression dynamique de pointe
+7. Gesloten volumes – drukcoëfficiënten en zones || 7. Closed volumes – pressure coefficients and zones || 7. Volumes fermés – coefficients de pression et zones
+8. Gesloten volumes – inwendige druk (EN 7.2.9) || 8. Closed volumes – internal pressure (EN 7.2.9) || 8. Volumes fermés – pression intérieure (EN 7.2.9)
+9. Gesloten volumes – resultaten per zone || 9. Closed volumes – results per zone || 9. Volumes fermés – résultats par zone
+10. Gesloten volumes – totale krachten || 10. Closed volumes – total forces || 10. Volumes fermés – forces totales
+11. Open delen – overkappingen (EN 7.3) en vrijstaande wanden (EN 7.4) || 11. Open parts – canopies (EN 7.3) and free-standing walls (EN 7.4) || 11. Parties ouvertes – toitures isolées (EN 7.3) et murs isolés (EN 7.4)
+12. Tijdelijke situatie en veiligheidsfactoren || 12. Temporary situation and safety factors || 12. Situation temporaire et coefficients de sécurité
+13. Verificatie || 13. Verification || 13. Vérification
+14. Aannames en te bevestigen gegevens || 14. Assumptions and data to be confirmed || 14. Hypothèses et données à confirmer
+15. Gebruikte Eurocode-artikelen || 15. Eurocode clauses used || 15. Articles de l'Eurocode utilisés
+16. Gebruiksaanwijzing || 16. User guide || 16. Mode d'emploi
 15 m: c_s c_d = 1 te verantwoorden (EN 6.2(1), ANB 6.3.1). || 15 m: c_s c_d = 1 to be justified (EN 6.2(1), ANB 6.3.1). || 15 m : c_s c_d = 1 à justifier (EN 6.2(1), ANB 6.3.1).
 15 m: te verantwoorden. || 15 m: to be justified. || 15 m : à justifier.
 2 MB). || 2 MB). || 2 Mo).
