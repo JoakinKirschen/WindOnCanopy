@@ -117,3 +117,8 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - plan en doorsnede staan enkel nog in het tabblad Invoer; het rapport neemt ze mee bij “Model en gekozen theorie”
 - §8 toont enkel nog alle combinaties (de maatgevende waarden staan in §2 en §3b); §9 toont enkel de maatgevende rij per deel
 - identieke rijen samengevoegd: gevel A en P (gespiegeld identiek) als “Gevel A/P” in §2 en §3c, zelfde windrichtingen in §10, zelfde duur in §11, dubbele zones in §3b als “(2×)”
+
+## Versie 1.10.0 – overspanningen 1–3, c_pe⁺/c_pe⁻ en symbolen in de figuren
+- asnummering verdwijnt uit de tool: overspanningen heten overspanning 1, 2, 3; wanden: linkergevel (overspanning 1), wand overspanning 1|2, wand overspanning 2|3, rechtergevel (overspanning 3); langsgevels blijven A/P; windrichtingen: van rechts/links ⟂ nok, van A/P ∥ nok; kolomlijnen links, 1|2, 2|3, rechts
+- figuren (rapport per zone, gevelaanzichten, 3D-labels, §3c-diagram): elke waarde met symbool en eenheid (c_pe, c_pi, ψ·c_p,net, ψ·c_f, w [kN/m²], q [kN/m], F/V/H [kN]); c_pe en c_pi altijd zichtbaar, ook bij smalle zones
+- dakzones bij wind ⟂ nok tonen c_pe⁺ of c_pe⁻ (positieve/negatieve reeks van tabel 7.4a), ook in de tabel van het rapport per zone en in de 3D-tooltip

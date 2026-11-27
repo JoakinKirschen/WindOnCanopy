@@ -1,7 +1,7 @@
 /* Belastingen per constructie-element (uit de resultaten van WE.compute):
    spanten (lijnlasten per spant, steunpuntsreacties per kolomlijn), kolommen in kopgevels,
    gordingen, gevelregels, gevelkolommen en windverbanden in langsrichting.
-   Coördinaten: x dwars (as 1 = 0), y langs (as A = 0), z omhoog. Teken w: + = druk naar het vlak toe. */
+   Coördinaten: x dwars (links = 0), y langs (A = 0), z omhoog. Teken w: + = druk naar het vlak toe. */
 var WEL = (function () {
   'use strict';
   function nl(v, d) { return v.toFixed(d).replace('.', ','); }
@@ -15,7 +15,7 @@ var WEL = (function () {
     for (var i = 0; i < parts.length; i++) { var v = parseFloat(parts[i].replace(',', '.')); if (!isFinite(v) || !/^-?\d+([.,]\d+)?$/.test(parts[i])) return { err: '“' + parts[i] + '” is geen getal.' }; ys.push(v); }
     if (ys.length < 2) return { err: 'Geef minstens twee spantposities.' };
     for (var k = 1; k < ys.length; k++) if (ys[k] <= ys[k - 1] + 1e-6) return { err: 'Posities moeten strikt stijgend zijn.' };
-    if (ys[0] < -1e-6) return { err: 'Posities ≥ 0 (as A = 0).' };
+    if (ys[0] < -1e-6) return { err: 'Posities ≥ 0 (A = 0).' };
     return { ys: ys };
   }
   // standaard: spantassen uit grondplan 2161/A (A–B 7,034; B–G 5 vakken; G–L 5 vakken; L–O 3 vakken; O–P 7,034)
@@ -53,13 +53,13 @@ var WEL = (function () {
     res.frames = frames; res.bays = bays; res.Lmax = Math.max.apply(null, bays.map(function (b) { return b.L; }));
 
     /* kolomlijnen en spanten (vakwerkliggers, scharnierend opgelegd per overspanning / per luifelveld) */
-    var LN = ['as 1', 'as 7', 'as 13', 'as 14'];
+    var LN = ['links', '1|2', '2|3', 'rechts'];
     var lines = X.map(function (x, i) { return { i: i, x: x, name: LN[i] }; });
     var trusses = [];
     spans.forEach(function (s) {
       var nb = (s.nb > 1 || s.luifel) ? s.nb : 1, d = s.w / nb;
       var idx = [s.i];
-      for (var b = 1; b < nb; b++) { lines.push({ i: lines.length, x: s.x0 + b * d, name: 'as 13–14 kolom ' + b }); idx.push(lines.length - 1); }
+      for (var b = 1; b < nb; b++) { lines.push({ i: lines.length, x: s.x0 + b * d, name: 'k3.' + b }); idx.push(lines.length - 1); }
       idx.push(s.i + 1);
       for (var t = 0; t < nb; t++) trusses.push({ span: s.i, bay: t + 1, x0: s.x0 + t * d, x1: s.x0 + (t + 1) * d, l0: idx[t], l1: idx[t + 1], on: s.roofOn });
     });
@@ -118,6 +118,7 @@ var WEL = (function () {
         var wl = W[z.part], H = wl.H, w = wOf(z, z.res['-'], z.res['-'].per[cb.scen], null), n = O.normal(z), sgn = -n[0];
         var o = walls[z.part] || (walls[z.part] = { part: z.part, x: wl.x, line: X.indexOf(wl.x), H: H, side: n[0], segs: [], names: [] });
         if (o.names.indexOf(z.name) < 0) o.names.push(z.name);
+        o.w = w; o.cpe = cpeOf(z.res['-'], null); o.cpi = z.res['-'].per[cb.scen].cpi; o.cl = clTxt(z.A, z.A);
         var hO = 0, dyo = 0;
         if (z.part === 'W0' && P.fase2.on) { dyo = ov(z.a0, z.a1, Math.max(fr.ya, P.fase2.y0), Math.min(fr.yb, P.fase2.y0 + P.fase2.L)); hO = Math.min(P.fase2.H, H); }
         if (dyo > 1e-9 && hO > 0) { o.segs.push({ z0: 0, z1: hO, q: cscd * w * (dy - dyo) * sgn, w: w }); o.segs.push({ z0: hO, z1: H, q: cscd * w * dy * sgn, w: w }); }
@@ -127,7 +128,7 @@ var WEL = (function () {
         var o = walls[pid], br = [0, o.H];
         o.segs.forEach(function (g) { br.push(g.z0, g.z1); }); br.sort(function (a, b) { return a - b; }); br = br.filter(function (v, i, a) { return i === 0 || v - a[i - 1] > 1e-9; });
         var segs = [];
-        for (var i = 0; i < br.length - 1; i++) { var zm = (br[i] + br[i + 1]) / 2, q = 0; o.segs.forEach(function (g) { if (zm >= g.z0 && zm <= g.z1) q += g.q; }); segs.push({ z0: br[i], z1: br[i + 1], q: q }); }
+        for (var i = 0; i < br.length - 1; i++) { var zm = (br[i] + br[i + 1]) / 2, q = 0; o.segs.forEach(function (g) { if (zm >= g.z0 && zm <= g.z1) q += g.q; }); segs.push({ z0: br[i], z1: br[i + 1], q: q, w: o.w, cpe: o.cpe, cpi: o.cpi, cl: o.cl, zones: o.names.join('+') }); }
         o.segs = segs;
         var Rt = 0, Rb = 0, F = 0;
         segs.forEach(function (g) { var Fq = g.q * (g.z1 - g.z0), zc = (g.z0 + g.z1) / 2; F += Fq; Rt += Fq * zc / o.H; Rb += Fq * (o.H - zc) / o.H; });
@@ -239,7 +240,7 @@ var WEL = (function () {
     res.rails = Object.keys(rg).map(function (k) { return rg[k]; }).sort(srt);
     res.gcols = Object.keys(gc).map(function (k) { return gc[k]; }).sort(srt);
 
-    /* --- langsrichting: windverbanden (wind van as A / as P) --- */
+    /* --- langsrichting: windverbanden (wind van A / P) --- */
     var lon = [];
     ['A', 'P'].forEach(function (d) {
       var sgn = d === 'A' ? 1 : -1;
