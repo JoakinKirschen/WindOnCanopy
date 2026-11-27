@@ -317,11 +317,18 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
 <div class="pane off" id="pane-out" role="tabpanel" aria-labelledby="tab-out">
   <section class="card" id="sec-toc">
-    <nav class="toc"><a href="#sec-elem">Per element</a><a href="#sec-model">Model en theorie</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D (invoer)</a><a href="#sec-report">Rapport per zone</a><a href="#sec-geo">Geometrie</a><a href="#sec-qp">Stuwdruk</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
+    <nav class="toc"><a href="#sec-qp">Stuwdruk</a><a href="#sec-elem">Per element</a><a href="#sec-model">Model en theorie</a><a href="#sec-summary">Samenvatting</a><a href="#sec-3d">3D (invoer)</a><a href="#sec-report">Rapport per zone</a><a href="#sec-geo">Geometrie</a><a href="#sec-cpe">Coëfficiënten</a><a href="#sec-cpi">Inwendige druk</a><a href="#sec-res">Resultaten</a><a href="#sec-tot">Totalen</a><a href="#sec-open">Open delen</a><a href="#sec-temp">Tijdelijk</a><a href="#sec-ver">Verificatie</a><a href="#sec-ass">Aannames</a><a href="#sec-ref">Normen</a><a href="#sec-help">Gebruik</a></nav>
+  </section>
+
+  <section class="card" id="sec-qp">
+    <h2>1. Basiswindsnelheid en piekstuwdruk</h2>
+    <div id="qpSteps"></div>
+    <h3>Stuwdrukprofiel</h3>
+    <div class="tablewrap"><table id="tblProf"></table></div>
   </section>
 
   <section class="card" id="sec-elem">
-    <h2>1. Belastingen per constructie-element</h2>
+    <h2>2. Belastingen per constructie-element</h2>
     <div class="filterbar">
       <label>Spant <select id="e_frame"></select></label>
       <label>Richting <select id="e_dir"></select></label>
@@ -336,7 +343,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   </section>
 
   <section class="card" id="sec-model">
-    <h2>2. Model en automatisch gekozen theorie</h2>
+    <h2>3. Model en automatisch gekozen theorie</h2>
     <p class="small">EN 7.2.9(2): ≥ 2 vlakken met > 30 % openingen ⇒ open constructie (EN 7.3 / 7.4); anders gesloten gebouw (EN 7.2).</p>
     <h3>Volumes en openingspercentages</h3>
     <div class="tablewrap"><table id="tblVol"></table></div>
@@ -345,7 +352,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   </section>
 
   <section class="card" id="sec-summary">
-    <h2>3. Samenvatting maatgevende waarden</h2>
+    <h2>4. Samenvatting maatgevende waarden</h2>
     <div class="small" id="sumMode"></div>
     <h3>Daken en overkappingen</h3>
     <div class="kpis" id="kpiRoof"></div>
@@ -358,7 +365,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
 
   <section class="card" id="sec-report">
-    <h2>4. Rapport – drukken en coëfficiënten per zone en vlak</h2>
+    <h2>5. Rapport – drukken en coëfficiënten per zone en vlak</h2>
     <p class="small">Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting.</p>
     <div class="filterbar">
       <label>c<sub>pi</sub>-scenario <select id="r_scen"><option value="S1">S1 gesloten (+0,2)</option><option value="S2">S2 gesloten (−0,3)</option><option value="S3" selected>S3 openingen (7.2.9)</option><option value="S4">S4 handmatig</option><option value="S5">S5 open grensvlak (WInt)</option></select></label>
@@ -372,15 +379,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   </section>
 
   <section class="card" id="sec-geo">
-    <h2>5. Geometrie uit de plannen</h2>
+    <h2>6. Geometrie uit de plannen</h2>
     <div class="tablewrap"><table id="tblGeo"></table></div>
-  </section>
-
-  <section class="card" id="sec-qp">
-    <h2>6. Basiswindsnelheid en piekstuwdruk</h2>
-    <div id="qpSteps"></div>
-    <h3>Stuwdrukprofiel</h3>
-    <div class="tablewrap"><table id="tblProf"></table></div>
   </section>
 
   <section class="card" id="sec-cpe">

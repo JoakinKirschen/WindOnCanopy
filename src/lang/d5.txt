@@ -160,3 +160,9 @@ beschuttingsfactor || shelter factor || coefficient d'abri
 Teken: q en F + = naar het vlak toe || Sign: q and F + = towards the surface || Signe : q et F + = vers la surface
 V + = druk op de fundering, − = trek/ || V + = compression on the foundation, − = tension/ || V + = compression sur la fondation, − = traction/
 maten in m || dimensions in m || cotes en m
+Basiswindsnelheid en basisstuwdruk || Basic wind velocity and basic velocity pressure || Vitesse de référence du vent et pression dynamique de référence
+Met alle factoren (tijdelijke situatie en ontwerp) || With all factors (temporary situation and design) || Avec tous les facteurs (situation temporaire et calcul)
+Per volume en open deel || Per volume and open part || Par volume et partie ouverte
+(q_p zonder r) || (q_p without r) || (q_p sans r)
+(niet toegepast) || (not applied) || (non appliqué)
+Piekstuwdruk || Peak velocity pressure || Pression dynamique de pointe
