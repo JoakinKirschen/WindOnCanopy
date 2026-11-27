@@ -544,6 +544,55 @@
     var closed = cc.filter(function (c) { return c.cid === $('e_case').value && c.scen === $('e_scen').value; })[0] || null;
     return { dir: d, closed: closed, can: hasC ? { sign: $('e_sign').value, lay: $('e_lay').value } : null };
   }
+  /* aanzichten voor het rapport: vaste combinaties van de filterbalk */
+  var VIEWS = [];
+  function viewNow() { return { spant: +$('e_frame').value || 0, richting: $('e_dir').value, dakgeval: $('e_case').value, cpi: $('e_scen').value, overkapping: $('e_sign').value, opstelling: $('e_lay').value, cpe: $('e_cpe').value, waarde: $('e_mode').value }; }
+  function viewOk(v) { return v && typeof v === 'object' && DIRN[v.richting] && typeof v.cpi === 'string'; }
+  function viewLabel(v) {
+    var E = EL && !EL.err ? EL : null, fr = E ? E.frames[Math.min(E.frames.length - 1, Math.max(0, +v.spant || 0))] : null, hasC = OUT && OUT.canopies.length;
+    return (fr ? 'Spant ' + fr.name + ' · ' : '') + DIRN[v.richting].short + (v.dakgeval ? ' · ' + v.dakgeval : '') + ' · ' + v.cpi + (hasC ? ' · overkapping ' + (v.overkapping === 'min' ? 'opwaarts' : 'neerwaarts') + (v.opstelling !== 'beide' ? ' (' + (v.opstelling === 'links' ? 'linker helling' : 'rechter helling') + ')' : '') : '') + ' · ' + (v.cpe === '10' ? 'c<sub>pe,10</sub>' : v.cpe === '1' ? 'c<sub>pe,1</sub>' : 'c<sub>pe</sub>(A)') + ' · ' + (v.waarde === 'd' ? 'ontwerp' : 'karakteristiek');
+  }
+  function viewSel(v) {
+    EV = elOf(v.cpe); var E = EV, P = OUT.P, cc = E.closedCombos(v.richting).filter(Boolean);
+    var closed = cc.filter(function (c) { return c.cid === v.dakgeval && c.scen === v.cpi; })[0] || null;
+    if (cc.length && !closed) return null;
+    return { k: Math.min(E.frames.length - 1, Math.max(0, +v.spant || 0)), sel: { dir: v.richting, closed: closed, can: OUT.canopies.length ? { sign: v.overkapping, lay: v.opstelling } : null }, fac: OUT.vb.red * (v.waarde === 'd' ? P.gammaQ * P.KFI : 1), un: v.waarde === 'd' ? 'ontwerp' : 'karakteristiek' };
+  }
+  function viewsSave() { lsSet('views', JSON.stringify(VIEWS)); }
+  function renderViews() {
+    var box = $('e_views'); if (!box) return;
+    box.innerHTML = VIEWS.length ? '<span class="small">Aanzichten in het rapport (' + VIEWS.length + '):</span>' + VIEWS.map(function (v, i) { return '<span class="vchip"><button type="button" data-vshow="' + i + '" title="Instellingen van dit aanzicht tonen">' + (i + 1) + '. ' + viewLabel(v) + '</button><button type="button" data-vdel="' + i + '" title="Uit het rapport verwijderen" aria-label="Verwijderen">✕</button></span>'; }).join('') + '<button type="button" id="e_vclear">Alle verwijderen</button>' : '<span class="small">Nog geen aanzichten in het rapport: kies de instellingen en klik op ＋ Aan rapport toevoegen.</span>';
+  }
+  function addView() {
+    var v = viewNow(), key = JSON.stringify(v);
+    if (VIEWS.some(function (w) { return JSON.stringify(w) === key; })) { note('Dit aanzicht staat al in het rapport.'); return; }
+    VIEWS.push(v); viewsSave(); renderViews();
+    var cb = $('rForm') && $('rForm').querySelector('input[name=part][value=views]'); if (cb) cb.checked = true;
+    note('Aanzicht ' + VIEWS.length + ' toegevoegd aan het rapport (onderdeel “Gekozen aanzichten belastingen per element”).');
+  }
+  function viewsClick(ev) {
+    var b = ev.target.closest('button'); if (!b) return;
+    if (b.id === 'e_vclear') { VIEWS = []; }
+    else if (b.dataset.vdel !== undefined) { VIEWS.splice(+b.dataset.vdel, 1); }
+    else if (b.dataset.vshow !== undefined) {
+      var v = VIEWS[+b.dataset.vshow]; if (!v) return;
+      [['e_frame', String(v.spant)], ['e_dir', v.richting], ['e_cpe', v.cpe], ['e_mode', v.waarde], ['e_sign', v.overkapping], ['e_lay', v.opstelling]].forEach(function (q) { if ([].some.call($(q[0]).options, function (o) { return o.value === q[1]; })) $(q[0]).value = q[1]; });
+      EV = elOf(v.cpe); elemSel();
+      [['e_case', v.dakgeval], ['e_scen', v.cpi]].forEach(function (q) { if ([].some.call($(q[0]).options, function (o) { return o.value === q[1]; })) $(q[0]).value = q[1]; });
+      renderElem(); return;
+    } else return;
+    viewsSave(); renderViews();
+  }
+  function viewsReport() {
+    if (!EL || EL.err) return '<p class="small">Belastingen per element niet beschikbaar</p>';
+    var h = '';
+    VIEWS.forEach(function (v, i) {
+      var r = viewSel(v);
+      h += '<div class="rcase"><h3>Aanzicht ' + (i + 1) + ': ' + viewLabel(v) + '</h3>' + (r ? elemCase(r.k, r.sel, r.fac, r.un) : '<p class="small">Deze combinatie bestaat niet in het huidige model (dakgeval of c<sub>pi</sub>-scenario niet van toepassing).</p>') + '</div>';
+    });
+    EV = elOf($('e_cpe').value);
+    return h;
+  }
   function elemSVG(T, fr, fac, cid) {
     var o = OUT, sp = o.spans, E = EV || EL, xmax = Math.max.apply(null, E.lines.map(function (l) { return l.x; }));
     var zmax = Math.max.apply(null, sp.map(function (s) { return s.top; })), sc = 860 / xmax, ml = 150, mr = 110, mt = 60, mb = 102, Wd = ml + xmax * sc + mr, Hd = mt + zmax * sc + mb;
@@ -667,6 +716,7 @@
     var sel = elemSel(), k = +fsel.value;
     var dmode = $('e_mode').value === 'd', fac = o.vb.red * (dmode ? P.gammaQ * P.KFI : 1), un = dmode ? 'ontwerp' : 'karakteristiek';
     box.innerHTML = elemCase(k, sel, fac, un) + elemCommon(fac);
+    renderViews();
     if (SEL.frame !== k) { SEL.frame = k; if (window.View3D && OUT) View3D.update(OUT, SEL); }
   }
   function elemCase(k, sel, fac, un) {
@@ -968,25 +1018,29 @@
   var MEM = {};   // laatst gebruikte bestandshandle per soort ('project', 'export')
   function idb(mode, key, val) {
     return new Promise(function (res) {
+      var done = false, fin = function (v, db) { if (db) try { db.close(); } catch (e) { } if (!done) { done = true; res(v); } };
+      setTimeout(function () { fin(null); }, 1500);   // IndexedDB hangt soms (geblokkeerd, privévenster): niet blijven wachten
       try {
         var rq = indexedDB.open('windtool', 1);
         rq.onupgradeneeded = function () { rq.result.createObjectStore('kv'); };
-        rq.onerror = function () { res(null); };
+        rq.onerror = rq.onblocked = function () { fin(null); };
         rq.onsuccess = function () {
+          var db = rq.result;
           try {
-            var tx = rq.result.transaction('kv', mode === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
-            var r2 = mode === 'get' ? st.get(key) : st.put(val, key);
-            r2.onsuccess = function () { res(mode === 'get' ? r2.result || null : true); };
-            r2.onerror = function () { res(null); };
-          } catch (e) { res(null); }
+            var tx = db.transaction('kv', mode === 'get' ? 'readonly' : 'readwrite'), st = tx.objectStore('kv');
+            var r2 = mode === 'get' ? st.get(key) : mode === 'del' ? st.delete(key) : st.put(val, key);
+            r2.onsuccess = function () { fin(mode === 'get' ? r2.result || null : true, db); };
+            r2.onerror = function () { fin(null, db); };
+          } catch (e) { fin(null, db); }
         };
-      } catch (e) { res(null); }
+      } catch (e) { fin(null); }
     });
   }
   function lsGet(k) { try { return localStorage.getItem('windtool.' + k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem('windtool.' + k, v); } catch (e) { } }
   function rememberHandle(kind, h) { MEM[kind] = h; idb('put', 'handle.' + kind, h); if (h && h.name) { lsSet('name.' + kind, h.name); showProjName(kind); } }
-  function lastHandle(kind) { return MEM[kind] ? Promise.resolve(MEM[kind]) : idb('get', 'handle.' + kind).then(function (h) { if (h) MEM[kind] = h; return h; }); }
+  function forgetHandle(kind) { delete MEM[kind]; MEM[kind + '.loaded'] = true; idb('del', 'handle.' + kind); }
+  function lastHandle(kind) { return MEM[kind] || MEM[kind + '.loaded'] ? Promise.resolve(MEM[kind] || null) : idb('get', 'handle.' + kind).then(function (h) { MEM[kind + '.loaded'] = true; if (h) MEM[kind] = h; return h; }); }
   function showProjName(kind) { if (kind !== 'project') return; var n = lsGet('name.project'), el = $('projName'); if (el) { el.innerHTML = n ? 'project: <span translate="no">' + esc(n) + '</span>' : ''; el.hidden = !n; } }
   function mimeFor(name) { var e = name.split('.').pop(); return { json: ['application/json', 'Projectbestand / JSON'], csv: ['text/csv', 'CSV-bestand'], html: ['text/html', 'HTML-rapport'] }[e] || ['text/plain', 'Bestand']; }
   function deliver(name, text, type, kind) {
@@ -1009,18 +1063,19 @@
     // offline: venster “Opslaan als” (map en naam kiezen) waar de browser dat ondersteunt (Chrome, Edge)
     if (window.showSaveFilePicker) {
       var m = mimeFor(name), ext = '.' + name.split('.').pop(), acc = {}; acc[m[0]] = [ext];
-      var picked = false;
-      lastHandle(kind).then(function (lh) {
-        var opt = { id: kind === 'project' ? 'windproject' : 'windexport', suggestedName: name, types: [{ description: m[1], accept: acc }] };
-        if (lh) opt.startIn = lh;   // zelfde map als de laatste keer
-        var pick = function (o) { return window.showSaveFilePicker(o); };
-        return pick(opt).catch(function (e) { if (e && e.name !== 'AbortError' && opt.startIn) { delete opt.startIn; return pick(opt); } throw e; });
-      }).then(function (h) {
-        picked = true;
-        return h.createWritable().then(function (w) { return w.write(new Blob([text], { type: type })).then(function () { return w.close(); }); }).then(function () { rememberHandle(kind, h); note((h.name || name) + ' opgeslagen.'); });
-      }).catch(function (e) {
+      var opt = { id: kind === 'project' ? 'windproject' : 'windexport', suggestedName: name, types: [{ description: m[1], accept: acc }] };
+      if (MEM[kind]) opt.startIn = MEM[kind];   // zelfde map als de laatste keer (vooraf geladen: het venster moet meteen in de klik openen)
+      var pr;
+      try { pr = window.showSaveFilePicker(opt); } catch (e) { pr = Promise.reject(e); }
+      pr.then(function (h) {
+        return h.createWritable().then(function (w) { return w.write(new Blob([text], { type: type })).then(function () { return w.close(); }); }).then(function () { rememberHandle(kind, h); note((h.name || name) + ' opgeslagen.'); }, function (e) {
+          note('Opslaan in ' + (h.name || name) + ' mislukt (' + (e && e.message ? e.message : e) + '; is het bestand nog geopend in een ander programma?). Het bestand wordt nu gedownload.', 'err');
+          download(h.name || name, text, type, true);
+        });
+      }, function (e) {
         if (e && e.name === 'AbortError') return;
-        if (!picked) askName(name, text, type, kind); else note('Opslaan mislukt: ' + (e && e.message ? e.message : e), 'err');
+        if (opt.startIn) forgetHandle(kind);   // laatst gebruikte map bestaat niet meer: vergeten, anders mislukt het telkens opnieuw
+        askName(name, text, type, kind);
       });
       return;
     }
@@ -1041,8 +1096,8 @@
     if (d.showModal) d.showModal(); else d.setAttribute('open', '');
     inp.focus(); inp.select();
   }
-  function download(name, text, type) {
-    var b = new Blob([text], { type: type }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500); note(name + ' gedownload.');
+  function download(name, text, type, quiet) {
+    var b = new Blob([text], { type: type }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000); if (!quiet) note(name + ' gedownload.');
   }
   function clip(name, text) {
     var box = $('exportBox'), ta = $('exportText'), msg = $('exportMsg'); box.hidden = false; ta.value = text; msg.textContent = name + ' wordt gekopieerd…';
@@ -1066,7 +1121,7 @@
     return {
       onderdelen: q('input[name=part]:checked'), richtingen: q('input[name=dir]:checked'), dakgevallen: q('input[name=case]:checked').map(Number),
       gevelaanzichten: f.walls.checked, cpi: f.scen.value, coefficienten: f.meas.value, overkapping: q('input[name=csign]:checked'), waarde: f.mode.value,
-      aannames: q('input[name=ass]:checked').map(Number), spant: f.frame.value,
+      aannames: q('input[name=ass]:checked').map(Number), spant: f.frame.value, aanzichten: VIEWS.slice(),
       sectieRapportPerZone: { cpi: $('r_scen').value, coefficienten: $('r_meas').value, overkapping: $('r_sign').value, waarde: $('r_mode').value, richting: $('r_dir').value }
     };
   }
@@ -1077,6 +1132,7 @@
     function sel(el, v) { if (typeof v === 'string' && [].some.call(el.options, function (o) { return o.value === v; })) el.value = v; }
     boxes('part', r.onderdelen); boxes('dir', r.richtingen); boxes('case', r.dakgevallen, true); boxes('csign', r.overkapping); boxes('ass', r.aannames, true);
     if (typeof r.gevelaanzichten === 'boolean') f.walls.checked = r.gevelaanzichten;
+    if (Array.isArray(r.aanzichten)) { VIEWS = r.aanzichten.filter(viewOk); viewsSave(); renderViews(); }
     if (r.spant !== undefined && r.spant !== '') { RFRAME = String(r.spant); if (f.frame.options.length) sel(f.frame, RFRAME); }
     sel(f.scen, r.cpi); sel(f.meas, r.coefficienten); sel(f.mode, r.waarde);
     var z = r.sectieRapportPerZone;
@@ -1122,8 +1178,8 @@
   }
 
   /* ---------- rapportdialoog ---------- */
-  var RSECT = [['sec-qp', 'Stuwdruk'], ['sec-model', 'Model en gekozen theorie'], ['sec-summary', 'Samenvatting maatgevende waarden'], ['snap3d', '3D-afbeelding (huidig beeld)'], ['zones', 'Rapport per zone (dak- en gevelaanzichten)'], ['sec-elem', 'Belastingen per constructie-element'], ['sec-geo', 'Geometrie'], ['sec-cpe', 'Coëfficiënten en zones'], ['sec-cpi', 'Inwendige druk'], ['sec-res', 'Resultaten per zone (tabel, huidige filter)'], ['sec-tot', 'Totale krachten'], ['sec-open', 'Open delen (7.3 / 7.4)'], ['sec-temp', 'Tijdelijke situatie'], ['sec-ver', 'Verificatie'], ['inputs', 'Invoergegevens (uitgangspunten)'], ['sec-ref', 'Normartikelen']];
-  var RDEF = { 'sec-model': true, 'sec-summary': true, snap3d: true, zones: true, 'sec-elem': true, inputs: true };
+  var RSECT = [['sec-qp', 'Stuwdruk'], ['sec-model', 'Model en gekozen theorie'], ['sec-summary', 'Samenvatting maatgevende waarden'], ['snap3d', '3D-afbeelding (huidig beeld)'], ['zones', 'Rapport per zone (dak- en gevelaanzichten)'], ['sec-elem', 'Belastingen per constructie-element'], ['views', 'Gekozen aanzichten belastingen per element'], ['sec-geo', 'Geometrie'], ['sec-cpe', 'Coëfficiënten en zones'], ['sec-cpi', 'Inwendige druk'], ['sec-res', 'Resultaten per zone (tabel, huidige filter)'], ['sec-tot', 'Totale krachten'], ['sec-open', 'Open delen (7.3 / 7.4)'], ['sec-temp', 'Tijdelijke situatie'], ['sec-ver', 'Verificatie'], ['inputs', 'Invoergegevens (uitgangspunten)'], ['sec-ref', 'Normartikelen']];
+  var RDEF = { views: true, 'sec-model': true, 'sec-summary': true, snap3d: true, zones: true, 'sec-elem': true, inputs: true };
   function buildDialog() {
     var h = '<form method="dialog" id="rForm"><h2 style="margin-top:0">Rapport samenstellen</h2><div class="dlgcols"><fieldset><legend>Onderdelen</legend>' + RSECT.map(function (q) { return '<label><input type="checkbox" name="part" value="' + q[0] + '"' + (RDEF[q[0]] ? ' checked' : '') + '> ' + q[1] + '</label>'; }).join('') + '</fieldset>';
     h += '<fieldset><legend>Rapport per zone en per element</legend><div class="small">Windrichtingen</div>' + WE.DIRS.map(function (d) { return '<label><input type="checkbox" name="dir" value="' + d.id + '" checked> ' + d.short + '</label>'; }).join('');
@@ -1163,6 +1219,7 @@
     var rDirs = [].map.call(f.querySelectorAll('input[name=dir]:checked'), function (c) { return c.value; }), rCases = [].map.call(f.querySelectorAll('input[name=case]:checked'), function (c) { return +c.value; }), rSigns = [].map.call(f.querySelectorAll('input[name=csign]:checked'), function (c) { return c.value; });
     parts.forEach(function (id) {
       if (id === 'sec-elem') { html += '<section class="card zonesec"><h2>Belastingen per constructie-element</h2>' + elemReport({ dirs: rDirs, cases: rCases, signs: rSigns, scen: f.scen.value, mode: f.mode.value, frame: f.frame.value }) + '</section>'; return; }
+      if (id === 'views') { if (VIEWS.length) html += '<section class="card zonesec"><h2>Gekozen aanzichten belastingen per element</h2>' + viewsReport() + '</section>'; return; }
       if (id === 'snap3d') {
         var cv = document.querySelector('#viewer canvas'), img = null;
         try { img = cv ? cv.toDataURL('image/png') : null; } catch (e) { img = null; }
@@ -1292,21 +1349,28 @@
     $('exportClose').onclick = function () { $('exportBox').hidden = true; };
     ['f_surf', 'f_dir'].forEach(function (id) { $(id).onchange = renderRes; });
     ['e_frame', 'e_dir', 'e_case', 'e_scen', 'e_sign', 'e_lay', 'e_mode', 'e_cpe'].forEach(function (id) { $(id).onchange = function () { if (OUT) renderElem(); }; });
+    $('e_add').onclick = function () { if (OUT && EL && !EL.err) addView(); }; $('e_views').onclick = viewsClick;
     initTabs();
     ['r_scen', 'r_meas', 'r_sign', 'r_mode', 'r_dir'].forEach(function (id) { $(id).onchange = renderReport; });
     buildDialog();
+    var lv = null; try { lv = JSON.parse(lsGet('views') || 'null'); } catch (e) { }
     try { var lr = JSON.parse(lsGet('report') || 'null'); if (lr) applyReportSettings(lr); } catch (e) { }
+    if (Array.isArray(lv)) { VIEWS = lv.filter(viewOk); viewsSave(); }
     if (lsGet('notes')) { NOTES = lsGet('notes'); $('rNotes').value = NOTES; }
     $('btnReportDlg').onclick = openDlg; if ($('btnReport2')) $('btnReport2').onclick = openDlg;
     $('btnSave').onclick = saveProject;
+    if (!PAGE && window.showSaveFilePicker) { lastHandle('project'); lastHandle('export'); }
     $('btnOpen').onclick = function () {
       if (!PAGE && window.showOpenFilePicker) {
-        lastHandle('project').then(function (lh) {
-          var opt = { id: 'windproject', types: [{ description: 'Projectbestand', accept: { 'application/json': ['.json'] } }] };
-          if (lh) opt.startIn = lh;
-          return window.showOpenFilePicker(opt).catch(function (e) { if (e && e.name !== 'AbortError' && opt.startIn) { delete opt.startIn; return window.showOpenFilePicker(opt); } throw e; });
-        }).then(function (hs) { var h = hs[0]; return h.getFile().then(function (file) { rememberHandle('project', h); openProject(file); }); })
-          .catch(function (e) { if (e && e.name === 'AbortError') return; $('fileIn').value = ''; $('fileIn').click(); });
+        var opt = { id: 'windproject', types: [{ description: 'Projectbestand', accept: { 'application/json': ['.json'] } }] }, pr;
+        if (MEM.project) opt.startIn = MEM.project;   // venster meteen in de klik openen (handle vooraf geladen)
+        try { pr = window.showOpenFilePicker(opt); } catch (e) { pr = Promise.reject(e); }
+        pr.then(function (hs) { var h = hs[0]; return h.getFile().then(function (file) { rememberHandle('project', h); openProject(file); }); })
+          .catch(function (e) {
+            if (e && e.name === 'AbortError') return;
+            if (opt.startIn) { forgetHandle('project'); note('De laatst gebruikte map is niet meer bereikbaar; klik nogmaals op Project openen.', 'warn'); return; }
+            note('Project openen mislukt: ' + (e && e.message ? e.message : e) + '. Je kan het projectbestand ook naar het invoerpaneel slepen.', 'err');
+          });
         return;
       }
       $('fileIn').value = ''; $('fileIn').click();
