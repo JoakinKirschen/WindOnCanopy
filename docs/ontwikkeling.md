@@ -111,3 +111,9 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 
 ## Versie 1.9.1 – c_pe,1 / c_pe,10 expliciet
 - overal waar een uitwendige coëfficiënt getoond wordt, staat nu c_pe,1, c_pe,10 of c_pe(A) volgens de werkelijk gebruikte belaste oppervlakte (fig. 7.2): samenvatting, rapport per zone (ondertitel, labels, tabel), 3D-labels, §3c-diagram en -tabellen (spanten, gordingen, gevelregels, gevelkolommen); overkapping blijft ψ·c_p,net / ψ·c_f
+
+## Versie 1.9.2 – beknoptere tekst, geen dubbele resultaten
+- uitlegparagrafen ingekort tot één regel per onderdeel (kop, invoer, §1, §3b, §3c, §7, §9, §10); herhaalde uitleg (theoriekeuze, tekenafspraak, “Model.”-paragraaf in §3c, “Gevels: zie dakgeval 1”) geschrapt
+- plan en doorsnede staan enkel nog in het tabblad Invoer; het rapport neemt ze mee bij “Model en gekozen theorie”
+- §8 toont enkel nog alle combinaties (de maatgevende waarden staan in §2 en §3b); §9 toont enkel de maatgevende rij per deel
+- identieke rijen samengevoegd: gevel A en P (gespiegeld identiek) als “Gevel A/P” in §2 en §3c, zelfde windrichtingen in §10, zelfde duur in §11, dubbele zones in §3b als “(2×)”

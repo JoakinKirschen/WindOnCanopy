@@ -241,7 +241,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
   <div class="hrow">
   <div style="display:flex;gap:10px;align-items:center"><!--LOGO--><div>
     <h1>Windbelasting tijdelijke bouwfase – loods met luifel, Gent</h1>
-    <div class="sub"><span class="ver">versie <!--VERSION--></span><span class="ver" id="projName" hidden></span> NBN EN 1991-1-4:2005 + ANB:2010 · universeel model: gesloten delen EN 7.2 + 7.2.9 · open delen EN 7.3 / 7.4 – automatische keuze</div>
+    <div class="sub"><span class="ver">versie <!--VERSION--></span><span class="ver" id="projName" hidden></span> NBN EN 1991-1-4:2005 + ANB:2010</div>
   </div></div>
   <div class="btns">
     <select id="langSel" class="langsel" aria-label="Taal · Language · Langue" title="Taal · Language · Langue"><option value="en">English</option><option value="nl">Nederlands</option><option value="fr">Français</option></select>
@@ -264,7 +264,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
   <section class="card inpanel" id="panel">
     <div class="inhead"><h2>Invoer</h2><span class="inbtns"><button type="button" id="grpOpen">Alles openklappen</button><button type="button" id="grpClose">Alles dichtklappen</button></span></div>
-    <p class="small inhint">Wijzigingen worden meteen doorgerekend; het model en de 3D-weergave hieronder volgen meteen. Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen.</p>
+    <p class="small inhint">Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen.</p>
     <!--INPUTS-->
   </section>
 
@@ -322,8 +322,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
   <section class="card" id="sec-model">
     <h2>1. Model en automatisch gekozen theorie</h2>
-    <p class="small">Daken en wanden worden in het tabblad Invoer in- of uitgeschakeld. Overspanningen die niet door een aanwezige tussenwand (as 7, as 13) gescheiden zijn, vormen één volume. Per volume bepaalt het programma uit de openingspercentages welke theorie geldt: <b>≥ 2 vlakken met meer dan 30 % openingen</b> ⇒ open constructie (dak EN 7.3, wanden EN 7.4, EN 7.2.9(2)); anders gesloten gebouw (EN 7.2, c<sub>pi</sub> volgens 7.2.9: dominante zijde of fig. 7.13, plus +0,2/−0,3).</p>
-    <div class="grid2"><div><div class="svgbox" id="svgPlanR"></div></div><div><div class="svgbox" id="svgSecR"></div></div></div>
+    <p class="small">EN 7.2.9(2): ≥ 2 vlakken met > 30 % openingen ⇒ open constructie (EN 7.3 / 7.4); anders gesloten gebouw (EN 7.2).</p>
     <h3>Volumes en openingspercentages</h3>
     <div class="tablewrap"><table id="tblVol"></table></div>
     <h3>Berekende delen</h3>
@@ -345,7 +344,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
   <section class="card" id="sec-report">
     <h2>3b. Rapport – drukken en coëfficiënten per zone en vlak</h2>
-    <p class="small">Per windrichting en per dakgeval (tabel 7.4a Opm. 1: vier combinaties bij wind ⟂ nok, één bij wind ∥ nok): dakaanzicht en gevelaanzichten met per zone c<sub>pe</sub>, c<sub>pi</sub> en w, zoals in het 3D-model. Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting.</p>
+    <p class="small">Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting.</p>
     <div class="filterbar">
       <label>c<sub>pi</sub>-scenario <select id="r_scen"><option value="S1">S1 gesloten (+0,2)</option><option value="S2">S2 gesloten (−0,3)</option><option value="S3" selected>S3 openingen (7.2.9)</option><option value="S4">S4 handmatig</option><option value="S5">S5 open grensvlak (WInt)</option></select></label>
       <label>Coëfficiënten <select id="r_meas"><option value="loc">lokaal (A_lok)</option><option value="glob">globaal (c_pe,10 / c_f)</option></select></label>
@@ -359,7 +358,6 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
 
   <section class="card" id="sec-elem">
     <h2>3c. Belastingen per constructie-element</h2>
-    <p class="small">Windbelasting omgerekend naar de draagconstructie: lijnlasten per spant (invloedsbreedte), reacties per kolomlijn (maatgevend voor fundering en verankering), gordingen, gevelregels, gevelkolommen en windverbanden. Spantposities en h.o.h.-afstanden in de invoer (groep Draagconstructie).</p>
     <div class="filterbar">
       <label>Spant <select id="e_frame"></select></label>
       <label>Richting <select id="e_dir"></select></label>
@@ -400,7 +398,6 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
     <div class="filterbar">
       <label>Vlak <select id="f_surf"><option value="all">alle</option></select></label>
       <label>Richting <select id="f_dir"><option value="all">alle</option></select></label>
-      <label>Weergave <select id="f_view"><option value="env">maatgevend per zone (druk + zuiging)</option><option value="all">alle combinaties (geval × scenario)</option></select></label>
     </div>
     <div class="tablewrap" style="max-height:620px"><table id="tblRes"></table></div>
     <p class="small">Teken: + = druk naar het oppervlak toe (dak: neerwaarts; gevel: naar binnen), − = zuiging van het oppervlak af. Luifel: c<sub>p,net</sub> (lokaal) en c<sub>f</sub> (globaal), + = netto neerwaarts (EN tabel 7.7); geen c<sub>pi</sub>.</p>

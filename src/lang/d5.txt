@@ -45,3 +45,24 @@ globaal: || global: || global :
 (A) volgens fig. 7.2) || (A) according to fig. 7.2) || (A) selon la fig. 7.2)
 coëfficiënt max / min || coefficient max / min || coefficient max / min
 , daartussen logaritmisch; spanten en kolommen met de zoneoppervlakte, gordingen, regels en gevelkolommen met A = L·h.o.h. || , logarithmic in between; frames and columns with the zone area, purlins, rails and wall columns with A = L·spacing || , logarithmique entre les deux ; portiques et poteaux avec la surface de zone, pannes, lisses et poteaux de façade avec A = L·entraxe
+EN 7.2.9(2): ≥ 2 vlakken met > 30 % openingen ⇒ open constructie (EN 7.3 / 7.4); anders gesloten gebouw (EN 7.2). || EN 7.2.9(2): ≥ 2 faces with > 30 % openings ⇒ open structure (EN 7.3 / 7.4); otherwise closed building (EN 7.2). || EN 7.2.9(2) : ≥ 2 faces avec > 30 % d'ouvertures ⇒ construction ouverte (EN 7.3 / 7.4) ; sinon bâtiment fermé (EN 7.2).
+Gevels zijn onafhankelijk van het dakgeval en staan bij het eerste geval van elke richting. || Walls are independent of the roof case and are shown with the first case of each direction. || Les façades sont indépendantes du cas de toiture et figurent avec le premier cas de chaque direction.
+Grijze velden zijn afgeleid of niet van toepassing. Een projectbestand (.json) kan je hierheen slepen. || Grey fields are derived or not applicable. You can drag a project file (.json) here. || Les champs grisés sont dérivés ou sans objet. Vous pouvez glisser un fichier de projet (.json) ici.
+, daaronder w in kN/m². || , below it w in kN/m². || , en dessous w en kN/m².
+· blauw = zuiging / opwaarts · rood = druk / neerwaarts || · blue = suction / upward · red = pressure / downward || · bleu = dépression / vers le haut · rouge = pression / vers le bas
+Overkapping (EN 7.3): puntlast per helling in het drukpunt (fig. 7.16/7.17). || Canopy (EN 7.3): point load per pitch at the centre of pressure (fig. 7.16/7.17). || Toiture isolée (EN 7.3) : charge ponctuelle par versant au centre de pression (fig. 7.16/7.17).
+Kolom scharnierend in voet en op spanthoogte; + = richting as 14. || Column pinned at base and at frame level; + = towards axis 14. || Poteau articulé en pied et au niveau du portique ; + = vers l'axe 14.
+Ligger op twee steunpunten: M = qL²/8, R = qL/2; c || Simply supported beam: M = qL²/8, R = qL/2; c || Poutre sur deux appuis : M = qL²/8, R = qL/2 ; c
+bij A = L·h.o.h.; zonder c || at A = L·spacing; without c || pour A = L·entraxe ; sans c
+Kolom scharnierend in voet en dakrand; incl. c || Column pinned at base and eaves; incl. c || Poteau articulé en pied et en rive ; incl. c
++ = in windrichting. Wrijving EN 5.3(3), 7.5: c || + = in wind direction. Friction EN 5.3(3), 7.5: c || + = dans le sens du vent. Frottement EN 5.3(3), 7.5 : c
+S3: dominante zijde (EN 7.2.9(4)–(5)) of fig. 7.13 (7.2.9(6)). S1/S2: gesloten gebouw (+0,2/−0,3). S5: grensvlak met het verwijderde dak als volledig open gevel. || S3: dominant face (EN 7.2.9(4)–(5)) or fig. 7.13 (7.2.9(6)). S1/S2: closed building (+0.2/−0.3). S5: boundary with the removed roof as a fully open wall. || S3 : face dominante (EN 7.2.9(4)–(5)) ou fig. 7.13 (7.2.9(6)). S1/S2 : bâtiment fermé (+0,2/−0,3). S5 : limite avec la toiture enlevée comme façade entièrement ouverte.
++ omhoog. || + upward. || + vers le haut.
+Karakteristieke waarden zonder tijdelijke reductie. || Characteristic values without temporary reduction. || Valeurs caractéristiques sans réduction temporaire.
+EN 7.3(4): φ = 0 aan lijzijde van de maximale blokkering. Gemarkeerd = maatgevend. || EN 7.3(4): φ = 0 downwind of the maximum blockage. Highlighted = governing. || EN 7.3(4) : φ = 0 sous le vent de l'obstruction maximale. En surbrillance = déterminant.
+werkt in beide richtingen; z || acts in both directions; z || agit dans les deux sens ; z
+Van as A/P ∥ gevel || From axis A/P ∥ wall || Depuis l'axe A/P ∥ façade
+Van as P/A ∥ gevel || From axis P/A ∥ wall || Depuis l'axe P/A ∥ façade
+Gevel A/P · as 1–7 || Wall A/P · axis 1–7 || Façade A/P · axe 1–7
+Gevel A/P · as 7–13 || Wall A/P · axis 7–13 || Façade A/P · axe 7–13
+Gevel A/P · as 13–14 || Wall A/P · axis 13–14 || Façade A/P · axe 13–14
