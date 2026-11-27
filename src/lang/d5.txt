@@ -166,3 +166,26 @@ Per volume en open deel || Per volume and open part || Par volume et partie ouve
 (q_p zonder r) || (q_p without r) || (q_p sans r)
 (niet toegepast) || (not applied) || (non appliqué)
 Piekstuwdruk || Peak velocity pressure || Pression dynamique de pointe
+# versie 1.15.0
+Huidige instellingen als aanzicht aan het rapport toevoegen || Add the current settings to the report as a view || Ajouter les paramètres actuels au rapport comme vue
+＋ Aan rapport toevoegen || ＋ Add to report || ＋ Ajouter au rapport
+Aanzichten in het rapport || Views in the report || Vues dans le rapport
+Instellingen van dit aanzicht tonen || Show the settings of this view || Afficher les paramètres de cette vue
+Uit het rapport verwijderen || Remove from the report || Retirer du rapport
+Alle verwijderen || Remove all || Tout retirer
+Nog geen aanzichten in het rapport: kies de instellingen en klik op ＋ Aan rapport toevoegen. || No views in the report yet: choose the settings and click ＋ Add to report. || Pas encore de vues dans le rapport : choisissez les paramètres et cliquez sur ＋ Ajouter au rapport.
+Dit aanzicht staat al in het rapport. || This view is already in the report. || Cette vue figure déjà dans le rapport.
+toegevoegd aan het rapport (onderdeel “Gekozen aanzichten belastingen per element”). || added to the report (part “Selected views of member loads”). || ajoutée au rapport (partie « Vues choisies des charges par élément »).
+Gekozen aanzichten belastingen per element || Selected views of member loads || Vues choisies des charges par élément
+Aanzicht || View || Vue
+Deze combinatie bestaat niet in het huidige model (dakgeval of c || This combination does not exist in the current model (roof case or c || Cette combinaison n'existe pas dans le modèle actuel (cas de toiture ou scénario c
+-scenario niet van toepassing). || scenario not applicable). || non applicable).
+linker helling || left pitch || versant gauche
+rechter helling || right pitch || versant droit
+Verwijderen || Remove || Retirer
+Opslaan in || Saving to || L'enregistrement dans
+mislukt ( || failed ( || a échoué (
+; is het bestand nog geopend in een ander programma?). Het bestand wordt nu gedownload. || ; is the file still open in another program?). The file is being downloaded instead. || ; le fichier est-il encore ouvert dans un autre programme ?). Le fichier est téléchargé à la place.
+De laatst gebruikte map is niet meer bereikbaar; klik nogmaals op Project openen. || The last used folder is no longer available; click Open project again. || Le dernier dossier utilisé n'est plus accessible ; cliquez à nouveau sur Ouvrir le projet.
+Project openen mislukt: || Opening the project failed: || L'ouverture du projet a échoué :
+. Je kan het projectbestand ook naar het invoerpaneel slepen. || . You can also drag the project file onto the input panel. || . Vous pouvez aussi glisser le fichier de projet sur le panneau des données.

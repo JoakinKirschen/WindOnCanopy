@@ -132,6 +132,9 @@ tr.gov td{background:#fff3e0 !important}
 nav.toc{display:flex;flex-wrap:wrap;gap:6px}
 nav.toc a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:2px 9px;background:#fff}
 .filterbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.vchip{display:inline-flex;align-items:center;gap:2px;padding:1px 2px 1px 8px;border-radius:10px;font-size:12px;border:1px solid #8fb0da;background:#eef3fb;color:#234a7a}
+.vchip button{font:inherit;border:0;background:none;color:inherit;cursor:pointer;padding:0 4px}
+.vchip button:hover{text-decoration:underline}
 .filterbar select{font:inherit;font-size:13px;padding:3px 6px;border:1px solid var(--line);border-radius:5px;max-width:calc(100vw - 130px)}
 /* 3D */
 .ctrlbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 10px}
@@ -338,7 +341,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,.s
       <label>Opstelling <select id="e_lay"><option value="beide">beide hellingen</option><option value="links">linker helling</option><option value="rechts">rechter helling</option></select></label>
       <label>c<sub>pe</sub> <select id="e_cpe"><option value="A">volgens belaste oppervlakte (fig. 7.2)</option><option value="10">c_pe,10 voor alle elementen</option><option value="1">c_pe,1 (lokaal) voor alle elementen</option></select></label>
       <label>Waarde <select id="e_mode"><option value="k">karakteristiek</option><option value="d">ontwerp</option></select></label>
+      <button type="button" id="e_add" title="Huidige instellingen als aanzicht aan het rapport toevoegen">＋ Aan rapport toevoegen</button>
     </div>
+    <div class="filterbar" id="e_views"></div>
     <div id="elemInfo"></div>
   </section>
 
