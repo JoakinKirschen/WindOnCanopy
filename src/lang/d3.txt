@@ -163,7 +163,7 @@ loefgevel [kN] || windward wall [kN] || façade au vent [kN]
 lok. / glob. || loc. / glob. || loc. / glob.
 lokaal (A = || local (A = || local (A =
 lokaal (A_lok) || local (A_loc) || local (A_loc)
-lokaal c || local c || c local
+lokaal c || local c || valeur locale c
 lokale druk || local pressure || pression locale
 lokale zuiging || local suction || dépression locale
 m (bk wandplaten 110,00 m) || m (outside of wall sheeting 110,00 m) || m (extérieur des bardages 110,00 m)

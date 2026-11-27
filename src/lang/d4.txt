@@ -57,7 +57,7 @@ volgens 7.2.9 (S3) of als gesloten gebouw (S1/S2). Open volumes: overkapping (7.
 volgens 7.2.9: dominante zijde of fig. 7.13, plus +0,2/−0,3). || according to 7.2.9: dominant face or fig. 7.13, plus +0,2/−0,3). || selon 7.2.9 : face dominante ou fig. 7.13, plus +0,2/−0,3).
 volle lijn = wand aanwezig · stippel = geen wand · rood = gevelopening fase 2 · arcering = dak verwijderd || solid line = wall present · dotted = no wall · red = wall opening phase 2 · hatching = roof removed || trait plein = paroi présente · pointillé = pas de paroi · rouge = ouverture phase 2 · hachures = toiture enlevée
 vrijstaand (7.4) || free-standing (7.4) || isolé (7.4)
-vrijstaand c || free-standing c || c isolé
+vrijstaand c || free-standing c || isolé : c
 vrijstaande wand, tabel 7.9 (7.4.1), φ = || free-standing wall, table 7.9 (7.4.1), φ = || mur isolé, tableau 7.9 (7.4.1), φ =
 vrijstaande wanden || free-standing walls || murs isolés
 w = 0,85309 · (−2,3235 − 0,20) = −2,1527 kN/m² || w = 0,85309 · (−2,3235 − 0,20) = −2,1527 kN/m² || w = 0,85309 · (−2,3235 − 0,20) = −2,1527 kN/m²

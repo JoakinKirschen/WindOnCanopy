@@ -100,3 +100,7 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 ## Versie 1.8.0 – spanten in 3D, tekenafspraak
 - 3D: spanten (posities uit Draagconstructie) als liggers en kolommen met letter A–P, schakelaar "spanten"; het in §3c gekozen spant oranje gemarkeerd; zonder spantposities blijven de oude kolomstippen
 - §3c: tekenafspraak EN 5.3(3), fig. 5.1 expliciet vermeld (w = w_e − w_i, + = naar het buitenvlak; inwendige onderdruk werkt naar binnen, op het dak neerwaarts) – rekenwijze ongewijzigd en gecontroleerd
+
+## Versie 1.8.1 – duidelijkheid coëfficiënten
+- rapport per zone: per geval vermeld of lokale c_pe (A_lok) of globale c_pe,10 getoond worden, eenheid w [kN/m²]
+- §3c: diagram toont q in kN/m én w in kN/m²; uitleg dat §3c globale c_pe,10 gebruikt (vergelijk met het rapport per zone in de stand "globaal")
