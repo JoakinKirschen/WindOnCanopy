@@ -439,7 +439,7 @@
         if (cases.length > 1 && opts.cases.indexOf(ci) < 0) return;
         if (firstCase === null) firstCase = ci + 1;
         var pl = planSVG(d.id, cid, signs[0] || null, false), rows = pl.rows.slice();
-        h += '<div class="rcase"><h3>' + d.name + ' – ' + (cid === 'θ=90°' ? 'θ = 90° (één geval)' : 'dakgeval ' + (ci + 1) + '/4: ' + cid) + '</h3><p class="small">' + cpiTxt.replace(/^ · /, '') + phiTxt + '</p><div class="rgrid"><div>' + pl.svg + '</div><div>';
+        h += '<div class="rcase"><h3>' + d.name + ' – ' + (cid === 'θ=90°' ? 'θ = 90° (één geval)' : 'dakgeval ' + (ci + 1) + '/4: ' + cid) + '</h3><p class="small">' + cpiTxt.replace(/^ · /, '') + phiTxt + ' · ' + (loc ? 'lokale c<sub>pe</sub> (A<sub>lok</sub> = ' + fmt(o.P.Aloc, 1) + ' m²)' : 'globale c<sub>pe,10</sub>') + ' · w [kN/m²]</p><div class="rgrid"><div>' + pl.svg + '</div><div>';
         var wallHtml = '';
         if (opts.walls && !wallsDone) {
           wallsDone = true;
@@ -515,7 +515,7 @@
       if (sub) r += txt(X(xm), Y(zAt(s, xm)) - 9 - hh, sub, 'middle', '#5f6b7a', 9.5);
       return r;
     }
-    T.segs.forEach(function (g) { var wd = (g.x1 - g.x0) * sc; h += band(g.span, g.x0, g.x1, g.q * fac, false, (wd > 34 ? fmt(g.q * fac, 2, true) : ''), (wd > 105 ? 'c_pe ' + fmt(g.cpe, 2, true) + ' · c_pi ' + fmt(g.cpi, 2, true) : '')); });
+    T.segs.forEach(function (g) { var wd = (g.x1 - g.x0) * sc; h += band(g.span, g.x0, g.x1, g.q * fac, false, (wd > 34 ? fmt(g.q * fac, 2, true) + (wd > 70 ? ' kN/m' : '') : ''), (wd > 150 ? 'w ' + fmt(g.w * fac, 3, true) + ' kN/m² · c_pe,10 ' + fmt(g.cpe, 2, true) + ' · c_pi ' + fmt(g.cpi, 2, true) : wd > 70 ? 'w ' + fmt(g.w * fac, 3, true) + ' kN/m²' : '')); });
     T.pts.forEach(function (p) {
       h += band(p.span, p.x0, p.x1, p.q * fac, true, '');
       var s = sp[p.span], y0 = Y(zAt(s, p.x)) - 4, col = p.F >= 0 ? POS : NEG, L = 46;
@@ -583,7 +583,7 @@
     var E = EL, o = OUT, P = o.P, fr = E.frames[k], T = E.frameLoads(k, sel);
     var LO = E.lineOrder.map(function (i) { return E.lines[i]; }), PNs = function (id) { return PN[id] || id; };
     var c = function (v, d) { return '<td class="' + cls(v) + '">' + fmt(v, d === undefined ? 1 : d, true) + '</td>'; };
-    var h = '<p class="small">Combinatie: <b>' + DIRN[sel.dir].name + '</b>' + (sel.closed ? ' · dakgeval ' + sel.closed.cid + ' · ' + SCN[sel.closed.scen] : '') + (sel.can ? ' · overkapping ' + (sel.can.sign === 'min' ? 'opwaarts' : 'neerwaarts') + ' (' + sel.can.lay + ')' : '') + ' · waarden ' + un + (o.vb.red < 1 ? ' (incl. r = ' + fmt(o.vb.red, 3) + ')' : '') + '. Teken: q en F + = naar het vlak toe (dak: neerwaarts), V + = druk op de fundering, − = trek/opwaarts; H + = richting as 14.</p><p class="small">Tekenafspraak EN 5.3(3), fig. 5.1: netto w = w<sub>e</sub> − w<sub>i</sub> = q<sub>p</sub>(z<sub>e</sub>)·c<sub>pe</sub> − q<sub>p</sub>(z<sub>i</sub>)·c<sub>pi</sub>; positief = naar het buitenvlak toe. Inwendige onderdruk (c<sub>pi</sub> &lt; 0) werkt van het binnenvlak weg, dus naar binnen in het gebouw: op het dak neerwaarts, op een gevel naar binnen.</p>';
+    var h = '<p class="small">Combinatie: <b>' + DIRN[sel.dir].name + '</b>' + (sel.closed ? ' · dakgeval ' + sel.closed.cid + ' · ' + SCN[sel.closed.scen] : '') + (sel.can ? ' · overkapping ' + (sel.can.sign === 'min' ? 'opwaarts' : 'neerwaarts') + ' (' + sel.can.lay + ')' : '') + ' · waarden ' + un + (o.vb.red < 1 ? ' (incl. r = ' + fmt(o.vb.red, 3) + ')' : '') + '. Teken: q en F + = naar het vlak toe (dak: neerwaarts), V + = druk op de fundering, − = trek/opwaarts; H + = richting as 14.</p><p class="small">Dak: globale c<sub>pe,10</sub> per zone (hoofddraagconstructie) en lijnlast q = w · invloedsbreedte [kN/m]. Het rapport per zone toont w in kN/m², met lokale c<sub>pe</sub> (A<sub>lok</sub>) of globale c<sub>pe,10</sub> naargelang de keuze – vergelijk met de stand “globaal”.</p><p class="small">Tekenafspraak EN 5.3(3), fig. 5.1: netto w = w<sub>e</sub> − w<sub>i</sub> = q<sub>p</sub>(z<sub>e</sub>)·c<sub>pe</sub> − q<sub>p</sub>(z<sub>i</sub>)·c<sub>pi</sub>; positief = naar het buitenvlak toe. Inwendige onderdruk (c<sub>pi</sub> &lt; 0) werkt van het binnenvlak weg, dus naar binnen in het gebouw: op het dak neerwaarts, op een gevel naar binnen.</p>';
     h += '<div class="svgbox elemfig">' + elemSVG(T, fr, fac) + '</div>';
     // lijnlasten
     h += '<h3>Lijnlasten op spant ' + fr.name + '</h3><div class="tablewrap"><table><tr><th class="l">Deel</th><th class="l">Helling</th><th class="l">Zone(s)</th><th>x van</th><th>x tot</th><th>c<sub>pe</sub></th><th>c<sub>pi</sub></th><th>w<br>[kN/m²]</th><th>q<sub>⊥</sub> = q<sub>v</sub><br>[kN/m]</th><th>q<sub>h</sub><br>[kN/m]</th><th>Resultante<br>[kN]</th></tr>';

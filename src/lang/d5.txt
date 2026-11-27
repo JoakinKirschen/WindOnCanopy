@@ -21,3 +21,11 @@ Netto neerwaarts ondanks negatieve c || Net downward despite negative c || Net v
 Tekenafspraak EN 5.3(3), fig. 5.1: netto w = w || Sign convention EN 5.3(3), fig. 5.1: net w = w || Convention de signe EN 5.3(3), fig. 5.1 : w net = w
 ; positief = naar het buitenvlak toe. Inwendige onderdruk (c || ; positive = towards the outer surface. Internal suction (c || ; positif = vers la face extérieure. La dépression intérieure (c
 0) werkt van het binnenvlak weg, dus naar binnen in het gebouw: op het dak neerwaarts, op een gevel naar binnen. || 0) acts away from the inner surface, i.e. into the building: downward on the roof, inward on a wall. || 0) agit en s'éloignant de la face intérieure, donc vers l'intérieur du bâtiment : vers le bas sur la toiture, vers l'intérieur sur une façade.
+# versie 1.8.1
+Dak: globale c || Roof: global c || Toiture : valeurs globales c
+per zone (hoofddraagconstructie) en lijnlast q = w · invloedsbreedte [kN/m]. Het rapport per zone toont w in kN/m², met lokale c || per zone (main structure) and line load q = w · tributary width [kN/m]. The report per zone shows w in kN/m², with local c || par zone (structure porteuse) et charge linéique q = w · largeur d'influence [kN/m]. Le rapport par zone montre w en kN/m², avec valeurs locales c
+(A || (A || (A
+) of globale c || ) or global c || ) ou valeurs globales c
+naargelang de keuze – vergelijk met de stand “globaal”. || depending on the choice – compare with the setting “global”. || selon le choix – comparez avec le réglage « global ».
+lokale c || local c || valeurs locales c
+globale c || global c || valeurs globales c
