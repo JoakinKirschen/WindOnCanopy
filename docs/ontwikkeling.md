@@ -96,3 +96,7 @@ Kernresultaten (standaardinvoer, karakteristiek, cat. III, geen duurreductie):
 - rapportdialoog: Annuleren draait wijzigingen terug, "Opslaan en sluiten" bewaart de instellingen (ook na herladen); keuze van het spant voor §3c
 - rapport §3c: per windrichting × dakgeval × overkapping op/neer (zelfde keuze als het rapport per zone), daarna omhullenden en secundaire elementen
 - §3c: c_pe en c_pi per segment in diagram en tabel + uitleg wanneer het dak netto neerwaarts belast wordt door inwendige zuiging
+
+## Versie 1.8.0 – spanten in 3D, tekenafspraak
+- 3D: spanten (posities uit Draagconstructie) als liggers en kolommen met letter A–P, schakelaar "spanten"; het in §3c gekozen spant oranje gemarkeerd; zonder spantposities blijven de oude kolomstippen
+- §3c: tekenafspraak EN 5.3(3), fig. 5.1 expliciet vermeld (w = w_e − w_i, + = naar het buitenvlak; inwendige onderdruk werkt naar binnen, op het dak neerwaarts) – rekenwijze ongewijzigd en gecontroleerd

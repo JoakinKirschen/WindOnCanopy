@@ -39,7 +39,7 @@ window.View3D = (function () {
     cv.addEventListener('pointerup', function (e) { if (down && Math.abs(e.clientX - down[0]) + Math.abs(e.clientY - down[1]) < 5) onClick(e); down = null; });
     cv.addEventListener('dblclick', onDbl);
     document.querySelectorAll('.viewbtns button').forEach(function (b) { b.onclick = function () { setView(b.getAttribute('data-view')); }; });
-    ['t_roof', 't_can', 't_wall', 't_labels', 't_arrows', 't_wind', 't_ctx', 't_dims'].forEach(function (id) { document.getElementById(id).onchange = applyToggles; });
+    ['t_roof', 't_can', 't_wall', 't_labels', 't_arrows', 't_wind', 't_ctx', 't_dims', 't_frames'].forEach(function (id) { document.getElementById(id).onchange = applyToggles; });
     built = true; requestAnimationFrame(tick);
   }
   function resize() { if (!renderer) return; var w = wrap.clientWidth, h = wrap.clientHeight; renderer.setSize(w, h); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); dirty = true; }
@@ -92,7 +92,7 @@ window.View3D = (function () {
     C.x = X[3] / 2; C.y = B / 2;
     var hT = Math.max.apply(null, sp.map(function (s) { return s.top; }));
     R = 0.5 * Math.sqrt(X[3] * X[3] + B * B + hT * hT) + 8;
-    G = { roof: new THREE.Group(), wall: new THREE.Group(), open: new THREE.Group(), arrows: new THREE.Group(), wind: new THREE.Group(), ctx: new THREE.Group(), dims: new THREE.Group() };
+    G = { roof: new THREE.Group(), wall: new THREE.Group(), open: new THREE.Group(), arrows: new THREE.Group(), wind: new THREE.Group(), ctx: new THREE.Group(), dims: new THREE.Group(), frames: new THREE.Group() };
     Object.keys(G).forEach(function (k) { root.add(G[k]); });
     function zAt(s, x) {
       if (s.luifel) { var d = s.w / s.nb, u = (x - s.x0) - Math.floor(Math.min(x - s.x0, s.w - 1e-9) / d) * d; return s.zl + Math.min(u, d - u) * taL; }
@@ -187,12 +187,28 @@ window.View3D = (function () {
       var loaded = o.zones.some(function (z) { return z.part === id; }) || o.free.some(function (z) { return z.part === id; });
       if (!loaded) { var m = poly([V(w.x, 0, 0), V(w.x, B, 0), V(w.x, B, w.H), V(w.x, 0, w.H)], new THREE.Color('#c9d1da'), 0.5); G.ctx.add(m); addLabel(V(w.x, B / 2, w.H / 2), 'binnenwand ' + window.WindUI.PN[id], 200, 'ctx'); }
     });
-    var ny = Math.max(1, Math.round(B / 7.3));
-    [0, 1, 2, 3].forEach(function (k) {
-      if (o.walls['W' + k].on) return;
-      var hh = k === 0 ? sp[0].zl : k === 3 ? sp[2].zr : Math.min(sp[k - 1].zr, sp[k].zl);
-      for (var j = 0; j <= ny; j++) { var c = new THREE.Mesh(GEO.box, new THREE.MeshLambertMaterial({ color: 0x6c7783 })); c.scale.set(0.4, hh, 0.4); c.position.copy(V(X[k], j * B / ny, hh / 2)); G.ctx.add(c); }
-    });
+    var EL = o.EL && !o.EL.err ? o.EL : null;
+    if (!EL) {
+      var ny = Math.max(1, Math.round(B / 7.3));
+      [0, 1, 2, 3].forEach(function (k) {
+        if (o.walls['W' + k].on) return;
+        var hh = k === 0 ? sp[0].zl : k === 3 ? sp[2].zr : Math.min(sp[k - 1].zr, sp[k].zl);
+        for (var j = 0; j <= ny; j++) { var c = new THREE.Mesh(GEO.box, new THREE.MeshLambertMaterial({ color: 0x6c7783 })); c.scale.set(0.4, hh, 0.4); c.position.copy(V(X[k], j * B / ny, hh / 2)); G.ctx.add(c); }
+      });
+    } else {
+      /* --- spanten (posities uit de invoer Draagconstructie) --- */
+      var zLine = function (x) { var z = 0; sp.forEach(function (s) { if (x >= s.x0 - 1e-6 && x <= s.x1 + 1e-6) z = Math.max(z, zAt(s, Math.min(Math.max(x, s.x0), s.x1 - 1e-9))); }); return z; };
+      EL.frames.forEach(function (fr, k) {
+        var selF = SEL.frame === k, c = selF ? 0xe07a1f : 0x334155, r = selF ? 0.26 : 0.13, y = fr.y;
+        sp.forEach(function (s) {
+          var xs = topPts(s, s.x0, s.x1), pts = xs.map(function (x) { return V(x, y, zAt(s, x) + 0.12); });
+          if (s.roofOn) for (var i = 0; i < pts.length - 1; i++) G.frames.add(rod(pts[i], pts[i + 1], r, c));
+          else G.frames.add(dline(pts, selF ? 0xe07a1f : 0x7b8794));
+        });
+        EL.lines.forEach(function (l) { var zt = zLine(l.x); if (zt > 0) G.frames.add(rod(V(l.x, y, 0), V(l.x, y, zt), r * 1.15, c)); });
+        addLabel(V(X[3] + 4, y, 0.4), (selF ? '<b>' : '') + fr.name + (selF ? '</b>' : ''), selF ? 700 : 120, 'frames', selF ? 'big' : '');
+      });
+    }
     var ground = new THREE.Mesh(new THREE.PlaneGeometry(R * 8, R * 8), new THREE.MeshLambertMaterial({ color: 0xdfe5eb })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.03; G.ctx.add(ground); ground.userData.ground = true;
     var gr = new THREE.GridHelper(R * 8, Math.round(R * 8 / 10), 0xbfc9d3, 0xd1d8df); gr.position.y = -0.01; G.ctx.add(gr);
     [[0, 'as 1'], [X[1], 'as 7'], [X[2], 'as 13'], [X[3], 'as 14']].forEach(function (q) { addLabel(V(q[0], -3, 0.2), q[1], 60, 'ctx'); });
@@ -231,15 +247,15 @@ window.View3D = (function () {
   }
   function applyToggles() {
     var c = function (id) { return document.getElementById(id).checked; };
-    G.roof.visible = c('t_roof'); G.wall.visible = c('t_wall'); G.open.visible = c('t_can'); G.arrows.visible = c('t_arrows'); G.wind.visible = c('t_wind'); G.ctx.visible = c('t_ctx'); G.dims.visible = c('t_dims');
+    G.roof.visible = c('t_roof'); G.wall.visible = c('t_wall'); G.open.visible = c('t_can'); G.arrows.visible = c('t_arrows'); G.wind.visible = c('t_wind'); G.ctx.visible = c('t_ctx'); G.dims.visible = c('t_dims'); G.frames.visible = c('t_frames');
     G.arrows.children.forEach(function (a) { a.visible = (a.userData.grp === 'roof' && c('t_roof')) || (a.userData.grp === 'wall' && c('t_wall')) || (a.userData.grp === 'open' && c('t_can')); });
     dirty = true;
   }
   function placeLabels() {
-    var vis = { roof: G.roof.visible, wall: G.wall.visible, open: G.open.visible, ctx: G.ctx.visible, wind: G.wind.visible, dims: G.dims.visible }, show = document.getElementById('t_labels').checked;
+    var vis = { roof: G.roof.visible, wall: G.wall.visible, open: G.open.visible, ctx: G.ctx.visible, wind: G.wind.visible, dims: G.dims.visible, frames: G.frames.visible }, show = document.getElementById('t_labels').checked;
     var Wd = wrap.clientWidth, Hd = wrap.clientHeight, placed = [];
     labels.slice().sort(function (a, b) { return b.prio - a.prio; }).forEach(function (l) {
-      var ok = vis[l.grp] !== false && (show || l.grp === 'wind' || l.grp === 'dims');
+      var ok = vis[l.grp] !== false && (show || l.grp === 'wind' || l.grp === 'dims' || l.grp === 'frames');
       if (!ok) { l.el.classList.add('hidden'); return; }
       var p = l.pos.clone().project(camera);
       if (p.z > 1 || p.z < -1) { l.el.classList.add('hidden'); return; }
